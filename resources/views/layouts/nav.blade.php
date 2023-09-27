@@ -327,16 +327,30 @@
                 <li>
                     <div class="user-info m-b-20">
                         <div class="detail m-t-10">
-                            <h6>{{ auth()->user()->name }}</h6>
+                            <h6>{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</h6>
                             <p class="m-b-0">{{ auth()->user()->email }}</p>
                         </div>
                     </div>
                 </li>
-                <li class="active open"> <a href="index.html"><i class="zmdi zmdi-home"></i><span>Dashboard</span></a></li>
-                <li class=""> <a href="index.html"><i class="material-icons">people</i><span>Customers</span></a></li>
-                <li class=""> <a href="index.html"><i class="material-icons">people_outline</i><span>Vendors</span></a></li>
-                <li class=""> <a href="index.html"><i class="material-icons">place</i><span>Map</span></a></li>
-                <li class=""> <a href="index.html"><i class="material-icons">shop</i><span>Products</span></a></li>
+                <li class="nav-item @if(Route::is('dashboard')) active open @endif"> <a href="{{ route('dashboard') }}"><i class="zmdi zmdi-home"></i><span>Dashboard</span></a></li>
+                <li class="nav-item @if(Route::is('customers.index')) active @endif">
+                    <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-swap-alt"></i><span>User Management</span></a>
+                    <ul class="ml-menu">
+                        <li class="nav-item @if(Route::is('customers.index')) active open @endif">
+                            <a href="{{ route('customers.index') }}"><i class="material-icons">people</i><span>Customers</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('dashboard') }}"><i class="material-icons">people_outline</i><span>Vendors</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item"> <a href="{{ route('dashboard') }}"><i class="material-icons">layers</i><span>Order Management</span></a></li>
+                <li class="nav-item"> <a href="{{ route('dashboard') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a></li>
+                <li class="nav-item"> <a href="{{ route('dashboard') }}"><i class="material-icons">shop</i><span>Stock Management</span></a></li>
+                <li class="nav-item"> <a href="{{ route('dashboard') }}"><i class="material-icons">storage</i><span>Tariff Management</span></a></li>
+                <li class="nav-item @if(Route::is('permissions.*')) active open @endif"> <a href="{{ route('permissions.index') }}"><i class="material-icons">extension</i><span>Roles and Permissions</span></a></li>
+                <li class="nav-item @if(Route::is('documents.index')) active open @endif"> <a href="{{ route('documents.index') }}"><i class="material-icons">description</i><span>Documents Management</span></a></li>
+                <li class="nav-item"> <a href="{{ route('dashboard') }}"><i class="material-icons">dehaze</i><span>Activity Logs</span></a></li>
                 <div class="d-none">
                     <li class="header">MAIN</li>
                     <li><a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-apps"></i><span>App</span> <span class="badge badge-success float-right">7</span></a>
