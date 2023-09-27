@@ -1,43 +1,8 @@
-{{-- <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout> --}}
 @extends('layouts.app')
 @section('content')
 <section class="content home">
     <div class="container-fluid">
-        <div class="block-header">
-            <div class="row clearfix">
-                <div class="col-lg-5 col-md-5 col-sm-12">
-                    <h2>Dashboard</h2>
-                    <ul class="breadcrumb padding-0">
-                        <li class="breadcrumb-item"><a href="index.html"><i class="zmdi zmdi-home"></i></a></li>
-                        <li class="breadcrumb-item active">Dashboard</li>
-                    </ul>
-                </div>
-                <div class="col-lg-7 col-md-7 col-sm-12">
-                    <div class="input-group m-b-0">
-                        <input type="text" class="form-control" placeholder="Search...">
-                        <span class="input-group-addon">
-                            <i class="zmdi zmdi-search"></i>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <x-breadcrumbs :items="$breadcrumbs"></x-breadcrumbs>
         <div class="row clearfix">
             <div class="col-lg-3 col-md-6">
                 <div class="card text-center">

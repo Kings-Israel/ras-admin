@@ -70,7 +70,7 @@
                     <a class="icon" href="https://www.behance.net/thememakker" target="_blank"><i class="zmdi zmdi-behance"></i></a>
                     <a class="icon" href="javascript:void(0);"><i class="zmdi zmdi-twitter"></i></a>
                     <a class="icon" href="javascript:void(0);"><i class="zmdi zmdi-linkedin"></i></a>
-                    <p>Coded by WrapTheme<br> Designed by <a href="http://thememakker.com/" target="_blank">thememakker.com</a></p>
+                    <p><a href="https://deveint.com/" target="_blank">deveint.com</a></p>
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
     <ul class="menu_list">
         <li>
             <a href="javascript:void(0);" class="bars"></a>
-            <a class="navbar-brand" href="index.html"><img src="assets/images/logo.svg" alt="Alpino"></a>
+            <a class="navbar-brand" href="{{ route('dashboard') }}"><img src="{{ asset('assets/images/logo.svg') }}" alt="Alpino"></a>
         </li>
         <li><a href="javascript:void(0);" class="btn_overlay hidden-sm-down"><i class="zmdi zmdi-search"></i></a></li>
         <li><a href="javascript:void(0);" class="menu-sm"><i class="zmdi zmdi-swap"></i></a></li>

@@ -1,0 +1,19 @@
+.nav-item > a {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+
+.block-header {
+    margin-bottom: -8px !important;
+}
+
+.card .header {
+    padding: 5px 0 !important;
+}
+
+.modal-backdrop.show {
+    display: none !important;
+    opacity: 0 !important;
+}
