@@ -58,7 +58,7 @@ class DocumentController extends Controller
     {
         return view('documents.edit', [
             'breadcrumbs' => [
-                'Documents' => route('documents.index'),
+                'Settings' => route('settings.index'),
                 'Edit Document' => route('documents.edit', $document)
             ],
             'countries' => Country::orderBy('name', 'ASC')->get(),
@@ -95,7 +95,7 @@ class DocumentController extends Controller
 
         toastr()->success('', 'Document Updated Successfully');
 
-        return redirect()->route('documents.index');
+        return redirect()->route('settings.index');
     }
 
     public function delete(Document $document)
