@@ -155,4 +155,6 @@ return [
     */
 
     'pagination_theme' => 'bootstrap',
+
+    'asset_url' => env('APP_URL', 'http://localhost'),
 ];
