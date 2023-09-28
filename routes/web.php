@@ -7,6 +7,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Livewire\Livewire;
 
 
 Route::middleware('auth')->group(function () {
@@ -52,5 +53,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+if (config('app.env') == 'production') {
+    Livewire::setUpdateRoute(function ($handle) {
+        return Route::post('/ras-admin/livewire/update', $handle);
+    });
+}
 
 require __DIR__.'/auth.php';
