@@ -10,7 +10,7 @@
                         <h2 class="my-auto"><strong>Edit {{ $document->name }}</strong></h2>
                     </div>
                 </div>
-                <form class="body" action="{{ route('documents.update', ['document' => $document]) }}" method="POST">
+                <form class="body" action="{{ route('settings.document.update', ['document' => $document]) }}" method="POST">
                     @csrf
                     @method('PATCH')
                     <div class="modal-body">
@@ -49,7 +49,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary btn-round waves-effect">SAVE CHANGES</button>
-                        <button type="button" class="btn btn-danger btn-simple btn-round waves-effect" data-dismiss="modal">CLOSE</button>
+                        <a href="{{ route('settings.index') }}" class="btn btn-danger btn-simple btn-round waves-effect" data-dismiss="modal">BACK</a>
                     </div>
                 </form>
             </div>

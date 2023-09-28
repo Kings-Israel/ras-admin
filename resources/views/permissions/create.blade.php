@@ -2,7 +2,7 @@
 @section('content')
 <section class="content home">
     <div class="container-fluid">
-        <x-breadcrumbs :items="$breadcrumbs"></x-breadcrumbs>
+        <x-breadcrumbs :page="$page" :items="$breadcrumbs"></x-breadcrumbs>
         <div class="clearfix">
             <div class="card">
                 <div class="header">

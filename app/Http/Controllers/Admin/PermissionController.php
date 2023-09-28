@@ -15,6 +15,7 @@ class PermissionController extends Controller
 
         return view('permissions.index', [
             'roles' => $roles,
+            'page' => 'Roles and Permissions',
             'breadcrumbs' => [
                 'Roles and Permissions' => route('permissions.index'),
             ],
@@ -26,6 +27,7 @@ class PermissionController extends Controller
         $permissions = Permission::all();
 
         return view('permissions.create', [
+            'page' => 'Add Role',
             'breadcrumbs' => [
                 'Roles and Permissions' => route('permissions.index'),
                 'Add' => route('permissions.create'),
@@ -52,6 +54,7 @@ class PermissionController extends Controller
         $permissions = Permission::all();
 
         return view('permissions.edit', [
+            'page' => 'Edit Roles and Permissions',
             'breadcrumbs' => [
                 'Roles and Permissions' => route('permissions.index'),
                 'Edit' => route('permissions.edit', ['role' => $role]),

@@ -24,4 +24,20 @@ class Country extends Model
     {
         return $this->hasMany(City::class);
     }
+
+    /**
+     * Get all of the businesses for the Country
+     */
+    public function businesses(): HasMany
+    {
+        return $this->hasMany(Business::class);
+    }
+
+    /**
+     * Get all of the warehouses for the Country
+     */
+    public function warehouses(): HasMany
+    {
+        return $this->hasMany(Warehouse::class);
+    }
 }

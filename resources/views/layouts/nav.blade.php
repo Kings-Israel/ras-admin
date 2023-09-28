@@ -349,7 +349,7 @@
                 <li class="nav-item"> <a href="{{ route('dashboard') }}"><i class="material-icons">shop</i><span>Stock Management</span></a></li>
                 <li class="nav-item"> <a href="{{ route('dashboard') }}"><i class="material-icons">storage</i><span>Tariff Management</span></a></li>
                 <li class="nav-item @if(Route::is('permissions.*')) active open @endif"> <a href="{{ route('permissions.index') }}"><i class="material-icons">extension</i><span>Roles and Permissions</span></a></li>
-                <li class="nav-item @if(Route::is('documents.index')) active open @endif"> <a href="{{ route('documents.index') }}"><i class="material-icons">description</i><span>Documents Management</span></a></li>
+                {{-- <li class="nav-item @if(Route::is('documents.index')) active open @endif"> <a href="{{ route('documents.index') }}"><i class="material-icons">description</i><span>Documents Management</span></a></li> --}}
                 <li class="nav-item"> <a href="{{ route('dashboard') }}"><i class="material-icons">dehaze</i><span>Activity Logs</span></a></li>
                 <div class="d-none">
                     <li class="header">MAIN</li>
