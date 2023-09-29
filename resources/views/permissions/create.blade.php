@@ -15,7 +15,7 @@
                             <div class="col-sm-6">
                                 <label for="role_name">Role Name</label>
                                 <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Name" name="role_name" />
+                                    <input type="text" class="form-control" placeholder="Name" name="role_name" :value="old('role_name')" />
                                     <x-input-error :messages="$errors->get('role_name')" class="mt-2 list-unstyled"></x-input-error>
                                 </div>
                             </div>

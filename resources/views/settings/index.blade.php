@@ -4,7 +4,14 @@
     <div class="container-fluid">
         <x-breadcrumbs :page="$page" :items="$breadcrumbs"></x-breadcrumbs>
         <div class="clearfix">
-            <livewire:admin.settings.categories />
+            <div class="row">
+                <div class="col-md-7 col-sm-12">
+                    <livewire:admin.settings.categories />
+                </div>
+                <div class="col-md-5 col-sm-12">
+                    <livewire:admin.settings.measurement-units-list />
+                </div>
+            </div>
         </div>
         <div class="clearfix">
             <div class="card">

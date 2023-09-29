@@ -11,10 +11,7 @@ class PermissionController extends Controller
 {
     public function index()
     {
-        $roles = Role::withCount('permissions', 'users')->where('name', '!=', 'admin')->get();
-
         return view('permissions.index', [
-            'roles' => $roles,
             'page' => 'Roles and Permissions',
             'breadcrumbs' => [
                 'Roles and Permissions' => route('permissions.index'),
@@ -39,10 +36,26 @@ class PermissionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'role_name' => 'required', 'string'
+            'role_name' => ['required', 'string', 'unique:roles,name']
+        ], [
+            'role_name.unique' => 'The Role already exists'
         ]);
 
-        dd($request->all());
+        $role = Role::create([
+            'name' => $request->role_name
+        ]);
+
+        if($request->has('permissions') && count($request->permissions) > 0) {
+            foreach($request->permissions as $permission) {
+                $permission = Permission::find($permission);
+
+                $role->givePermissionTo($permission);
+            }
+        }
+
+        toastr()->success('', 'Role created successfully');
+
+        return redirect()->route('permissions.index');
     }
 
     public function edit(Role $role)
@@ -74,7 +87,7 @@ class PermissionController extends Controller
             'name' => $request->get('name'),
         ]);
 
-        session()->put('success', 'Role updated');
+        toastr()->success('', 'Role updated successfully');
 
         return redirect()->route('permissions.index');
     }
@@ -83,6 +96,8 @@ class PermissionController extends Controller
     {
         Role::destroy($id);
 
-        return;
+        toastr()->success('', 'Role deleted successfully');
+
+        return redirect()->route('permissions.index');
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Document;
+use App\Models\MeasurementUnit;
 use App\Models\RequiredDocumentPerCountry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -248,12 +249,37 @@ class SettingsController extends Controller
         return redirect()->route('settings.index');
     }
 
-    public function delete(Document $document)
+    public function deleteDocument(Document $document)
     {
         $document->delete();
 
-        toastr()->success('', 'Document Delete Successfully');
+        toastr()->success('', 'Document Deleted Successfully');
 
-        return back();
+        return redirect()->route('settings.index');
+    }
+
+    public function updateUnit(Request $request, MeasurementUnit $unit)
+    {
+        $request->validate([
+            'name' => 'required'
+        ]);
+
+        $unit->update([
+            'name' => $request->name,
+            'abbrev' => $request->has('abbrev') && $request->abbrev != '' ? $request->abbrev : $unit->abbrev,
+        ]);
+
+        toastr()->success('', 'Unit updated successfully');
+
+        return redirect()->route('settings.index');
+    }
+
+    public function deleteUnit(MeasurementUnit $unit)
+    {
+        $unit->delete();
+
+        toastr()->success('', 'Unit deleted Successfully');
+
+        return redirect()->route('settings.index');
     }
 }

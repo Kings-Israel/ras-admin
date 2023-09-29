@@ -3,9 +3,9 @@
 use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\SettingsController;
-use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 
@@ -45,9 +45,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/{country}/city/store', [SettingsController::class, 'storeCity'])->name('city.store');
         Route::post('/city/{city}/update', [SettingsController::class, 'updateCity'])->name('city.update');
         Route::get('/city/{city}/delete', [SettingsController::class, 'deleteCity'])->name('city.delete');
+        // Measurement Units
+        Route::post('/units/{unit}/update', [SettingsController::class, 'updateUnit'])->name('unit.update');
+        Route::get('/units/{unit}/delete', [SettingsController::class, 'deleteUnit'])->name('unit.delete');
     });
 
-    Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+    Route::get('/customers', [UsersController::class, 'buyers'])->name('users.buyers');
+    Route::get('/vendors', [UsersController::class, 'vendors'])->name('users.vendors');
+    Route::get('/financiers', [UsersController::class, 'financiers'])->name('users.financiers');
+    Route::get('/inspectors', [UsersController::class, 'inspectors'])->name('users.inspectors');
+    Route::get('/warehousemanagers', [UsersController::class, 'warehouseManagers'])->name('users.warehousemanagers');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
