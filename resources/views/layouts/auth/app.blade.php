@@ -16,6 +16,7 @@
         <!-- Custom Css -->
         <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/css/color_skins.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
         <!-- Scripts -->
         {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
         @yield('css')
@@ -27,7 +28,7 @@
                     <div class="row">
                         <div class="col-lg-6 col-md-12">
                             <div class="company_detail">
-                                <h4 class="logo"><img src="assets/images/logo.svg" alt=""> Real African Sources</h4>
+                                <h4 class="logo"><img src="{{ asset('assets/images/logo-alt.png') }}" alt=""></h4>
                             </div>
                         </div>
                         <div class="col-lg-5 col-md-12 offset-lg-1">
