@@ -2,7 +2,7 @@
 <div class="block-header">
     <div class="row clearfix">
         <div class="col-lg-5 col-md-5 col-sm-12">
-            <h2>{{ $page ? $page : 'Dashbboard' }}</h2>
+            <h2>{{ $page ? $page : 'Dashboard' }}</h2>
             <ul class="breadcrumb padding-0">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="zmdi zmdi-home"></i></a></li>
                 @if (count($items) > 0)

@@ -38,9 +38,9 @@
                 <div class="card text-center">
                     <div class="body">
                         <p class="m-b-20"><i class="zmdi zmdi-account-box zmdi-hc-3x col-green"></i></p>
-                        <span>New Employees</span>
-                        <h3 class="m-b-10 number count-to" data-from="0" data-to="78" data-speed="2000" data-fresh-interval="700">78</h3>
-                        <small class="text-muted">78% lower growth</small>
+                        <span>Users</span>
+                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $users }}" data-speed="2000" data-fresh-interval="700">{{ $users }}</h3>
+                        <small class="text-muted">{{ $user_registration_rate }}% {{ $user_registration_direction }} growth</small>
                     </div>
                 </div>
             </div>
@@ -49,20 +49,10 @@
             <div class="col-lg-12 col-md-12">
                 <div class="card visitors-map">
                     <div class="header">
-                        <h2><strong>Visit</strong> & Sales Statistics</h2>
-                        <ul class="header-dropdown">
-                            <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
-                                <ul class="dropdown-menu slideUp">
-                                    <li><a href="javascript:void(0);">Action</a></li>
-                                    <li><a href="javascript:void(0);">Another action</a></li>
-                                    <li><a href="javascript:void(0);">Something else</a></li>
-                                    <li><a href="javascript:void(0);" class="boxs-close">Delete</a></li>
-                                </ul>
-                            </li>
-                        </ul>
+                        <h2><strong>Buyers</strong> & Vendors Registration Rate</h2>
                     </div>
                     <div class="body m-b-10">
-                        <div id="m_area_chart"></div>
+                        <canvas id="user_registration_rate" height="100"></canvas>
                     </div>
                     <div class="body">
                         <div class="row">
@@ -614,4 +604,44 @@
 @endsection
 @push('scripts')
     <script src="{{ asset('assets/js/pages/index.js') }}"></script>
+    <script src="{{ asset('assets/plugins/chartjs/Chart.bundle.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/charts/chartjs.js') }}"></script>
+    <script>
+        $(function () {
+            let user_registration_graph_data = {!! json_encode($user_registration_rate_graph_data) !!}
+            let vendor_registration_graph_data = {!! json_encode($vendor_registration_rate_graph_data) !!}
+            let months = {!! json_encode($months) !!}
+
+            new Chart(document.getElementById("user_registration_rate").getContext("2d"),
+                config = {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: "Users",
+                            data: user_registration_graph_data,
+                            borderColor: 'rgba(241,95,121, 0.2)',
+                            backgroundColor: 'rgba(241,95,121, 0.5)',
+                            pointBorderColor: 'rgba(241,95,121, 0.3)',
+                            pointBackgroundColor: 'rgba(241,95,121, 0.2)',
+                            pointBorderWidth: 1
+                        }, {
+                            label: "Vendors",
+                            data: vendor_registration_graph_data,
+                            borderColor: 'rgba(140,147,154, 0.2)',
+                            backgroundColor: 'rgba(140,147,154, 0.2)',
+                            pointBorderColor: 'rgba(140,147,154, 0)',
+                            pointBackgroundColor: 'rgba(140,147,154, 0.9)',
+                            pointBorderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: false,
+
+                    }
+                }
+            );
+        });
+    </script>
 @endpush

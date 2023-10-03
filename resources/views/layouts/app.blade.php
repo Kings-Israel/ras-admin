@@ -48,7 +48,7 @@
     <script src="{{ asset('assets/plugins/multi-select/js/jquery.multi-select.js') }}"></script>
     <script src="{{ asset('assets/plugins/jquery-inputmask/jquery.inputmask.bundle.js') }}"></script>
     <script src="{{ asset('assets/plugins/nouislider/nouislider.js') }}"></script>
-
+    <script src="{{ asset('assets/bundles/flotchartsscripts.bundle.js') }}"></script>
     <script src="{{ asset('assets/bundles/mainscripts.bundle.js') }}"></script>
     <script src="{{ asset('assets/js/pages/forms/advanced-form-elements.js') }}"></script>
     <!-- Lib Scripts Plugin Js -->

@@ -1,11 +1,11 @@
 ﻿//Project:	Alpino - Responsive Bootstrap 4 Template
 //Primary use:	Alpino - Responsive Bootstrap 4 Template
 $(function() {
-    "use strict";	
+    "use strict";
 	MorrisArea();
 });
 
-$(function () {   
+$(function () {
     $('.sparkline-pie').sparkline('html', {
         type: 'pie',
         offset: 90,
@@ -22,7 +22,7 @@ $(function () {
         fillColor: 'transparent',
         spotColor: '#000',
         lineWidth: 1,
-        spotRadius: 2,        
+        spotRadius: 2,
 
     });
     $("#sparkline15").sparkline([2,3,9,1,2,5,4,7,8,2], {
@@ -35,67 +35,17 @@ $(function () {
         lineWidth: 1,
         spotRadius: 2,
     });
-   
+
     $('.sparkbar').sparkline('html', {
         type: 'bar',
         height: '100',
-        width: '100%',        
+        width: '100%',
         barSpacing: '20',
         barColor: '#e56590',
         negBarColor: '#4ac2ae',
         responsive: true,
     });
 });
-
-// Morris-chart
-function MorrisArea() {
-    Morris.Area({
-        element: 'm_area_chart',
-        data: [{
-                period: '2011',
-                Visit: 45,
-                Sales: 75                
-            }, {
-                period: '2012',
-                Visit: 130,
-                Sales: 110                
-            }, {
-                period: '2013',
-                Visit: 80,
-                Sales: 60
-            }, {
-                period: '2014',
-                Visit: 78,
-                Sales: 205
-            }, {
-                period: '2015',
-                Visit: 180,
-                Sales: 124
-            }, {
-                period: '2016',
-                Visit: 105,
-                Sales: 100
-            },
-            {
-                period: '2017',
-                Visit: 210,
-                Sales: 180
-            }
-        ],
-        xkey: 'period',
-        ykeys: ['Visit', 'Sales'],
-        labels: ['Visit', 'Sales'],
-        pointSize: 3,
-        fillOpacity: 0,
-        pointStrokeColors: ['#191f28', '#6c7787'],
-        behaveLikeLine: true,
-        gridLineColor: '#e0e0e0',
-        lineWidth: 2,
-        hideHover: 'auto',
-        lineColors: ['#191f28', '#6c7787'],
-        resize: true
-    });
-}
 
 //======
 $(window).on('scroll',function() {
@@ -120,7 +70,7 @@ $(function() {
 			"IN": 2000000,
 			"GB": 120,
 		};
-	
+
 	if( $('#world-map-markers2').length > 0 ){
 		$('#world-map-markers2').vectorMap(
 		{
@@ -146,36 +96,36 @@ $(function() {
 					'stroke-opacity': 0.8
 				},
 				hover: {
-					'stroke': '#fff',					
+					'stroke': '#fff',
 					'fill-opacity': 1,
 					'stroke-width': 5
 				},
 			},
-		   
+
 			markers : [{
 				latLng : [21.00, 78.00],
-				name : 'INDIA : 350'			  
+				name : 'INDIA : 350'
 				}, {
 					latLng : [-33.00, 151.00],
-					name : 'Australia : 250'				
+					name : 'Australia : 250'
 				}, {
 					latLng : [36.77, -119.41],
-					name : 'USA : 250'			  
+					name : 'USA : 250'
 				}, {
 					latLng : [55.37, -3.41],
-					name : 'UK   : 250'			  
+					name : 'UK   : 250'
 				}, {
 					latLng : [25.20, 55.27],
-					name : 'UAE : 250'			  
+					name : 'UAE : 250'
 				}, {
 					latLng : [491,540.93],
-					name : 'CANADA : 250'			  
+					name : 'CANADA : 250'
 				}, {
 					latLng : [452,256.55],
-					name : 'FRANCE : 50'			  
+					name : 'FRANCE : 50'
 				}, {
 					latLng : [445,610.79],
-					name : 'CHINA : 50'				  
+					name : 'CHINA : 50'
 				}
 			],
 

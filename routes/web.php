@@ -1,17 +1,23 @@
 <?php
 
 use App\Http\Controllers\Admin\DocumentController;
+use App\Http\Controllers\Admin\LogController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\WarehouseController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/warehouses', [WarehouseController::class, 'index'])->name('warehouses');
+    Route::get('/products', [ProductController::class, 'index'])->name('products');
 
     Route::group(['prefix' => 'permissions/', 'as' => 'permissions.'], function () {
         Route::get('/', [PermissionController::class, 'index'])->name('index');
@@ -59,6 +65,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/logs', LogController::class)->name('logs');
 });
 
 if (config('app.env') == 'production') {
