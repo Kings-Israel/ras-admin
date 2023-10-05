@@ -11,6 +11,13 @@ class User extends Authenticatable
 {
     use HasFactory, HasRoles;
 
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [];
+
     public function getAvatarAttribute($value)
     {
         if ($value != NULL) {

@@ -1,6 +1,12 @@
 @extends('layouts.app')
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css') }}">
+    <style>
+        #super{
+            vertical-align:super;
+            font-size: smaller;
+        }
+    </style>
 @endsection
 @section('content')
 <section class="content home">
@@ -9,17 +15,21 @@
         <div class="row clearfix">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="header">
+                    <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
+                        <a class="btn btn-secondary btn-sm" href="{{ route('warehouses.create') }}">Add Warehouse</a>
                     </div>
                     <div class="body">
-                        <table class="table table-bordered table-striped table-hover dataTable js-exportable">
+                        <table class="table table-hover dataTable js-exportable">
                             <thead>
                                 <tr>
                                     <th>Name</th>
                                     <th>Location</th>
                                     <th>Manager</th>
                                     <th>No. of Products</th>
+                                    <th>Capacity (m<span id="super">3</span>)</th>
+                                    <th>Occuppied (m<span id="super">3</span>)</th>
+                                    <th>Price</th>
                                     <th>Added on</th>
                                     <th></th>
                                 </tr>
@@ -31,9 +41,12 @@
                                         <td>{{ $warehouse->city ? $warehouse->city->name.', ' : '' }}{{ $warehouse->country->name }}</td>
                                         <td>{{ $warehouse->user->first_name }} {{ $warehouse->user->last_name }}</td>
                                         <td>{{ $warehouse->products_count }}</td>
+                                        <td>{{ $warehouse->max_capacity }}</td>
+                                        <td>{{ 'US$'.number_format($warehouse->price) }}</td>
+                                        <td>{{ $warehouse->occupied_capacity }}</td>
                                         <td>{{ $warehouse->created_at->format('d M Y') }}</td>
                                         <td>
-                                            <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
+                                            <a href="{{ route('warehouses.edit', ['warehouse' => $warehouse]) }}" class="btn btn-sm btn-primary btn-round waves-effect">EDIT</a>
                                         </td>
                                     </tr>
                                 @endforeach

@@ -12,6 +12,13 @@ class Warehouse extends Model
     use HasFactory;
 
     /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [];
+
+    /**
      * Get the country that owns the Warehouse
      */
     public function country(): BelongsTo

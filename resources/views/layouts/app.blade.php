@@ -36,8 +36,8 @@
         @yield('content')
     </body>
     <!-- Jquery Core Js -->
-    <script src={{ asset('assets/bundles/libscripts.bundle.js') }}></script>
-    <script src={{ asset('assets/bundles/vendorscripts.bundle.js') }}></script>
+    <script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
+    <script src="{{ asset('assets/bundles/vendorscripts.bundle.js') }}"></script>
     <script src="{{ asset('assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js') }}"></script>
 
     <script src="{{ asset('assets/bundles/knob.bundle.js') }}"></script>
@@ -51,6 +51,10 @@
     <script src="{{ asset('assets/bundles/flotchartsscripts.bundle.js') }}"></script>
     <script src="{{ asset('assets/bundles/mainscripts.bundle.js') }}"></script>
     <script src="{{ asset('assets/js/pages/forms/advanced-form-elements.js') }}"></script>
+
+    {{-- <script src="https://maps.google.com/maps/api/js?v=3&key=AIzaSyCisnVFSnc5QVfU2Jm2W3oRLqMDrKwOEoM"></script> <!-- Google Maps API Js -->
+    <script src="{{ asset('assets/plugins/gmaps/gmaps.js') }}"></script> <!-- GMaps PLugin Js -->
+    <script src="{{ asset('assets/js/pages/maps/google.js') }}"></script> --}}
     <!-- Lib Scripts Plugin Js -->
     @stack('scripts')
 </html>

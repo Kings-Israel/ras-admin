@@ -17,6 +17,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/warehouses', [WarehouseController::class, 'index'])->name('warehouses');
+    Route::get('/warehouses/create', [WarehouseController::class, 'create'])->name('warehouses.create');
+    Route::post('warehouses/store', [WarehouseController::class, 'store'])->name('warehouses.store');
+    Route::get('/warehouses/{warehouse}/edit', [WarehouseController::class, 'edit'])->name('warehouses.edit');
+    Route::patch('/warehouses/{warehouse}/update', [WarehouseController::class, 'update'])->name('warehouses.update');
+
     Route::get('/products', [ProductController::class, 'index'])->name('products');
 
     Route::group(['prefix' => 'permissions/', 'as' => 'permissions.'], function () {
