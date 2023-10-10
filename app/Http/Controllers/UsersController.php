@@ -44,11 +44,10 @@ class UsersController extends Controller
 
     public function warehouseManagers()
     {
-        $users = User::whereHas('roles', function ($query) {
+        $users = User::withCount('warehouses')->whereHas('roles', function ($query) {
                     $query->where('name', 'warehouse manager');
                 })
                 ->get();
-
         return view('users.warehouse-managers', [
             'page' => 'Warehouse Managers',
             'breadcrumbs' => [

@@ -55,14 +55,15 @@
                                 <div class="col-6">
                                     <label for="manager">Select Manager</label>
                                     <div class="form-group">
-                                        <select name="user_id" id="user" class="form-control">
+                                        @php($warehouse_managers = $warehouse->users->pluck('id')->toArray())
+                                        <select name="users[]" id="user" class="form-control">
                                             <option value="">Select Manager</option>
                                             @foreach ($users as $user)
-                                                <option value="{{ $user->id }}" @if($warehouse->user_id == $user->id) selected @endif>{{ $user->first_name }} {{ $user->last_name }} ({{ $user->email }})</option>
+                                                <option value="{{ $user->id }}" @if(in_array($user->id, $warehouse_managers)) selected @endif>{{ $user->first_name }} {{ $user->last_name }} ({{ $user->email }})</option>
                                             @endforeach
                                             <option value="">Select None</option>
                                         </select>
-                                        <x-input-error :messages="$errors->get('user_id')" class="mt-2 list-unstyled"></x-input-error>
+                                        <x-input-error :messages="$errors->get('users')" class="mt-2 list-unstyled"></x-input-error>
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -132,10 +133,14 @@
     }
 
     function initMap() {
-        var latLng = new google.maps.LatLng(warehouseLat, warehouseLong);
+        if (warehouseLat != '' && warehouseLong != '') {
+            var latLng = new google.maps.LatLng(warehouseLat, warehouseLong);
+        } else {
+            var latLng = new google.maps.LatLng(-1.270104, 36.80814)
+        }
         var map = new google.maps.Map(document.getElementById('gmap_markers'), {
-            center: {lat: parseFloat(warehouseLat), lng: parseFloat(warehouseLong)},
-            zoom: 3
+            center: latLng,
+            zoom: 13
         });
         var input = document.getElementById('pac-input');
 
@@ -145,7 +150,8 @@
         var infowindow = new google.maps.InfoWindow();
         marker = new google.maps.Marker({
             map: map,
-            anchorPoint: new google.maps.Point(0, -29)
+            anchorPoint: new google.maps.Point(0, -29),
+            position: latLng,
         });
 
         autocomplete.addListener('place_changed', function() {

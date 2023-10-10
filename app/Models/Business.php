@@ -55,4 +55,12 @@ class Business extends Model
     {
         return $this->hasMany(City::class);
     }
+
+    /**
+     * Get all of the products for the Business
+     */
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
 }

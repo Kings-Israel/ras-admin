@@ -25,7 +25,7 @@
                                 <tr>
                                     <th>Name</th>
                                     <th>Location</th>
-                                    <th>Manager</th>
+                                    <th>Manager(s)</th>
                                     <th>No. of Products</th>
                                     <th>Capacity (m<span id="super">3</span>)</th>
                                     <th>Occuppied (m<span id="super">3</span>)</th>
@@ -39,7 +39,7 @@
                                     <tr>
                                         <td>{{ $warehouse->name }}</td>
                                         <td>{{ $warehouse->city ? $warehouse->city->name.', ' : '' }}{{ $warehouse->country->name }}</td>
-                                        <td>{{ $warehouse->user->first_name }} {{ $warehouse->user->last_name }}</td>
+                                        <td>{{ $warehouse->users_count }}</td>
                                         <td>{{ $warehouse->products_count }}</td>
                                         <td>{{ $warehouse->max_capacity }}</td>
                                         <td>{{ 'US$'.number_format($warehouse->price) }}</td>

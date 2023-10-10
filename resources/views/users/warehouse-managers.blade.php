@@ -18,6 +18,7 @@
                                 <tr>
                                     <th>Name</th>
                                     <th>Email</th>
+                                    <th>Warehouses</th>
                                     <th>Phone Number</th>
                                     <th>Last Login</th>
                                     <th>Registered date</th>
@@ -29,6 +30,7 @@
                                     <tr>
                                         <td>{{ $user->first_name }} {{ $user->last_name }}</td>
                                         <td>{{ $user->email }}</td>
+                                        <td>{{ $user->warehouses_count }}</td>
                                         <td>{{ $user->phone_number }}</td>
                                         <td>{{ Carbon\Carbon::parse($user->last_login)->diffForHumans() }}</td>
                                         <td>{{ $user->created_at->diffForHumans() }}</td>
