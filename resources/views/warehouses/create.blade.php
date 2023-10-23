@@ -74,7 +74,7 @@
                                         <select name="users[]" id="user" class="form-control" multiple>
                                             <option value="">Select Manager</option>
                                             @foreach ($users as $user)
-                                                <option value="{{ $user->id }}" @if(in_array(old('users', $user->id))) selected @endif>{{ $user->first_name }} {{ $user->last_name }} ({{ $user->email }})</option>
+                                                <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }} ({{ $user->email }})</option>
                                             @endforeach
                                         </select>
                                         <x-input-error :messages="$errors->get('user_id')" class="mt-2 list-unstyled"></x-input-error>
