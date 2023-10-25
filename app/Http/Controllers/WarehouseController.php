@@ -9,6 +9,7 @@ use App\Models\UserWarehouse;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Password;
 
 class WarehouseController extends Controller
 {
@@ -89,13 +90,19 @@ class WarehouseController extends Controller
         ]);
 
         if (!$request->has('users') || $request->users == NULL) {
-            $user = User::create([
-                'first_name' => $request->user_first_name,
-                'last_name' => $request->user_last_name,
-                'email' => $request->user_email,
-                'phone_number' => $request->user_phone_number,
-                'password' => Helpers::generatePassword()
-            ]);
+            $user = User::where('email', $request->user_email)->orWhere('phone_number', $request->user_phone_number)->first();
+            if (!$user) {
+                $user = User::create([
+                    'first_name' => $request->user_first_name,
+                    'last_name' => $request->user_last_name,
+                    'email' => $request->user_email,
+                    'phone_number' => $request->user_phone_number,
+                    'password' => Helpers::generatePassword()
+                ]);
+                
+                // Email credetails to the user
+                Password::sendResetLink($request->only('email'));
+            }
 
             $user->assignRole('warehouse manager');
 
@@ -104,7 +111,6 @@ class WarehouseController extends Controller
                 'warehouse_id' => $warehouse->id,
             ]);
 
-            // TODO: Email credetails to the user
         } else {
             foreach ($request->users as $user) {
                 UserWarehouse::firstOrCreate([

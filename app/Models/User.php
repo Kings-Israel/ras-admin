@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\PasswordReset;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -20,6 +21,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $guarded = [];
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new PasswordReset($this, $token));
+    }
 
     public function getAvatarAttribute($value)
     {

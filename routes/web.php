@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/warehouses', [WarehouseController::class, 'index'])->name('warehouses');
