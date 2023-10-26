@@ -21,6 +21,8 @@ class RolesList extends Component
     {
         $roles = Role::withCount('permissions', 'users')
                         ->where('name', '!=', 'admin')
+                        ->where('name', '!=', 'buyer')
+                        ->where('name', '!=', 'vendor')
                         ->when($this->search && $this->search != '', function ($query) {
                             $query->where('name', 'LIKE', '%'.$this->search.'%');
                         })

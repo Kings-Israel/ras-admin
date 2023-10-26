@@ -112,7 +112,9 @@
         <li><a href="chat.html"><i class="zmdi zmdi-comments"></i></a></li>
         <li><a href="javascript:void(0);" class="fullscreen" data-provide="fullscreen"><i class="zmdi zmdi-fullscreen"></i></a></li>
         <li class="power">
-            <a href="{{ route('settings.index') }}"><i class="zmdi zmdi-settings zmdi-hc-spin"></i></a>
+            @role('admin')
+                <a href="{{ route('settings.index') }}"><i class="zmdi zmdi-settings zmdi-hc-spin"></i></a>
+            @endrole
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <a href="{{ route('logout') }}"

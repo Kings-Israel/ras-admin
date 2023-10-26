@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Country;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\UserWarehouse;
 use App\Models\Warehouse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -32,57 +34,108 @@ class DashboardController extends Controller
             array_push($months_formatted, Carbon::parse($month)->format('M'));
         }
 
-        if (auth()->user()->hasRole('admin')) {
-            $users_registered_in_current_month = User::whereMonth('created_at', now())->count();
-            $users_registered_in_previous_month = User::whereMonth('created_at', now()->subMonth())->count();
-            $users_registration_diiference = $users_registered_in_previous_month - $users_registered_in_current_month;
-            if ($users_registration_diiference < 0) {
-                $user_registration_rate = 0;
-            } else {
-                $user_registration_rate = ceil($users_registration_diiference / ($users_registered_in_previous_month + $users_registered_in_current_month) * 100);
-            }
+        // Define all data needed for the dashboard
+        $warehouses_count = 0;
+        $products_count = 0;
+        $warehouses_count = 0;
+        $warehousues = [];
+        $buyers_count = 0;
+        $vendors_count = 0;
+        $total_users_count = 0;
+        $users_registered_in_current_month = 0;
+        $users_registered_in_previous_month = 0;
+        $users_registration_diiference = 0;
+        $user_registration_rate = 0;
+        $user_registration_direction = '';
+        // User Registration Rate
+        $user_registration_rate_graph_data = [];
+        // Vendor Registration Rate
+        $vendor_registration_rate_graph_data = [];
+        // Countries
+        $countries = [];
 
-            if ($users_registered_in_previous_month < $users_registered_in_current_month) {
-                $user_registration_direction = 'higher';
-            } else {
-                $user_registration_direction = 'lower';
-            }
-
-            $users = User::whereHas('roles', function ($query) {
-                                $query->where('name', '!=', 'admin');
-                            })
-                            ->count();
-
-            // User Registration Rate
-            $user_registration_rate_graph_data = [];
-            foreach ($months as $month) {
-                $users_monthly = User::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereHas('roles', function($query) { $query->where('name', 'buyer'); })->count();
-                array_push($user_registration_rate_graph_data, $users_monthly);
-            }
-
-            // Vendor Registration Rate
-            $vendor_registration_rate_graph_data = [];
-            foreach ($months as $month) {
-                $vendors_monthly = User::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereHas('roles', function($query) { $query->where('name', 'vendor'); })->count();
-                array_push($vendor_registration_rate_graph_data, $vendors_monthly);
-            }
-
-            $warehouses = Warehouse::count();
-            $products = Product::count();
-
-            return view('dashboard', [
-                'breadcrumbs' => [
-                    'Dashboard' => route('dashboard'),
-                ],
-                'months' => $months_formatted,
-                'users' => $users,
-                'user_registration_rate' => $user_registration_rate,
-                'user_registration_direction' => $user_registration_direction,
-                'user_registration_rate_graph_data' => $user_registration_rate_graph_data,
-                'vendor_registration_rate_graph_data' => $vendor_registration_rate_graph_data,
-                'warehouses' => $warehouses,
-                'products' => $products
-            ]);
+        $users_registered_in_current_month = User::whereHas('roles', function ($query) {$query->where('name', 'buyer')->orWhere('name', 'vendor');})->whereMonth('created_at', now())->count();
+        $users_registered_in_previous_month = User::whereHas('roles', function ($query) {$query->where('name', 'buyer')->orWhere('name', 'vendor');})->whereMonth('created_at', now()->subMonth())->count();
+        $users_registration_diiference = $users_registered_in_previous_month - $users_registered_in_current_month;
+        if ($users_registration_diiference < 0) {
+            $user_registration_rate = 0;
+        } else {
+            $user_registration_rate = ceil($users_registration_diiference / ($users_registered_in_previous_month + $users_registered_in_current_month) * 100);
         }
+
+        if ($users_registered_in_previous_month < $users_registered_in_current_month) {
+            $user_registration_direction = 'higher';
+        } else {
+            $user_registration_direction = 'lower';
+        }
+
+        $total_users_count = User::whereHas('roles', function ($query) {
+                            $query->where('name', '!=', 'admin');
+                        })
+                        ->count();
+
+        $buyers_count = User::whereHas('roles', function ($query) {
+                            $query->where('name', '=', 'buyer');
+                        })
+                        ->count();
+
+        $vendors_count = User::whereHas('roles', function ($query) {
+                            $query->where('name', '=', 'vendor');
+                        })
+                        ->count();
+
+        foreach ($months as $month) {
+            $users_monthly = User::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereHas('roles', function($query) { $query->where('name', 'buyer'); })->count();
+            array_push($user_registration_rate_graph_data, $users_monthly);
+        }
+
+        foreach ($months as $month) {
+            $vendors_monthly = User::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereHas('roles', function($query) { $query->where('name', 'vendor'); })->count();
+            array_push($vendor_registration_rate_graph_data, $vendors_monthly);
+        }
+
+        $warehouses = Warehouse::with('users', 'products', 'country', 'city')->get();
+        $warehouses_count = $warehouses->count();
+        $products_count = Product::count();
+
+        $country_colors = [
+            'col-orange',
+            'col-lime',
+            'col-purple',
+            'col-pink',
+            'col-grey',
+            'col-green',
+            'col-black',
+            'col-magenta',
+            'col-yellow',
+            'col-blue',
+        ];
+
+        $countries = Country::withCount('warehouses', 'businesses')
+                            ->with('warehouses', 'businesses', 'cities')
+                            ->orderBy('warehouses_count', 'DESC')
+                            ->get()
+                            ->take(9)
+                            ->each(function ($country, $key) use ($country_colors) {
+                                $country->color = $country_colors[$key];
+                            });
+
+        return view('dashboard', [
+            'breadcrumbs' => [
+                'Dashboard' => route('dashboard'),
+            ],
+            'months' => $months_formatted,
+            'total_users_count' => $total_users_count,
+            'buyers_count' => $buyers_count,
+            'vendors_count' => $vendors_count,
+            'user_registration_rate' => $user_registration_rate,
+            'user_registration_direction' => $user_registration_direction,
+            'user_registration_rate_graph_data' => $user_registration_rate_graph_data,
+            'vendor_registration_rate_graph_data' => $vendor_registration_rate_graph_data,
+            'warehouses' => $warehouses,
+            'warehouses_count' => $warehouses_count,
+            'products_count' => $products_count,
+            'countries' => $countries,
+        ]);
     }
 }

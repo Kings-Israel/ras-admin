@@ -3,129 +3,126 @@
 <section class="content home">
     <div class="container-fluid">
         <x-breadcrumbs :items="$breadcrumbs"></x-breadcrumbs>
+        @role('admin')
+            <div class="row clearfix">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <p class="m-b-20"><i class="zmdi zmdi-balance zmdi-hc-3x col-amber"></i></p>
+                            <span>Total Revenue</span>
+                            <h3 class="m-b-10">$<span class="number count-to" data-from="0" data-to="2078" data-speed="2000" data-fresh-interval="700">2078</span></h3>
+                            <small class="text-muted">27% lower growth</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <p class="m-b-20"><i class="zmdi zmdi-assignment zmdi-hc-3x col-blue"></i></p>
+                            <span>Total Orders</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="865" data-speed="2000" data-fresh-interval="700">865</h3>
+                            <small class="text-muted">88% lower growth</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <p class="m-b-20"><i class="zmdi zmdi-shopping-basket zmdi-hc-3x"></i></p>
+                            <span>Total Sales</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="3502" data-speed="2000" data-fresh-interval="700">3502</h3>
+                            <small class="text-muted">38% lower growth</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <p class="m-b-20"><i class="zmdi zmdi-account-box zmdi-hc-3x col-green"></i></p>
+                            <span>Users</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_users_count }}" data-speed="300" data-fresh-interval="100">{{ $total_users_count }}</h3>
+                            <small class="text-muted">{{ $user_registration_rate }}% {{ $user_registration_direction }} growth</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endrole
         <div class="row clearfix">
-            <div class="col-lg-3 col-md-6">
-                <div class="card text-center">
-                    <div class="body">
-                        <p class="m-b-20"><i class="zmdi zmdi-balance zmdi-hc-3x col-amber"></i></p>
-                        <span>Total Revenue</span>
-                        <h3 class="m-b-10">$<span class="number count-to" data-from="0" data-to="2078" data-speed="2000" data-fresh-interval="700">2078</span></h3>
-                        <small class="text-muted">27% lower growth</small>
+            @can('view warehouse')
+                <div class="col-lg-4 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <p class="m-b-20"><i class="zmdi zmdi-balance zmdi-hc-3x col-amber"></i></p>
+                            <span>Total Warehouses</span>
+                            <h3 class="m-b-10"><span class="number count-to" data-from="0" data-to="{{ $warehouses_count }}" data-speed="10" data-fresh-interval="5">{{ $warehouses_count }}</span></h3>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="card text-center">
-                    <div class="body">
-                        <p class="m-b-20"><i class="zmdi zmdi-assignment zmdi-hc-3x col-blue"></i></p>
-                        <span>Total Orders</span>
-                        <h3 class="m-b-10 number count-to" data-from="0" data-to="865" data-speed="2000" data-fresh-interval="700">865</h3>
-                        <small class="text-muted">88% lower growth</small>
+            @endcan
+            @can('view product')
+                <div class="col-lg-4 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <p class="m-b-20"><i class="zmdi zmdi-assignment zmdi-hc-3x col-blue"></i></p>
+                            <span>Total Products</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $products_count }}" data-speed="10" data-fresh-interval="5">{{ $products_count }}</h3>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="card text-center">
-                    <div class="body">
-                        <p class="m-b-20"><i class="zmdi zmdi-shopping-basket zmdi-hc-3x"></i></p>
-                        <span>Total Sales</span>
-                        <h3 class="m-b-10 number count-to" data-from="0" data-to="3502" data-speed="2000" data-fresh-interval="700">3502</h3>
-                        <small class="text-muted">38% lower growth</small>
+            @endcan
+            @can('view order')
+                <div class="col-lg-4 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <p class="m-b-20"><i class="zmdi zmdi-shopping-basket zmdi-hc-3x"></i></p>
+                            <span>Total Orders</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">0</h3>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="card text-center">
-                    <div class="body">
-                        <p class="m-b-20"><i class="zmdi zmdi-account-box zmdi-hc-3x col-green"></i></p>
-                        <span>Users</span>
-                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $users }}" data-speed="2000" data-fresh-interval="700">{{ $users }}</h3>
-                        <small class="text-muted">{{ $user_registration_rate }}% {{ $user_registration_direction }} growth</small>
-                    </div>
-                </div>
-            </div>
+            @endcan
         </div>
-        <div class="row clearfix">
-            <div class="col-lg-12 col-md-12">
-                <div class="card visitors-map">
-                    <div class="header">
-                        <h2><strong>Buyers</strong> & Vendors Registration Rate</h2>
-                    </div>
-                    <div class="body m-b-10">
-                        <canvas id="user_registration_rate" height="100"></canvas>
-                    </div>
-                    <div class="body">
-                        <div class="row">
-                            <div class="col-lg-8 col-md-12">
-                                <div id="world-map-markers2" class="m-b-10"></div>
-                            </div>
-                            <div class="col-lg-4 col-md-12">
-                                <div class="table-responsive">
-                                    <table class="table table-hover m-b-0">
-                                        <tbody>
-                                            <tr>
-                                                <th><i class="zmdi zmdi-circle col-cyan"></i></th>
-                                                <td>USA</td>
-                                                <td><span>862 Records</span></td>
-                                                <td><span>35% <i class="zmdi zmdi-caret-up"></i></span></td>
-                                            </tr>
-                                            <tr>
-                                                <th><i class="zmdi zmdi-circle"></i></th>
-                                                <td>Canada</td>
-                                                <td><span>451 Records</span></td>
-                                                <td><span>15% <i class="zmdi zmdi-caret-up"></i></span></td>
-                                            </tr>
-                                            <tr>
-                                                <th><i class="zmdi zmdi-circle text-warning"></i></th>
-                                                <td>India</td>
-                                                <td><span>502 Records</span></td>
-                                                <td><span>20% <i class="zmdi zmdi-caret-down"></i></span></td>
-                                            </tr>
-                                            <tr>
-                                                <th><i class="zmdi zmdi-circle text-info"></i></th>
-                                                <td>Australia</td>
-                                                <td><span>502 Records</span></td>
-                                                <td><span>20% <i class="zmdi zmdi-caret-up"></i></span></td>
-                                            </tr>
-                                            <tr>
-                                                <th><i class="zmdi zmdi-circle text-danger"></i></th>
-                                                <td>UK</td>
-                                                <td><span>237 Records</span></td>
-                                                <td><span>10% <i class="zmdi zmdi-caret-up"></i></span></td>
-                                            </tr>
-                                            <tr>
-                                                <th><i class="zmdi zmdi-circle"></i></th>
-                                                <td>France</td>
-                                                <td><span>237 Records</span></td>
-                                                <td><span>10% <i class="zmdi zmdi-caret-down"></i></span></td>
-                                            </tr>
-                                            <tr>
-                                                <th><i class="zmdi zmdi-circle"></i></th>
-                                                <td>Germany</td>
-                                                <td><span>237 Records</span></td>
-                                                <td><span>10% <i class="zmdi zmdi-caret-up"></i></span></td>
-                                            </tr>
-                                            <tr>
-                                                <th><i class="zmdi zmdi-circle"></i></th>
-                                                <td>China</td>
-                                                <td><span>237 Records</span></td>
-                                                <td><span>10% <i class="zmdi zmdi-caret-down"></i></span></td>
-                                            </tr>
-                                            <tr>
-                                                <th><i class="zmdi zmdi-circle col-purple"></i></th>
-                                                <td>USE</td>
-                                                <td><span>237 Records</span></td>
-                                                <td><span>10% <i class="zmdi zmdi-caret-down"></i></span></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+        @role('admin')
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12">
+                    <div class="card visitors-map">
+                        <div class="header">
+                            <h2><strong>Buyers</strong> & Vendors Registration Rate</h2>
+                        </div>
+                        <div class="body m-b-10">
+                            <canvas id="user_registration_rate" height="100"></canvas>
+                        </div>
+                        <div class="body">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-12">
+                                    <div id="world-map-markers2" class="m-b-10"></div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover m-b-0">
+                                            <tbody>
+                                                @foreach ($countries as $country)
+                                                    <tr title="{{ $country->name }}">
+                                                        <th><i class="zmdi zmdi-circle {{ $country->color }}"></i></th>
+                                                        @if (strlen($country->name) > 12)
+                                                            <td>{{ $country->iso_three }}</td>
+                                                        @else
+                                                            <td>{{ Str::title($country->name) }}</td>
+                                                        @endif
+                                                        <td><span>{{ $country->warehouses_count }} WHs</span></td>
+                                                        <td><span>{{ $country->businesses_count }} BSs</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endrole
         <div class="row clearfix">
             <div class="col-lg-4 col-md-6">
                 <div class="card">
@@ -606,11 +603,15 @@
     <script src="{{ asset('assets/js/pages/index.js') }}"></script>
     <script src="{{ asset('assets/plugins/chartjs/Chart.bundle.js') }}"></script>
     <script src="{{ asset('assets/js/pages/charts/chartjs.js') }}"></script>
+    @role('admin')
     <script>
         $(function () {
             let user_registration_graph_data = {!! json_encode($user_registration_rate_graph_data) !!}
             let vendor_registration_graph_data = {!! json_encode($vendor_registration_rate_graph_data) !!}
             let months = {!! json_encode($months) !!}
+            let warehouses = {!! json_encode($warehouses) !!}
+            let countries = {!! json_encode($countries) !!}
+            // console.log(countries)
 
             new Chart(document.getElementById("user_registration_rate").getContext("2d"),
                 config = {
@@ -642,6 +643,90 @@
                     }
                 }
             );
+
+            "use strict";
+
+            /** VectorMap Init */
+            var mapData = {};
+            let region_values = {}
+            let country_warehouses = []
+
+            let value_colors = [
+                '#FFA500',
+                '#00FF00',
+                '#800080',
+                '#FFC0CB',
+                '#808080',
+                '#008000',
+                '#000000',
+                '#FF00FF',
+                '#FFFF00',
+            ]
+
+            countries.forEach((country, key) => {
+                let country_iso = country.iso
+                mapData[country_iso] = country.warehouses_count
+                region_values[country_iso] = value_colors[key]
+            });
+
+
+            warehouses.forEach((warehouse, key) => {
+                if (warehouse.latitude != null && warehouse.longitude != null) {
+                    country_warehouses[key] = { latLng: [warehouse.latitude, warehouse.longitude], name: warehouse.name }
+                }
+            })
+
+
+            if( $('#world-map-markers2').length > 0 ){
+                $('#world-map-markers2').vectorMap(
+                {
+                    map: 'world_mill_en',
+                    backgroundColor: 'transparent',
+                    borderColor: '#fff',
+                    borderOpacity: 0.25,
+                    borderWidth: 0,
+                    color: '#e6e6e6',
+                    regionStyle : {
+                        initial : {
+                            fill : '#e9eef0'
+                        }
+                    },
+
+                    markerStyle: {
+                        initial: {
+                            r: 8,
+                            'fill': '#3c434d',
+                            'fill-opacity': 0.9,
+                            'stroke': '#fff',
+                            'stroke-width' : 5,
+                            'stroke-opacity': 0.8
+                        },
+                        hover: {
+                            'stroke': '#fff',
+                            'fill-opacity': 1,
+                            'stroke-width': 5
+                        },
+                    },
+
+                    markers : country_warehouses,
+
+                    series: {
+                        regions: [{
+                            values: region_values,
+                            attribute: 'fill'
+                        }]
+                    },
+                    hoverOpacity: null,
+                    normalizeFunction: 'linear',
+                    zoomOnScroll: true,
+                    scaleColors: ['#000000', '#000000'],
+                    selectedColor: '#000000',
+                    selectedRegions: [],
+                    enableZoom: true,
+                    hoverColor: '#fff',
+                });
+            }
         });
     </script>
+    @endrole
 @endpush
