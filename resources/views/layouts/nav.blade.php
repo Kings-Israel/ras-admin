@@ -30,6 +30,9 @@
                             <li class="nav-item @if(Route::is('users.inspectors')) active open @endif" >
                                 <a href="{{ route('users.inspectors') }}"><i class="material-icons">gavel</i><span>Inspectors</span></a>
                             </li>
+                            <li class="nav-item @if(Route::is('users.drivers')) active open @endif" >
+                                <a href="{{ route('users.drivers') }}"><i class="material-icons">toys</i><span>Drivers</span></a>
+                            </li>
                         </ul>
                     </li>
                 @endrole

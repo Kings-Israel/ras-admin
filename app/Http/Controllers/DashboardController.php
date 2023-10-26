@@ -38,9 +38,10 @@ class DashboardController extends Controller
         $warehouses_count = 0;
         $products_count = 0;
         $warehouses_count = 0;
-        $warehousues = [];
+        $warehouses = [];
         $buyers_count = 0;
         $vendors_count = 0;
+        $drivers_count = 0;
         $total_users_count = 0;
         $users_registered_in_current_month = 0;
         $users_registered_in_previous_month = 0;
@@ -53,6 +54,15 @@ class DashboardController extends Controller
         $vendor_registration_rate_graph_data = [];
         // Countries
         $countries = [];
+
+        // Storage Requests
+        $pending_storage_requests = 0;
+        $approved_storage_requests = 0;
+
+        $orders_on_delivery_in = 0;
+        $orders_on_delivery_out = 0;
+
+        $total_stocklift_requests = 0;
 
         $users_registered_in_current_month = User::whereHas('roles', function ($query) {$query->where('name', 'buyer')->orWhere('name', 'vendor');})->whereMonth('created_at', now())->count();
         $users_registered_in_previous_month = User::whereHas('roles', function ($query) {$query->where('name', 'buyer')->orWhere('name', 'vendor');})->whereMonth('created_at', now()->subMonth())->count();

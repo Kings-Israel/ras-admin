@@ -20,17 +20,20 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            @php($role_permissions = $role->permissions->pluck('id')->toArray())
-                            @foreach ($permissions as $permission)
-                                <div class="col-sm-6 col-md-3 checkbox">
-                                    <input id="permission_{{ $permission->id }}" type="checkbox" name="permissions[]" value="{{ $permission->name }}" @if(in_array($permission->id, $role_permissions)) checked @endif>
-                                    <label for="permission_{{ $permission->id }}">
-                                        {{ Str::title($permission->name) }}
-                                    </label>
-                                </div>
-                            @endforeach
-                        </div>
+                        @php($role_permissions = $role->permissions->pluck('id')->toArray())
+                        @foreach ($permissions as $key => $permission)
+                            <h4 class="-mb-2">{{ Str::title($key) }}</h4>
+                            <div class="row">
+                                @foreach ($permission as $permission_item)
+                                    <div class="col-sm-6 col-md-3 checkbox">
+                                        <input id="permission_{{ $permission_item->id }}" type="checkbox" name="permissions[]" value="{{ $permission_item->name }}" @if(in_array($permission_item->id, $role_permissions)) checked @endif>
+                                        <label for="permission_{{ $permission_item->id }}">
+                                            {{ Str::title($permission_item->name) }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
                         <button type="submit" class="btn btn-raised btn-primary btn-round waves-effect">UPDATE</button>
                     </form>
                 </div>
