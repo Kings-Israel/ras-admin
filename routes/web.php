@@ -66,6 +66,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/financiers', [UsersController::class, 'financiers'])->name('users.financiers');
     Route::get('/inspectors', [UsersController::class, 'inspectors'])->name('users.inspectors');
     Route::get('/warehousemanagers', [UsersController::class, 'warehouseManagers'])->name('users.warehousemanagers');
+    Route::get('/drivers', [UsersController::class, 'drivers'])->name('users.drivers');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

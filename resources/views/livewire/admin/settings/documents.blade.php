@@ -10,7 +10,9 @@
                 <tr>
                     <th>NAME</th>
                     <th>NO. OF COUNTRIES</th>
-                    <th>ACTIONS</th>
+                    @can('update settings')
+                        <th>ACTIONS</th>
+                    @endcan
                 </tr>
             </thead>
             <tbody>
@@ -18,17 +20,21 @@
                     <tr>
                         <td>{{ Str::title($document->name) }}</td>
                         <td>{{ $document->countries_count > 0 ? $document->countries_count : $countries->count().' - (ALL)' }}</td>
-                        <td>
-                            <div class="flex mx-2">
-                                {{-- <a href="#editDocument_{{ $document->id }}" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editDocument_{{ $document->id }}">Edit</a> --}}
-                                <a href="{{ route('settings.document.edit', ['document' => $document]) }}" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="{{ route('settings.document.delete', ['document' => $document]) }}">
-                                    <button class="btn btn-danger btn-sm">Delete</button>
-                                </a>
-                            </div>
-                        </td>
+                        @can('update settings')
+                            <td>
+                                <div class="flex mx-2">
+                                    {{-- <a href="#editDocument_{{ $document->id }}" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editDocument_{{ $document->id }}">Edit</a> --}}
+                                    <a href="{{ route('settings.document.edit', ['document' => $document]) }}" class="btn btn-warning btn-sm">Edit</a>
+                                    <a href="{{ route('settings.document.delete', ['document' => $document]) }}">
+                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                    </a>
+                                </div>
+                            </td>
+                        @endcan
                     </tr>
-                    @include('partials.admin.settings.edit-document')
+                    @can('update settings')
+                        @include('partials.admin.settings.edit-document')
+                    @endcan
                 @endforeach
             </tbody>
         </table>
