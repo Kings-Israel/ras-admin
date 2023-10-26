@@ -15,7 +15,14 @@ class WarehouseController extends Controller
 {
     public function index()
     {
-        $warehouses = Warehouse::withCount('users')->with('country', 'city')->withCount('products')->get();
+        if (auth()->user()->hasRole('warehouse manager')) {
+            $user_warehouses = UserWarehouse::where('user_id', auth()->id())->get()->pluck('warehouse_id');
+            $warehouses = Warehouse::withCount('products')->whereIn('id', $user_warehouses)->get();
+        }
+
+        if (auth()->user()->hasRole('admin')) {
+            $warehouses = Warehouse::withCount('users', 'products')->with('country', 'city')->get();
+        }
 
         return view('warehouses.index', [
             'page' => 'Warehouses',
@@ -53,7 +60,7 @@ class WarehouseController extends Controller
             'name' => ['required'],
             'users' => ['required_without:first_name', 'required_without:last_name', 'required_without:email', 'required_without:phone_number', 'array'],
             'max_capacity' => ['required', 'integer'],
-            'price' => ['required', 'integer'],
+            'price' => ['integer'],
             'place_id' => ['required'],
         ], [
             'place_id.required' => 'Please select location',
@@ -85,11 +92,27 @@ class WarehouseController extends Controller
             'latitude' => $warehouse_location['results'][0]['geometry']['location']['lat'],
             'longitude' => $warehouse_location['results'][0]['geometry']['location']['lng'],
             'location' => $warehouse_location['results'][0]['formatted_address'],
-            'price' => $request->price,
+            'price' => $request->has('price') ? $request->price : NULL,
             'occuppied_capacity' => 0,
         ]);
 
-        if (!$request->has('users') || $request->users == NULL) {
+        if ($request->has('users') && $request->users != NULL) {
+            foreach ($request->users as $user) {
+                $user_details = User::find($user);
+                if (!$user_details->hasRole('warehouse manager')) {
+                    $user_details->assignRole('warehouse manager');
+                }
+
+                UserWarehouse::firstOrCreate([
+                    'warehouse_id' => $warehouse->id,
+                    'user_id' => $user,
+                ]);
+            }
+        }
+
+        if ($request->has('first_name') && $request->has('last_name') && $request->has('email') && $request->has('phone_number')
+                && $request->first_name != NULL && $request->last_name != NULL && $request->email != NULL && $request->phone_number != NULL
+            ) {
             $user = User::where('email', $request->user_email)->orWhere('phone_number', $request->user_phone_number)->first();
             if (!$user) {
                 $user = User::create([
@@ -99,7 +122,7 @@ class WarehouseController extends Controller
                     'phone_number' => $request->user_phone_number,
                     'password' => Helpers::generatePassword()
                 ]);
-                
+
                 // Email credetails to the user
                 Password::sendResetLink($request->only('email'));
             }
@@ -110,14 +133,6 @@ class WarehouseController extends Controller
                 'user_id' => $user->id,
                 'warehouse_id' => $warehouse->id,
             ]);
-
-        } else {
-            foreach ($request->users as $user) {
-                UserWarehouse::firstOrCreate([
-                    'warehouse_id' => $warehouse->id,
-                    'user_id' => $user,
-                ]);
-            }
         }
 
         toastr()->success('', 'Warehouse added successfully');
@@ -148,8 +163,8 @@ class WarehouseController extends Controller
             'phone_number' => ['required_without:users'],
             'name' => ['required'],
             'users' => ['required_without:first_name', 'required_without:last_name', 'required_without:email', 'required_without:phone_number', 'array'],
-            'max_capacity' => ['required', 'integer'],
-            'price' => ['required', 'integer'],
+            'max_capacity' => ['nullable', 'integer'],
+            'price' => ['nullable', 'integer'],
         ], [
             'user_id.required_without' => 'Select manager(s) or add their details',
             'first_name.required_without' => 'Enter manager\'s first name',
@@ -181,34 +196,49 @@ class WarehouseController extends Controller
             'location' => $request->has('place_id') && $request->place_id != NULL ? $warehouse_location['results'][0]['formatted_address'] : $warehouse->location,
             'latitude' => $request->has('place_id') && $request->place_id != NULL ? $warehouse_location['results'][0]['geometry']['location']['lat'] : $warehouse->latitude,
             'longitude' => $request->has('place_id') && $request->place_id != NULL ? $warehouse_location['results'][0]['geometry']['location']['lng'] : $warehouse->longitude,
-            'max_capacity' => $request->max_capacity,
-            'price' => $request->price,
+            'max_capacity' => $request->has('max_capacity') ? $request->max_capacity : $warehouse->max_capacity,
+            'price' => $request->has('price') ? $request->price : $warehouse->price,
         ]);
 
-        if (!$request->has('users') || $request->users == NULL) {
-            $user = User::create([
-                'first_name' => $request->user_first_name,
-                'last_name' => $request->user_last_name,
-                'email' => $request->user_email,
-                'phone_number' => $request->user_phone_number,
-                'password' => Helpers::generatePassword()
-            ]);
+        if ($request->has('users') && $request->users != NULL) {
+            foreach ($request->users as $user) {
+                $user_details = User::find($user);
+                if (!$user_details->hasRole('warehouse manager')) {
+                    $user_details->assignRole('warehouse manager');
+                }
 
-            $user->assignRole('warehouse manager');
+                UserWarehouse::firstOrCreate([
+                    'warehouse_id' => $warehouse->id,
+                    'user_id' => $user,
+                ]);
+            }
+        }
 
-            UserWarehouse::create([
+        if ($request->has('first_name') && $request->has('last_name') && $request->has('email') && $request->has('phone_number')
+                && $request->first_name != NULL && $request->last_name != NULL && $request->email != NULL && $request->phone_number != NULL
+            ) {
+            $user = User::where('email', $request->email)->orWhere('phone_number', $request->phone_number)->first();
+            if (!$user) {
+                $user = User::create([
+                    'first_name' => $request->first_name,
+                    'last_name' => $request->last_name,
+                    'email' => $request->email,
+                    'phone_number' => $request->phone_number,
+                    'password' => Helpers::generatePassword()
+                ]);
+
+                // Email credetails to the user
+                Password::sendResetLink($request->only('email'));
+            }
+
+            if (!$user->hasRole('warehouse manager')) {
+                $user->assignRole('warehouse manager');
+            }
+
+            UserWarehouse::firstOrCreate([
                 'user_id' => $user->id,
                 'warehouse_id' => $warehouse->id,
             ]);
-
-            // TODO: Email credetails to the user
-        } else {
-            foreach ($request->users as $user) {
-                UserWarehouse::firstOrCreate([
-                    'user_id' => $user,
-                    'warehouse_id' => $warehouse->id,
-                ]);
-            }
         }
 
         toastr()->success('', 'Warehouse updated successfully');

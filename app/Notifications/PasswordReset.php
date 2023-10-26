@@ -13,15 +13,13 @@ class PasswordReset extends Notification
     use Queueable;
 
     public $token;
-    public $user;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(User $user, $token)
+    public function __construct($token)
     {
         $this->token = $token;
-        $this->user = $user;
     }
 
     /**
@@ -39,16 +37,18 @@ class PasswordReset extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        if (now()->diff($this->user->created_at) < 3) {
+        // Check if user is a newly added user
+        if (now()->diffInMinutes($notifiable->created_at) < 10) {
             return (new MailMessage)
+                        ->subject('Successful Account Creation')
                         ->line('You are receiving because your account has been created successfully on Real African Sources.')
                         ->line('Follow the link below to reset your password and login.')
-                        ->action('Notification Action', url('password/reset', $this->token));
+                        ->action('Reset Password', url('password-reset', $this->token));
         }
 
         return (new MailMessage)
                     ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('password/reset', $this->token))
+                    ->action('Reset Password', url('password-reset', $this->token))
                     ->line('Thank you for using our application!');
     }
 

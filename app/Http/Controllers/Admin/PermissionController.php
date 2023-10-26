@@ -80,12 +80,21 @@ class PermissionController extends Controller
     public function update(Request $request, Role $role)
     {
         $request->validate([
-            'name' => 'required'
+            'name' => 'required',
+            'permissions' => ['required', 'array']
         ]);
 
         $role->update([
             'name' => $request->get('name'),
         ]);
+
+        $role->permissions->each(function ($permission) use ($role) {
+            $role->revokePermissionTo($permission);
+        });
+
+        collect($request->permissions)->each(function ($permission) use ($role) {
+            $role->givePermissionTo($permission);
+        });
 
         toastr()->success('', 'Role updated successfully');
 

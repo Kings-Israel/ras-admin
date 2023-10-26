@@ -44,10 +44,19 @@ class UsersController extends Controller
 
     public function warehouseManagers()
     {
-        $users = User::withCount('warehouses')->whereHas('roles', function ($query) {
-                    $query->where('name', 'warehouse manager');
+        $users = User::withCount('warehouses')
+                ->whereHas('permissions', function ($query) {
+                    $query->where('name', 'view warehouse')
+                            ->orWhere('name', 'update warehouse');
+                })
+                ->orWhereHas('roles', function ($query) {
+                    $query->whereHas('permissions', function ($query) {
+                        $query->where('name', 'view warehouse')
+                            ->orWhere('name', 'update warehouse');
+                    });
                 })
                 ->get();
+
         return view('users.warehouse-managers', [
             'page' => 'Warehouse Managers',
             'breadcrumbs' => [
@@ -59,8 +68,15 @@ class UsersController extends Controller
 
     public function financiers()
     {
-        $users = User::whereHas('roles', function ($query) {
-                    $query->where('name', 'financier');
+        $users = User::whereHas('permissions', function ($query) {
+                    $query->where('name', 'view financing request')
+                            ->orWhere('name', 'update financing request');
+                })
+                ->orWhereHas('roles', function ($query) {
+                    $query->whereHas('permissions', function ($query) {
+                        $query->where('name', 'view financing request')
+                            ->orWhere('name', 'update financing request');
+                    });
                 })
                 ->get();
 
@@ -75,8 +91,19 @@ class UsersController extends Controller
 
     public function inspectors()
     {
-        $users = User::whereHas('roles', function ($query) {
-                    $query->where('name', 'inspector');
+        $users = User::whereHas('permissions', function ($query) {
+                    $query->where('name', 'view inspection report')
+                            ->orWhere('name', 'create inspection report')
+                            ->orWhere('name', 'create inspection report')
+                            ->orWhere('name', 'delete inspection report');
+                })
+                ->orWhereHas('roles', function ($query) {
+                    $query->whereHas('permissions', function ($query) {
+                        $query->where('name', 'view inspection report')
+                            ->orWhere('name', 'create inspection report')
+                            ->orWhere('name', 'create inspection report')
+                            ->orWhere('name', 'delete inspection report');
+                    });
                 })
                 ->get();
 
