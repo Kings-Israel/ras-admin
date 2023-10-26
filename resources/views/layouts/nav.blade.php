@@ -45,12 +45,12 @@
                 @can('view product')
                     <li class="nav-item @if(Route::is('products')) active open @endif"> <a href="{{ route('products') }}"><i class="material-icons">shop</i><span>Stock Management</span></a></li>
                 @endcan
-                @role('admin')
+                @can('view role')
                     <li class="nav-item @if(Route::is('permissions.*')) active open @endif"> <a href="{{ route('permissions.index') }}"><i class="material-icons">extension</i><span>Roles and Permissions</span></a></li>
-                @endrole
-                @role('admin')
+                @endcan
+                @can('view logs')
                     <li class="nav-item @if(Route::is('logs')) active open @endif"> <a href="{{ route('logs') }}"><i class="material-icons">dehaze</i><span>Activity Logs</span></a></li>
-                @endrole
+                @endcan
             </ul>
         </div>
     </div>
