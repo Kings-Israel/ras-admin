@@ -216,7 +216,7 @@
                 </div>
                 <div class="card">
                     <div class="header">
-                        <h2><strong>Top</strong> Categories</h2>
+                        <h2><strong>Top</strong> Categories by Products</h2>
                     </div>
                     <div class="body align-center">
                         <div class="row">
@@ -448,16 +448,6 @@
                 <div class="card">
                     <div class="header">
                         <h2><strong>Follow</strong> Us</h2>
-                        <ul class="header-dropdown">
-                            <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
-                                <ul class="dropdown-menu slideUp">
-                                    <li><a href="javascript:void(0);">Action</a></li>
-                                    <li><a href="javascript:void(0);">Another action</a></li>
-                                    <li><a href="javascript:void(0);">Something else</a></li>
-                                    <li><a class="boxs-close">Delete</a></li>
-                                </ul>
-                            </li>
-                        </ul>
                     </div>
                     <div class="body">
                         <ul class="follow_us list-unstyled">
