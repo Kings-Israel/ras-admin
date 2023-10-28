@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "730759a646b4161b8ed0341836e8d027",
+    "content-hash": "a51dd382244ca9c73897ea9a5af49053",
     "packages": [
         {
             "name": "brick/math",
@@ -3367,6 +3367,63 @@
                 }
             ],
             "time": "2023-04-15T23:01:58+00:00"
+        },
+        {
+            "name": "sarfraznawaz2005/visitlog",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sarfraznawaz2005/visitlog.git",
+                "reference": "13427d8d43da2d0b08d04a3f6d444fb593d3778b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sarfraznawaz2005/visitlog/zipball/13427d8d43da2d0b08d04a3f6d444fb593d3778b",
+                "reference": "13427d8d43da2d0b08d04a3f6d444fb593d3778b",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "~5|~6|~7|~8|~9|~10",
+                "php": ">=5.5.9"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Sarfraznawaz2005\\VisitLog\\VisitLogServiceProvider"
+                    ],
+                    "aliases": {
+                        "VisitLog": "Sarfraznawaz2005\\VisitLog\\Facades\\VisitLog"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Sarfraznawaz2005\\VisitLog\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sarfraz Ahmed",
+                    "email": "sarfraznawaz2005@gmail.com"
+                }
+            ],
+            "description": "Laravel package to log visitor information into database.",
+            "keywords": [
+                "IP",
+                "laravel",
+                "log",
+                "visitor"
+            ],
+            "support": {
+                "issues": "https://github.com/sarfraznawaz2005/visitlog/issues",
+                "source": "https://github.com/sarfraznawaz2005/visitlog/tree/3.0.0"
+            },
+            "time": "2023-05-25T15:54:34+00:00"
         },
         {
             "name": "spatie/laravel-activitylog",

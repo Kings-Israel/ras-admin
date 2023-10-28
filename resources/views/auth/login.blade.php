@@ -67,6 +67,6 @@
             <button type="submit" class="btn btn-primary btn-round btn-block">SIGN IN</button>
         </div>
     </form>
-    <a href="forgot-password.html" class="link">Forgot Password?</a>
+    <a href="{{ route('password.request') }}" class="link">Forgot Password?</a>
 </div>
 @endsection

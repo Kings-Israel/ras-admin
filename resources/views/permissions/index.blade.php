@@ -8,7 +8,9 @@
                 <div class="header">
                     <div class="d-flex justify-content-between">
                         <h2 class="my-auto"><strong>Roles</strong></h2>
-                        <a href="{{ route('permissions.create') }}" class="btn btn-secondary btn-sm">Add Role</a>
+                        @can('create role')
+                            <a href="{{ route('permissions.create') }}" class="btn btn-secondary btn-sm">Add Role</a>
+                        @endcan
                     </div>
                 </div>
                 <livewire:admin.roles.roles-list />

@@ -12,7 +12,9 @@
                     <th>NO. OF CITIES/TOWNS</th>
                     <th>NO. OF BUSINESSES</th>
                     <th>NO. OF WAREHOUSES</th>
-                    <th>ACTIONS</th>
+                    @can('update settings')
+                        <th>ACTIONS</th>
+                    @endcan
                 </tr>
             </thead>
             <tbody>
@@ -22,17 +24,21 @@
                         <td>{{ $country->cities_count }}</td>
                         <td>{{ $country->businesses_count }}</td>
                         <td>{{ $country->warehouses_count }}</td>
-                        <td>
-                            <div class="flex mx-2">
-                                {{-- <a href="#defaultModal_{{ $document->id }}" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#defaultModal_{{ $document->id }}">Edit</a> --}}
-                                <a href="{{ route('settings.country.edit', ['country' => $country]) }}" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="#deleteCountry_{{ $country->id }}" data-toggle="modal" data-target="#deleteCountry_{{ $country->id }}">
-                                    <button class="btn btn-danger btn-sm">Delete</button>
-                                </a>
-                            </div>
-                        </td>
+                        @can('update settings')
+                            <td>
+                                <div class="flex mx-2">
+                                    {{-- <a href="#defaultModal_{{ $document->id }}" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#defaultModal_{{ $document->id }}">Edit</a> --}}
+                                    <a href="{{ route('settings.country.edit', ['country' => $country]) }}" class="btn btn-warning btn-sm">Edit</a>
+                                    <a href="#deleteCountry_{{ $country->id }}" data-toggle="modal" data-target="#deleteCountry_{{ $country->id }}">
+                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                    </a>
+                                </div>
+                            </td>
+                        @endcan
                     </tr>
-                    @include('partials.admin.settings.delete-country')
+                    @can('update settings')
+                        @include('partials.admin.settings.delete-country')
+                    @endcan
                 @endforeach
             </tbody>
         </table>

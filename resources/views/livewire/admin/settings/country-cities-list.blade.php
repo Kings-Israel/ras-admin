@@ -17,7 +17,9 @@
                     <th>NO. OF BUSINESSES</th>
                     <th>NO. OF WAREHOUSES</th>
                     <th>COORDIINATES</th>
-                    <th>ACTIONS</th>
+                    @can('update settings')
+                        <th>ACTIONS</th>
+                    @endcan
                 </tr>
             </thead>
             <tbody>
@@ -27,16 +29,20 @@
                         <td>{{ $city->businesses_count }}</td>
                         <td>{{ $city->warehouses_count }}</td>
                         <td>{{ $city->latitude }}, {{ $city->longitude }}</td>
-                        <td>
-                            <div class="flex mx-2">
-                                <a href="#editCity_{{ $city->id }}" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editCity_{{ $city->id }}">Edit</a>
-                                <a href="{{ route('settings.city.delete', ['city' => $city]) }}">
-                                    <button class="btn btn-danger btn-sm">Delete</button>
-                                </a>
-                            </div>
-                        </td>
+                        @can('update settings')
+                            <td>
+                                <div class="flex mx-2">
+                                    <a href="#editCity_{{ $city->id }}" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editCity_{{ $city->id }}">Edit</a>
+                                    <a href="{{ route('settings.city.delete', ['city' => $city]) }}">
+                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                    </a>
+                                </div>
+                            </td>
+                        @endcan
                     </tr>
-                    @include('partials.admin.settings.edit-city')
+                    @can('update settings')
+                        @include('partials.admin.settings.edit-city')
+                    @endcan
                 @endforeach
             </tbody>
         </table>

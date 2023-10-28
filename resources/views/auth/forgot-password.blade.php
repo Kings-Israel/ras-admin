@@ -1,6 +1,10 @@
-<x-guest-layout>
+{{-- <x-guest-layout>
+</x-guest-layout> --}}
+@extends('layouts.auth.app')
+@section('auth')
+<div class="card-plain">
     <div class="mb-4 text-sm text-gray-600">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+        {{ __('Enter Email to get new password.') }}
     </div>
 
     <!-- Session Status -->
@@ -11,15 +15,17 @@
 
         <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
+            <label for="email" class="form-label">Email</label>
+            <input id="email" class="form-control" type="email" name="email" :value="old('email')" required autofocus />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
+            <button class="btn btn-primary btn-round btn-block">
                 {{ __('Email Password Reset Link') }}
-            </x-primary-button>
+            </button>
         </div>
     </form>
-</x-guest-layout>
+    <a href="{{ route('login') }}" class="link">Login</a>
+</div>
+@endsection

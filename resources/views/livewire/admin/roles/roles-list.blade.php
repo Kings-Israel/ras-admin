@@ -22,8 +22,12 @@
                         <td>{{ $role->users_count }}</td>
                         <td>
                             <div class="flex mx-2">
-                                <a href="{{ route('permissions.edit', ['role' => $role]) }}" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="{{ route('permissions.delete', ['role' => $role]) }}" class="btn btn-danger btn-sm">Delete</a>
+                                @can('update role')
+                                    <a href="{{ route('permissions.edit', ['role' => $role]) }}" class="btn btn-warning btn-sm">Edit</a>
+                                @endcan
+                                @can('delete role')
+                                    <a href="{{ route('permissions.delete', ['role' => $role]) }}" class="btn btn-danger btn-sm">Delete</a>
+                                @endcan
                             </div>
                         </td>
                     </tr>

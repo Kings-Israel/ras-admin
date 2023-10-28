@@ -21,7 +21,9 @@ class PermissionController extends Controller
 
     public function create()
     {
-        $permissions = Permission::all();
+        $permissions = Permission::all()->groupBy(function ($permission) {
+            return explode(' ', $permission->name, 2)[1];
+        });
 
         return view('permissions.create', [
             'page' => 'Add Role',
@@ -38,7 +40,7 @@ class PermissionController extends Controller
         $request->validate([
             'role_name' => ['required', 'string', 'unique:roles,name']
         ], [
-            'role_name.unique' => 'The Role already exists'
+            'role_name.unique' => 'The Role Name already exists'
         ]);
 
         $role = Role::create([
@@ -62,9 +64,12 @@ class PermissionController extends Controller
     {
         $role = Role::with(['permissions' => function($query) {
                         $query->select('id');
-                    }])->find($role->id);
+                    }])
+                    ->find($role->id);
 
-        $permissions = Permission::all();
+        $permissions = Permission::all()->groupBy(function ($permission) {
+            return explode(' ', $permission->name, 2)[1];
+        });
 
         return view('permissions.edit', [
             'page' => 'Edit Roles and Permissions',
@@ -80,12 +85,21 @@ class PermissionController extends Controller
     public function update(Request $request, Role $role)
     {
         $request->validate([
-            'name' => 'required'
+            'name' => 'required',
+            'permissions' => ['required', 'array']
         ]);
 
         $role->update([
             'name' => $request->get('name'),
         ]);
+
+        $role->permissions->each(function ($permission) use ($role) {
+            $role->revokePermissionTo($permission);
+        });
+
+        collect($request->permissions)->each(function ($permission) use ($role) {
+            $role->givePermissionTo($permission);
+        });
 
         toastr()->success('', 'Role updated successfully');
 

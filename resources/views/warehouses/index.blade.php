@@ -17,7 +17,9 @@
                 <div class="card">
                     <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
-                        <a class="btn btn-secondary btn-sm" href="{{ route('warehouses.create') }}">Add Warehouse</a>
+                        @can('create warehouse')
+                            <a class="btn btn-secondary btn-sm" href="{{ route('warehouses.create') }}">Add Warehouse</a>
+                        @endcan
                     </div>
                     <div class="body">
                         <table class="table table-hover dataTable js-exportable">
@@ -42,11 +44,13 @@
                                         <td>{{ $warehouse->users_count }}</td>
                                         <td>{{ $warehouse->products_count }}</td>
                                         <td>{{ $warehouse->max_capacity }}</td>
-                                        <td>{{ 'US$'.number_format($warehouse->price) }}</td>
                                         <td>{{ $warehouse->occupied_capacity }}</td>
+                                        <td>{{ number_format($warehouse->price) }}</td>
                                         <td>{{ $warehouse->created_at->format('d M Y') }}</td>
                                         <td>
-                                            <a href="{{ route('warehouses.edit', ['warehouse' => $warehouse]) }}" class="btn btn-sm btn-primary btn-round waves-effect">EDIT</a>
+                                            @can('update warehouse')
+                                                <a href="{{ route('warehouses.edit', ['warehouse' => $warehouse]) }}" class="btn btn-sm btn-primary btn-round waves-effect">EDIT</a>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach
