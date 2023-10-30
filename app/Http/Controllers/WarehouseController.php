@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Models\Country;
+use App\Models\StoreRequest;
 use App\Models\User;
 use App\Models\UserWarehouse;
 use App\Models\Warehouse;
@@ -151,6 +152,21 @@ class WarehouseController extends Controller
             ],
             'warehouse' => $warehouse->load('users'),
             'users' => $users
+        ]);
+    }
+    public function storageRequests(Warehouse $warehouse)
+    {
+        $users = User::whereHas('roles', fn ($query) => $query->where('name', 'warehouse manager'))->get();
+        $requests=StoreRequest::with('Customer')->where('warehouse_id', $warehouse)->get();
+        return view('warehouses.storerequests', [
+            'page' => 'Requests Warehouse',
+            'breadcrumbs' => [
+                'Warehouses' => route('warehouses'),
+                'Storage_Requests '.$warehouse->name => route('warehouses.storerequests', ['warehouse' => $warehouse])
+            ],
+            'warehouse' => $warehouse->load('users'),
+            'users' => $users,
+            ''
         ]);
     }
 
