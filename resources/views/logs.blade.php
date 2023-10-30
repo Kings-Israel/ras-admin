@@ -12,8 +12,8 @@
                     <div class="header">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
                     </div>
-                    <div class="body">
-                        <table class="table table-bordered table-striped table-hover dataTable js-exportable">
+                    {{-- <div class="body">
+                        <table class="table table-bordered table-striped table-hover dataTable js-exportable" id="logs">
                             <thead>
                                 <tr>
                                     <th>Log</th>
@@ -28,12 +28,13 @@
                                         @else
                                             <td>{{ $log->causer->first_name }} {{ $log->causer->last_name }} {{ $log->description }}</td>
                                         @endif
-                                        <td>{{ $log->created_at->diffForHumans() }}</td>
+                                        <td>{{ $log->created_at->format('d M Y H:i A') }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                    </div>
+                    </div> --}}
+                    <livewire:admin.logs.logs-list />
                 </div>
             </div>
         </div>
@@ -47,5 +48,10 @@
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.colVis.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script> --}}
+    <script>
+        $('#logs').DataTable( {
+            ordering: true
+        } );
+    </script>
 @endpush
