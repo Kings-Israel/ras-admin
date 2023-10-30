@@ -5,10 +5,12 @@ use App\Http\Controllers\Admin\LogController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PackagingController;
 use App\Http\Controllers\FinancingInstitutionController;
 use App\Http\Controllers\InspectorController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StoreRequestController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\WarehouseController;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +26,11 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/warehouses/{warehouse}/edit', [WarehouseController::class, 'edit'])->name('warehouses.edit');
     Route::get('/warehouses/{warehouse}/show', [WarehouseController::class, 'show'])->name('warehouses.show');
     Route::patch('/warehouses/{warehouse}/update', [WarehouseController::class, 'update'])->name('warehouses.update');
+
+    Route::get('/warehouses/{warehouse}/storagerequests', [StoreRequestController::class, 'index'])->name('warehouses.storagerequests');
+
+    Route::resource('packaging', PackagingController::class);
+    Route::get('/packaging', [PackagingController::class, 'index'])->name('packaging');
 
     Route::get('/products', [ProductController::class, 'index'])->name('products');
 
