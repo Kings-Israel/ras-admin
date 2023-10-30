@@ -117,7 +117,7 @@
                                     </tbody>
                                 </table>
                             @else
-                                <h4>No Products Uploaded</h4>
+                                <strong>No Products Uploaded</strong>
                             @endif
                         </div>
                     @endif
