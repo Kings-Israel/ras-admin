@@ -33,11 +33,43 @@ class Business extends Model
     }
 
     /**
+     * Get the primary image
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getPrimaryCoverImageAttribute($value)
+    {
+        return config('app.frontend_url').'/storage/vendor/cover_image/'.$value;
+    }
+
+    /**
+     * Get the primary image
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getSecondaryCoverImageAttribute($value)
+    {
+        if ($value) {
+            return config('app.frontend_url').'/storage/vendor/cover_image/'.$value;
+        }
+    }
+
+    /**
      * Get the user that owns the Business
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+        /**
+     * Get all of the documents for the Business
+     */
+    public function documents(): HasMany
+    {
+        return $this->hasMany(BusinessDocument::class);
     }
 
     /**
@@ -49,11 +81,11 @@ class Business extends Model
     }
 
     /**
-     * Get all of the cities for the Business
+     * Get the city that owns the Business
      */
-    public function cities(): HasMany
+    public function city(): BelongsTo
     {
-        return $this->hasMany(City::class);
+        return $this->belongsTo(City::class);
     }
 
     /**
