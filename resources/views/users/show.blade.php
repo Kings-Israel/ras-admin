@@ -91,30 +91,34 @@
                     @if ($user->hasRole('vendor'))
                         <div class="body">
                             <h5 class="card-title">Products</h5>
-                            <table class="table table-bordered table-striped table-hover dataTable js-exportable">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Price</th>
-                                        <th>Warehouse</th>
-                                        <th>Added On</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($user->business->products as $product)
+                            @if ($user->business && $user->business->products->count() > 0)
+                                <table class="table table-bordered table-striped table-hover dataTable js-exportable">
+                                    <thead>
                                         <tr>
-                                            <td>{{ $product->name }}</td>
-                                            <td>{{ $product->price ? $product->price : $product->min_price.' - '.$product->max_price }}</td>
-                                            <td>{{ $product->warehouse }}</td>
-                                            <td>{{ $product->created_at->format('d M Y') }}</td>
-                                            <td>
-                                                <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
-                                            </td>
+                                            <th>Name</th>
+                                            <th>Price</th>
+                                            <th>Warehouse</th>
+                                            <th>Added On</th>
+                                            <th></th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($user->business->products as $product)
+                                            <tr>
+                                                <td>{{ $product->name }}</td>
+                                                <td>{{ $product->price ? $product->price : $product->min_price.' - '.$product->max_price }}</td>
+                                                <td>{{ $product->warehouse }}</td>
+                                                <td>{{ $product->created_at->format('d M Y') }}</td>
+                                                <td>
+                                                    <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @else
+                                <h4>No Products Uploaded</h4>
+                            @endif
                         </div>
                     @endif
                     @if (!$user->hasRole('buyer') && !$user->hasRole('vendor'))
