@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class UsersController extends Controller
 {
@@ -49,7 +50,7 @@ class UsersController extends Controller
             'update warehouse',
         ];
 
-        $users = User::with('permissions')->get()->filter(function ($user) use ($warehouse_permissions) {
+        $users = User::with('roles', 'permissions')->get()->filter(function ($user) use ($warehouse_permissions) {
                     $user_permission_names = $user->getAllPermissions()->pluck('name');
                     return collect($warehouse_permissions)->diff(collect($user_permission_names))->isEmpty() ? true : false;
                 });
@@ -70,7 +71,7 @@ class UsersController extends Controller
             'update financing request',
         ];
 
-        $users = User::with('permissions')->get()->filter(function ($user) use ($financier_permissions) {
+        $users = User::with('roles', 'permissions')->get()->filter(function ($user) use ($financier_permissions) {
                     $user_permission_names = $user->getAllPermissions()->pluck('name');
                     return collect($financier_permissions)->diff(collect($user_permission_names))->isEmpty() ? true : false;
                 });
@@ -93,7 +94,7 @@ class UsersController extends Controller
             'delete inspection report',
         ];
 
-        $users = User::with('permissions')->get()->filter(function ($user) use ($inspector_permissions) {
+        $users = User::with('roles', 'permissions')->get()->filter(function ($user) use ($inspector_permissions) {
             $user_permission_names = $user->getAllPermissions()->pluck('name');
             return collect($inspector_permissions)->diff(collect($user_permission_names))->isEmpty() ? true : false;
         });
@@ -120,7 +121,7 @@ class UsersController extends Controller
             'delete stocklift request',
         ];
 
-        $users = User::with('permissions')->get()->filter(function ($user) use ($driver_permissions) {
+        $users = User::with('roles', 'permissions')->get()->filter(function ($user) use ($driver_permissions) {
             $user_permission_names = $user->getAllPermissions()->pluck('name');
             return collect($driver_permissions)->diff(collect($user_permission_names))->isEmpty() ? true : false;
         });
@@ -131,6 +132,22 @@ class UsersController extends Controller
                 'Drivers' => route('users.drivers'),
             ],
             'users' => $users
+        ]);
+    }
+
+    public function show(User $user)
+    {
+        $user->load('roles', 'permissions', 'business.products', 'business.country', 'business.city', 'financingInstitutions', 'inspectors');
+
+        $roles = Role::all();
+
+        return view('users.show', [
+            'page' => 'User Details',
+            'breadcrumbs' => [
+                $user->first_name.' '.$user->last_name => route('users.show', ['user' => $user])
+            ],
+            'user' => $user,
+            'roles' => $roles,
         ]);
     }
 }

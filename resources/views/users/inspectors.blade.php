@@ -33,7 +33,7 @@
                                         <td>{{ Carbon\Carbon::parse($user->last_login)->diffForHumans() }}</td>
                                         <td>{{ $user->created_at->diffForHumans() }}</td>
                                         <td>
-                                            <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
+                                            <a href="{{ route('users.show', ['user' => $user]) }}" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
                                         </td>
                                     </tr>
                                 @endforeach

@@ -22,13 +22,13 @@ class DashboardController extends Controller
 
     public function index()
     {
-        // Get past 9 months
+        // Get past 12 months
         $months = [];
-        // $days = [0, 29, 59, 89, 119, 149, 179, 209, 239];
-        // $days = [239, 209, 179, 149, 119, 89, 59, 29, 0];
-        $days = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
-        foreach($days as $day) {
-            array_push($months, now()->subMonths($day));
+
+        for ($i = 12; $i >= 0; $i--) {
+            $month = Carbon::today()->startOfMonth()->subMonth($i);
+            $year = Carbon::today()->startOfMonth()->subMonth($i)->format('Y');
+            array_push($months, $month);
         }
 
         // Format months
