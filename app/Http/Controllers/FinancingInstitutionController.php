@@ -93,15 +93,16 @@ class FinancingInstitutionController extends Controller
         if ($request->has('maker_user')) {
             $maker = User::find($request->maker_user_id);
         } else {
-            $maker = User::firstOrCreate([
-                'email' => $request->maker_email,
-                'phone_number' => $request->maker_phone_number,
-            ],
-            [
-                'first_name' => $request->maker_first_name,
-                'last_name' => $request->maker_last_name,
-                'password' => Helpers::generatePassword()
-            ]);
+            $maker = User::where('email', $request->maker_email)->orWhere('phone_number', $request->maker_phone_number)->first();
+            if (!$maker) {
+                $maker = User::firstOrCreate([
+                    'email' => $request->maker_email,
+                    'phone_number' => $request->maker_phone_number,
+                    'first_name' => $request->maker_first_name,
+                    'last_name' => $request->maker_last_name,
+                    'password' => Helpers::generatePassword()
+                ]);
+            }
 
             // Send email to create password and login
             Password::sendResetLink(['email' => $request->maker_email]);
@@ -121,14 +122,16 @@ class FinancingInstitutionController extends Controller
         if ($request->has('checker_user')) {
             $checker = User::find($request->checker_user_id);
         } else {
-            $checker = User::firstOrCreate([
-                'email' => $request->checker_email,
-                'phone_number' => $request->checker_phone_number,
-            ], [
-                'first_name' => $request->checker_first_name,
-                'last_name' => $request->checker_last_name,
-                'password' => Helpers::generatePassword()
-            ]);
+            $checker = User::where('email', $request->checker_email)->orWhere('phone_number', $request->checker_phone_number)->first();
+            if (!$checker) {
+                $checker = User::create([
+                    'email' => $request->checker_email,
+                    'phone_number' => $request->checker_phone_number,
+                    'first_name' => $request->checker_first_name,
+                    'last_name' => $request->checker_last_name,
+                    'password' => Helpers::generatePassword()
+                ]);
+            }
 
             // Send email to create password and login
             Password::sendResetLink(['email' => $request->checker_email]);
