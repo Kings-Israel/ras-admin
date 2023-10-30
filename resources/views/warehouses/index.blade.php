@@ -7,6 +7,8 @@
             font-size: smaller;
         }
     </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 @endsection
 @section('content')
 <section class="content home">
@@ -29,8 +31,8 @@
                                     <th>Location</th>
                                     <th>Manager(s)</th>
                                     <th>No. of Products</th>
-                                    <th>Capacity (m<span id="super">3</span>)</th>
-                                    <th>Occuppied (m<span id="super">3</span>)</th>
+{{--                                    <th>Capacity (m<span id="super">3</span>)</th>--}}
+{{--                                    <th>Occuppied (m<span id="super">3</span>)</th>--}}
                                     <th>Price</th>
                                     <th>Added on</th>
                                     <th></th>
@@ -43,14 +45,33 @@
                                         <td>{{ $warehouse->city ? $warehouse->city->name.', ' : '' }}{{ $warehouse->country->name }}</td>
                                         <td>{{ $warehouse->users_count }}</td>
                                         <td>{{ $warehouse->products_count }}</td>
-                                        <td>{{ $warehouse->max_capacity }}</td>
-                                        <td>{{ $warehouse->occupied_capacity }}</td>
+{{--                                        <td>{{ $warehouse->max_capacity }}</td>--}}
+{{--                                        <td>{{ $warehouse->occupied_capacity }}</td>--}}
                                         <td>{{ number_format($warehouse->price) }}</td>
                                         <td>{{ $warehouse->created_at->format('d M Y') }}</td>
                                         <td>
-                                            @can('update warehouse')
-                                                <a href="{{ route('warehouses.edit', ['warehouse' => $warehouse]) }}" class="btn btn-sm btn-primary btn-round waves-effect">EDIT</a>
-                                            @endcan
+                                            <div class="btn-group">
+                                                <button style="background-color: #1F252C;color:rgba(255,255,255,0.96)"
+                                                        class="mr-2 btn btn-md dropdown-toggle" type="button" id="dropdownMenuButton"
+                                                        data-bs-trigger="click" aria-haspopup="true" aria-expanded="false"
+                                                        data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                                                    <i data-feather="eye"></i>
+                                                    Action
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+{{--                                                    <a class="dropdown-item" href="{{ route('warehouses.edit', ['warehouse' => $warehouse]) }}">--}}
+{{--                                                        <i data-feather='edit' class="mr-50"></i><span>Edit</span></a>--}}
+                                                    @can('update warehouse')
+                                                        <a class="dropdown-item" href="{{ route('warehouses.edit', ['warehouse' => $warehouse->id]) }}" ><i data-feather='edit' class="mr-50 btn btn-sm btn-primary waves-effect"></i><span>Edit</span>
+                                                    @endcan
+                                                    <a class="dropdown-item" href="#">
+                                                        <i data-feather='eye' class="btn btn-sm btn-primary waves-effect"></i><span>View</span></a>
+                                                    <a class="dropdown-item" href="{{ route('warehouses.storagerequests', ['warehouse' => $warehouse->id]) }}">
+                                                        <i data-feather='eye' class="btn btn-sm btn-primary waves-effect"></i><span>Storage Requests</span></a>
+                                                        </a>
+                                                </div>
+                                            </div>
+
                                         </td>
                                     </tr>
                                 @endforeach
