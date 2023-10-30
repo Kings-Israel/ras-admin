@@ -45,16 +45,8 @@ class UsersController extends Controller
     public function warehouseManagers()
     {
         $warehouse_permissions = [
-            'view product',
             'view warehouse',
             'update warehouse',
-            'view order',
-            'create delivery',
-            'view delivery',
-            'update delivery',
-            'delete delivery',
-            'view stocklift request',
-            'update stocklift request',
         ];
 
         $users = User::with('permissions')->get()->filter(function ($user) use ($warehouse_permissions) {
@@ -95,16 +87,10 @@ class UsersController extends Controller
     public function inspectors()
     {
         $inspector_permissions = [
-            'view product',
-            'view warehouse',
-            'view order',
-            'update order',
             'create inspection report',
             'view inspection report',
             'update inspection report',
             'delete inspection report',
-            'view delivery',
-            'update delivery',
         ];
 
         $users = User::with('permissions')->get()->filter(function ($user) use ($inspector_permissions) {
@@ -132,10 +118,6 @@ class UsersController extends Controller
             'view stocklift request',
             'update stocklift request',
             'delete stocklift request',
-            'view product',
-            'view warehouse',
-            'view order',
-            'update order',
         ];
 
         $users = User::with('permissions')->get()->filter(function ($user) use ($driver_permissions) {
