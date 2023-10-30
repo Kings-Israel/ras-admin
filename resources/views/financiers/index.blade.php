@@ -1,6 +1,12 @@
 @extends('layouts.app')
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css') }}">
+    <style>
+        #super{
+            vertical-align:super;
+            font-size: smaller;
+        }
+    </style>
 @endsection
 @section('content')
 <section class="content home">
@@ -9,31 +15,38 @@
         <div class="row clearfix">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="header">
+                    <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
+                        @can('create financier')
+                            <a class="btn btn-secondary btn-sm" href="{{ route('financing-institutions.create') }}">Add Financing Institution</a>
+                        @endcan
                     </div>
                     <div class="body">
-                        <table class="table table-bordered table-striped table-hover dataTable js-exportable">
+                        <table class="table table-hover dataTable js-exportable">
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Phone Number</th>
-                                    <th>Last Login</th>
-                                    <th>Registered date</th>
+                                    <th>Location</th>
+                                    <th>Admin(s)</th>
+                                    <th>No. of Pending Requests</th>
+                                    <th>No. of Processed Requests</th>
+                                    <th>Added on</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($users as $user)
+                                @foreach ($financing_institutions as $institution)
                                     <tr>
-                                        <td>{{ $user->first_name }} {{ $user->last_name }}</td>
-                                        <td>{{ $user->email }}</td>
-                                        <td>{{ $user->phone_number }}</td>
-                                        <td>{{ Carbon\Carbon::parse($user->last_login)->diffForHumans() }}</td>
-                                        <td>{{ $user->created_at->diffForHumans() }}</td>
+                                        <td>{{ $institution->name }}</td>
+                                        <td>{{ $institution->city ? $institution->city->name.', ' : '' }}{{ $institution->country->name }}</td>
+                                        <td>{{ $institution->users_count }}</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>{{ $institution->created_at->format('d M Y') }}</td>
                                         <td>
-                                            <a href="{{ route('users.show', ['user' => $user]) }}" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
+                                            @can('update financier')
+                                                <a href="{{ route('financing-institutions.edit', ['financing_institution' => $institution]) }}" class="btn btn-sm btn-primary btn-round waves-effect">EDIT</a>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach

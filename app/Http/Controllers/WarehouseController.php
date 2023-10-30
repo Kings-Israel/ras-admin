@@ -14,6 +14,14 @@ use Illuminate\Support\Facades\Password;
 
 class WarehouseController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:view warehouse', ['only' => ['index', 'show']]);
+        $this->middleware('can:create warehouse', ['only' => ['create', 'store']]);
+        $this->middleware('can:update warehouse', ['only' => ['edit', 'update']]);
+        $this->middleware('can:delete warehouse', ['only' => ['destroy']]);
+    }
+
     public function index()
     {
         if (auth()->user()->hasRole('warehouse manager')) {
@@ -38,7 +46,7 @@ class WarehouseController extends Controller
     {
         $countries = Country::with('cities')->orderBy('name', 'ASC')->get();
 
-        $users = User::whereHas('roles', fn ($query) => $query->where('name', 'warehouse manager'))->get();
+        $users = User::where('email', '!=', 'admin@ras.com')->get();
 
         return view('warehouses.create', [
             'page' => 'Add Warehouse',
@@ -100,14 +108,14 @@ class WarehouseController extends Controller
         if ($request->has('users') && $request->users != NULL) {
             foreach ($request->users as $user) {
                 $user_details = User::find($user);
-                if (!$user_details->hasRole('warehouse manager')) {
-                    $user_details->assignRole('warehouse manager');
-                }
 
                 UserWarehouse::firstOrCreate([
                     'warehouse_id' => $warehouse->id,
                     'user_id' => $user,
                 ]);
+
+                $user_details->givePermissionTo('view warehouse');
+                $user_details->givePermissionTo('update warehouse');
             }
         }
 
@@ -128,12 +136,13 @@ class WarehouseController extends Controller
                 Password::sendResetLink($request->only('email'));
             }
 
-            $user->assignRole('warehouse manager');
-
             UserWarehouse::create([
                 'user_id' => $user->id,
                 'warehouse_id' => $warehouse->id,
             ]);
+
+            $user_details->givePermissionTo('view warehouse');
+            $user_details->givePermissionTo('update warehouse');
         }
 
         toastr()->success('', 'Warehouse added successfully');
@@ -167,6 +176,18 @@ class WarehouseController extends Controller
             'warehouse' => $warehouse->load('users'),
             'users' => $users,
             ''
+        ]);
+    }
+
+    public function show(Warehouse $warehouse)
+    {
+        return view('warehouses.show', [
+            'page' => 'View Warehouse',
+            'breadcrumbs' => [
+                'Warehouses' => route('warehouses'),
+                'View '.$warehouse->name => route('warehouses.show', ['warehouse' => $warehouse])
+            ],
+            'warehouse' => $warehouse->load('users'),
         ]);
     }
 
@@ -219,14 +240,14 @@ class WarehouseController extends Controller
         if ($request->has('users') && $request->users != NULL) {
             foreach ($request->users as $user) {
                 $user_details = User::find($user);
-                if (!$user_details->hasRole('warehouse manager')) {
-                    $user_details->assignRole('warehouse manager');
-                }
 
                 UserWarehouse::firstOrCreate([
                     'warehouse_id' => $warehouse->id,
                     'user_id' => $user,
                 ]);
+
+                $user_details->givePermissionTo('view warehouse');
+                $user_details->givePermissionTo('update warehouse');
             }
         }
 
@@ -247,14 +268,13 @@ class WarehouseController extends Controller
                 Password::sendResetLink($request->only('email'));
             }
 
-            if (!$user->hasRole('warehouse manager')) {
-                $user->assignRole('warehouse manager');
-            }
-
             UserWarehouse::firstOrCreate([
                 'user_id' => $user->id,
                 'warehouse_id' => $warehouse->id,
             ]);
+
+            $user->givePermissionTo('view warehouse');
+            $user->givePermissionTo('update warehouse');
         }
 
         toastr()->success('', 'Warehouse updated successfully');

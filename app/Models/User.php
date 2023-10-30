@@ -51,4 +51,20 @@ class User extends Authenticatable
     {
         return $this->hasOne(Business::class);
     }
+
+    /**
+     * The financingInstitutions that belong to the User
+     */
+    public function financingInstitutions(): BelongsToMany
+    {
+        return $this->belongsToMany(FinancingInstitution::class, 'financing_institution_users', 'user_id', 'financing_institution_id');
+    }
+
+    /**
+     * The inspectors that belong to the User
+     */
+    public function inspectors(): BelongsToMany
+    {
+        return $this->belongsToMany(Inspector::class, 'inspector_users', 'user_id', 'inspector_id');
+    }
 }

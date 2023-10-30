@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PackagingController;
+use App\Http\Controllers\FinancingInstitutionController;
+use App\Http\Controllers\InspectorController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StoreRequestController;
@@ -22,6 +24,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/warehouses/create', [WarehouseController::class, 'create'])->name('warehouses.create');
     Route::post('warehouses/store', [WarehouseController::class, 'store'])->name('warehouses.store');
     Route::get('/warehouses/{warehouse}/edit', [WarehouseController::class, 'edit'])->name('warehouses.edit');
+    Route::get('/warehouses/{warehouse}/show', [WarehouseController::class, 'show'])->name('warehouses.show');
     Route::patch('/warehouses/{warehouse}/update', [WarehouseController::class, 'update'])->name('warehouses.update');
 
     Route::get('/warehouses/{warehouse}/storagerequests', [StoreRequestController::class, 'index'])->name('warehouses.storagerequests');
@@ -30,6 +33,12 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/packaging', [PackagingController::class, 'index'])->name('packaging');
 
     Route::get('/products', [ProductController::class, 'index'])->name('products');
+
+    // Financiers
+    Route::resource('/financing-institutions', FinancingInstitutionController::class);
+
+    // Inspectors
+    Route::resource('/inspectors', InspectorController::class);
 
     Route::group(['prefix' => 'permissions/', 'as' => 'permissions.'], function () {
         Route::get('/', [PermissionController::class, 'index'])->name('index');
@@ -71,9 +80,10 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/customers', [UsersController::class, 'buyers'])->name('users.buyers');
     Route::get('/vendors', [UsersController::class, 'vendors'])->name('users.vendors');
     Route::get('/financiers', [UsersController::class, 'financiers'])->name('users.financiers');
-    Route::get('/inspectors', [UsersController::class, 'inspectors'])->name('users.inspectors');
+    Route::get('/inspector-users', [UsersController::class, 'inspectors'])->name('users.inspectors');
     Route::get('/warehousemanagers', [UsersController::class, 'warehouseManagers'])->name('users.warehousemanagers');
     Route::get('/drivers', [UsersController::class, 'drivers'])->name('users.drivers');
+    Route::get('/user/{user}/details', [UsersController::class, 'show'])->name('users.show');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
