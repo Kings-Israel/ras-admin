@@ -21,6 +21,8 @@
         <link rel="stylesheet" href="{{ asset('assets/plugins/multi-select/css/multi-select.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/plugins/nouislider/nouislider.min.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/plugins/bootstrap-select/css/bootstrap-select.css') }}">
+
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         @yield('css')
     </head>
     <body class="theme-black">
@@ -34,27 +36,27 @@
         @include('layouts.inner-nav')
         @include('layouts.nav')
         @yield('content')
+        <!-- Jquery Core Js -->
+        <script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
+        <script src="{{ asset('assets/bundles/vendorscripts.bundle.js') }}"></script>
+        <script src="{{ asset('assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js') }}"></script>
+
+        <script src="{{ asset('assets/bundles/knob.bundle.js') }}"></script>
+        <script src="{{ asset('assets/bundles/jvectormap.bundle.js') }}"></script>
+        <script src="{{ asset('assets/bundles/morrisscripts.bundle.js') }}"></script>
+        <script src="{{ asset('assets/bundles/sparkline.bundle.js') }}"></script>
+        {{-- <script src="{{ asset('assets/bundles/doughnut.bundle.js') }}"></script> --}}
+        <script src="{{ asset('assets/plugins/multi-select/js/jquery.multi-select.js') }}"></script>
+        <script src="{{ asset('assets/plugins/jquery-inputmask/jquery.inputmask.bundle.js') }}"></script>
+        <script src="{{ asset('assets/plugins/nouislider/nouislider.js') }}"></script>
+        <script src="{{ asset('assets/bundles/flotchartsscripts.bundle.js') }}"></script>
+        <script src="{{ asset('assets/bundles/mainscripts.bundle.js') }}"></script>
+        <script src="{{ asset('assets/js/pages/forms/advanced-form-elements.js') }}"></script>
+
+        {{-- <script src="https://maps.google.com/maps/api/js?v=3&key=AIzaSyCisnVFSnc5QVfU2Jm2W3oRLqMDrKwOEoM"></script> <!-- Google Maps API Js -->
+        <script src="{{ asset('assets/plugins/gmaps/gmaps.js') }}"></script> <!-- GMaps PLugin Js -->
+        <script src="{{ asset('assets/js/pages/maps/google.js') }}"></script> --}}
+        <!-- Lib Scripts Plugin Js -->
+        @stack('scripts')
     </body>
-    <!-- Jquery Core Js -->
-    <script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
-    <script src="{{ asset('assets/bundles/vendorscripts.bundle.js') }}"></script>
-    <script src="{{ asset('assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js') }}"></script>
-
-    <script src="{{ asset('assets/bundles/knob.bundle.js') }}"></script>
-    <script src="{{ asset('assets/bundles/jvectormap.bundle.js') }}"></script>
-    <script src="{{ asset('assets/bundles/morrisscripts.bundle.js') }}"></script>
-    <script src="{{ asset('assets/bundles/sparkline.bundle.js') }}"></script>
-    {{-- <script src="{{ asset('assets/bundles/doughnut.bundle.js') }}"></script> --}}
-    <script src="{{ asset('assets/plugins/multi-select/js/jquery.multi-select.js') }}"></script>
-    <script src="{{ asset('assets/plugins/jquery-inputmask/jquery.inputmask.bundle.js') }}"></script>
-    <script src="{{ asset('assets/plugins/nouislider/nouislider.js') }}"></script>
-    <script src="{{ asset('assets/bundles/flotchartsscripts.bundle.js') }}"></script>
-    <script src="{{ asset('assets/bundles/mainscripts.bundle.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/forms/advanced-form-elements.js') }}"></script>
-
-    {{-- <script src="https://maps.google.com/maps/api/js?v=3&key=AIzaSyCisnVFSnc5QVfU2Jm2W3oRLqMDrKwOEoM"></script> <!-- Google Maps API Js -->
-    <script src="{{ asset('assets/plugins/gmaps/gmaps.js') }}"></script> <!-- GMaps PLugin Js -->
-    <script src="{{ asset('assets/js/pages/maps/google.js') }}"></script> --}}
-    <!-- Lib Scripts Plugin Js -->
-    @stack('scripts')
 </html>

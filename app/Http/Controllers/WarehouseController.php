@@ -36,7 +36,7 @@ class WarehouseController extends Controller
         return view('warehouses.index', [
             'page' => 'Warehouses',
             'breadcrumbs' => [
-                'Warehouses' => route('warehouses')
+                'Warehouses' => route('warehouses.index')
             ],
             'warehouses' => $warehouses
         ]);
@@ -51,7 +51,7 @@ class WarehouseController extends Controller
         return view('warehouses.create', [
             'page' => 'Add Warehouse',
             'breadcrumbs' => [
-                'Warehouses' => route('warehouses'),
+                'Warehouses' => route('warehouses.index'),
                 'Add Warehouse' => route('warehouses.create'),
             ],
             'countries' => $countries,
@@ -147,7 +147,7 @@ class WarehouseController extends Controller
 
         toastr()->success('', 'Warehouse added successfully');
 
-        return redirect()->route('warehouses');
+        return redirect()->route('warehouses.index');
     }
 
     public function edit(Warehouse $warehouse)
@@ -156,7 +156,7 @@ class WarehouseController extends Controller
         return view('warehouses.edit', [
             'page' => 'Edit Warehouse',
             'breadcrumbs' => [
-                'Warehouses' => route('warehouses'),
+                'Warehouses' => route('warehouses.index'),
                 'Edit '.$warehouse->name => route('warehouses.edit', ['warehouse' => $warehouse])
             ],
             'warehouse' => $warehouse->load('users'),
@@ -184,7 +184,7 @@ class WarehouseController extends Controller
         return view('warehouses.show', [
             'page' => 'View Warehouse',
             'breadcrumbs' => [
-                'Warehouses' => route('warehouses'),
+                'Warehouses' => route('warehouses.index'),
                 'View '.$warehouse->name => route('warehouses.show', ['warehouse' => $warehouse])
             ],
             'warehouse' => $warehouse->load('users'),
@@ -279,6 +279,6 @@ class WarehouseController extends Controller
 
         toastr()->success('', 'Warehouse updated successfully');
 
-        return redirect()->route('warehouses');
+        return redirect()->route('warehouses.index');
     }
 }

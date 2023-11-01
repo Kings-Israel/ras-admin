@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PackagingController;
 use App\Http\Controllers\FinancingInstitutionController;
 use App\Http\Controllers\InspectorController;
+use App\Http\Controllers\LogisticsController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StoreRequestController;
@@ -20,7 +21,7 @@ use Livewire\Livewire;
 Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/warehouses', [WarehouseController::class, 'index'])->name('warehouses');
+    Route::get('/warehouses', [WarehouseController::class, 'index'])->name('warehouses.index');
     Route::get('/warehouses/create', [WarehouseController::class, 'create'])->name('warehouses.create');
     Route::post('warehouses/store', [WarehouseController::class, 'store'])->name('warehouses.store');
     Route::get('/warehouses/{warehouse}/edit', [WarehouseController::class, 'edit'])->name('warehouses.edit');
@@ -39,6 +40,9 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     // Inspectors
     Route::resource('/inspectors', InspectorController::class);
+
+    // Logistics
+    Route::resource('/logistics', LogisticsController::class);
 
     Route::group(['prefix' => 'permissions/', 'as' => 'permissions.'], function () {
         Route::get('/', [PermissionController::class, 'index'])->name('index');

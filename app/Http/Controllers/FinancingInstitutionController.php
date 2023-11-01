@@ -28,9 +28,9 @@ class FinancingInstitutionController extends Controller
         $financing_institutions = FinancingInstitution::withCount('users')->get();
 
         return view('financiers.index', [
-            'page' => 'Financing Institution',
+            'page' => 'Financing Institutions',
             'breadcrumbs' => [
-                'Financing Institution' => route('financing-institutions.index')
+                'Financing Institutions' => route('financing-institutions.index')
             ],
             'financing_institutions' => $financing_institutions
         ]);
@@ -44,6 +44,7 @@ class FinancingInstitutionController extends Controller
         return view('financiers.create', [
             'page' => 'Financing Institutions',
             'breadcrumbs' => [
+                'Financing Institutions' => route('financing-institutions.index'),
                 'Add Financing Institutions' => route('financing-institutions.create')
             ],
             'countries' => $countries,
@@ -156,12 +157,13 @@ class FinancingInstitutionController extends Controller
     {
         $countries = Country::with('cities')->get();
         $cities = City::all();
-        $users = User::all();
+        $users = User::where('email', '!=', 'admin@ras.com')->get();
 
         return view('financiers.edit', [
             'page' => 'Edit Financing Institutions',
             'breadcrumbs' => [
-                'Edit Financing Institutions' => route('financing-institutions.edit')
+                'Financing Institutions' => route('financing-institutions.index'),
+                'Edit Financing Institutions' => route('financing-institutions.edit', ['financing_institution' => $financingInstitution])
             ],
             'countries' => $countries,
             'cities' => $cities,

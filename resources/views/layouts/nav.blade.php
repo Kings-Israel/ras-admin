@@ -40,17 +40,18 @@
                     <li class="nav-item"> <a href="{{ route('dashboard') }}"><i class="material-icons">layers</i><span>Order Management</span></a></li>
                 @endcan
                 @can('view warehouse')
+                {{-- <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a></li> --}}
                     <li class="nav-item @if(Route::is('warehouses.*')) active @endif">
-{{--                        <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a></li>--}}
-                    <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-swap-alt"></i><span>Warehouse Management</span></a>
-                    <ul class="ml-menu">
-                        <li class="nav-item @if(Route::is('warehouses')) active open @endif">
-                            <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouses</span></a>
-                        </li>
-                        <li class="nav-item @if(Route::is('packaging')) active open @endif" >
-                            <a href="{{ route('packaging') }}"><i class="material-icons">package</i><span>Packaging</span></a>
-                        </li>
-                    </ul>
+                        <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-swap-alt"></i><span>Warehouse Management</span></a>
+                        <ul class="ml-menu">
+                            <li class="nav-item @if(Route::is('warehouses.index')) active open @endif">
+                                <a href="{{ route('warehouses.index') }}"><i class="material-icons">local_convenience_store</i><span>Warehouses</span></a>
+                            </li>
+                            <li class="nav-item @if(Route::is('packaging')) active open @endif" >
+                                <a href="{{ route('packaging') }}"><i class="material-icons">package</i><span>Packaging</span></a>
+                            </li>
+                        </ul>
+                    </li>
                 @endcan
                 @can('view product')
                     <li class="nav-item @if(Route::is('products')) active open @endif"> <a href="{{ route('products') }}"><i class="material-icons">shop</i><span>Stock Management</span></a></li>
@@ -89,8 +90,24 @@
                         </ul>
                     </li>
                 @endcan
-                @can('view delivery', 'view stocklift request')
-                    <li class="nav-item @if(Route::is('stocklift_request.*')) active open @endif"> <a href="{{ route('dashboard') }}"><i class="material-icons">flight_takeoff</i><span>Logistics Management</span></a></li>
+                @can('view logistics company', 'update logistics company', 'create logistics company', 'create stocklift request', 'update stocklift request', 'view stocklift request')
+                    <li class="nav-item @if(Route::is('logistics.*') || Route::is('logistics-reports.*')) active @endif">
+                        <a href="javascript:void(0)" class="menu-toggle"><i class="material-icons">flight_takeoff</i><span>Logistics Management</span></a>
+                        @can('view stocklift request', 'create stocklift request', 'update stocklift request')
+                            <ul class="ml-menu">
+                                @can('view logistics company', 'create logistics company', 'update logistics company')
+                                    <li class="nav-item @if(Route::is('logistics.index')) active open @endif">
+                                        <a href="{{ route('logistics.index') }}">Logistics Companies</a>
+                                    </li>
+                                @endcan
+                                @can('create stocklift request', 'update stocklift request', 'view stocklift request')
+                                    <li class="nav-item @if(Route::is('financing-requests.index')) active open @endif">
+                                        <a href="{{ route('dashboard') }}">Logistics Reports</a>
+                                    </li>
+                                @endcan
+                            </ul>
+                        @endcan
+                    </li>
                 @endcan
                 @can('view role')
                     <li class="nav-item @if(Route::is('permissions.*')) active open @endif"> <a href="{{ route('permissions.index') }}"><i class="material-icons">extension</i><span>Roles and Permissions</span></a></li>

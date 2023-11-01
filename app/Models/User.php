@@ -67,4 +67,12 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Inspector::class, 'inspector_users', 'user_id', 'inspector_id');
     }
+
+    /**
+     * The logisticsCompanies that belong to the User
+     */
+    public function logisticsCompanies(): BelongsToMany
+    {
+        return $this->belongsToMany(LogisticsCompany::class, 'logistics_company_users', 'user_id', 'logistics_company_id');
+    }
 }
