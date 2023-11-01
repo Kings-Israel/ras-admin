@@ -213,7 +213,7 @@
             });
             placeMarker(event.latLng);
         });
-   }
+    }
 </script>
 <script src="{!! config('services.maps.key') !!}" async defer></script>
 @endpush

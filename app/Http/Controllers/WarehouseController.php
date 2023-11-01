@@ -152,7 +152,7 @@ class WarehouseController extends Controller
 
     public function edit(Warehouse $warehouse)
     {
-        $users = User::whereHas('roles', fn ($query) => $query->where('name', 'warehouse manager'))->get();
+        $users = User::where('email', '!=', 'admin@ras.com')->get();
         return view('warehouses.edit', [
             'page' => 'Edit Warehouse',
             'breadcrumbs' => [
@@ -163,6 +163,7 @@ class WarehouseController extends Controller
             'users' => $users
         ]);
     }
+
     public function storageRequests(Warehouse $warehouse)
     {
         $users = User::whereHas('roles', fn ($query) => $query->where('name', 'warehouse manager'))->get();
