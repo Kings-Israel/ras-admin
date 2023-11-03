@@ -145,6 +145,26 @@
                     </div>
                 </div>
             @endcan
+            @can('view financing request')
+                <div class="col-lg-4 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <span>Approved Financing Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $financing_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $financing_requests_count }}</h3>
+                        </div>
+                    </div>
+                </div>
+            @endcan
+            @can('view financing request')
+            <div class="col-lg-4 col-md-6">
+                <div class="card text-center">
+                    <div class="body">
+                        <span>Rejected Financing Requests</span>
+                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $financing_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $financing_requests_count }}</h3>
+                    </div>
+                </div>
+            </div>
+        @endcan
         </div>
         @role('admin')
             <div class="row clearfix">
