@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Business;
 use App\Models\Category;
 use App\Models\Country;
+use App\Models\FinancingRequest;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\UserWarehouse;
@@ -80,6 +81,9 @@ class DashboardController extends Controller
 
         $total_stocklift_requests = 0;
 
+        // Financing Requests
+        $financing_requests_count = 0;
+
         // Site visits log
         $site_visits_series = [];
 
@@ -114,6 +118,8 @@ class DashboardController extends Controller
                         ->count();
 
         $total_businesses_count = Business::count();
+
+        $financing_requests = FinancingRequest::count();
 
         foreach ($months as $month) {
             $users_monthly = User::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereHas('roles', function($query) { $query->where('name', 'buyer'); })->count();
@@ -277,6 +283,7 @@ class DashboardController extends Controller
             'total_stocklift_requests' => $total_stocklift_requests,
             'product_categories_ratio' => $product_categories_ratio,
             'site_visits_series' => $site_visits_series,
+            'financing_requests_count' => $financing_requests_count,
         ]);
     }
 }
