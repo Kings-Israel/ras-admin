@@ -7,12 +7,15 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PackagingController;
 use App\Http\Controllers\FinancingInstitutionController;
+use App\Http\Controllers\FinancingRequestController;
 use App\Http\Controllers\InspectorController;
 use App\Http\Controllers\LogisticsController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StoreRequestController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\VendorController;
 use App\Http\Controllers\WarehouseController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
@@ -36,7 +39,31 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->name('products');
 
     // Financiers
-    Route::resource('/financing-institutions', FinancingInstitutionController::class);
+    // Route::resource('/financing-institutions', FinancingInstitutionController::class);
+    Route::group(['prefix' => 'financing/institutions'], function () {
+        Route::get('/', [FinancingInstitutionController::class, 'index'])->name('financing.institutions.index');
+        Route::get('/create', [FinancingInstitutionController::class, 'create'])->name('financing.institutions.create');
+        Route::post('/store', [FinancingInstitutionController::class, 'store'])->name('financing.institutions.store');
+        Route::get('/{financing_institution}/edit', [FinancingInstitutionController::class, 'edit'])->name('financing.institutions.edit');
+        Route::get('/{financing_institution}/details', [FinancingInstitutionController::class, 'show'])->name('financing.institutions.show');
+        Route::patch('/{financing_institution}', [FinancingInstitutionController::class, 'update'])->name('financing.institutions.update');
+        Route::delete('/{financing_institution}', [FinancingInstitutionController::class, 'destroy'])->name('financing.institutions.delete');
+    });
+
+    Route::group(['prefix' => '/vendors'], function () {
+        Route::get('/', [VendorController::class, 'index'])->name('vendors.index');
+        Route::get('/{business}', [VendorController::class, 'show'])->name('vendors.show');
+        Route::get('/{business}/verify', [VendorController::class, 'verify'])->name('vendors.verify');
+    });
+
+    Route::group(['prefix' => '/orders'], function () {
+        Route::get('/', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/{order}', [OrderController::class, 'show'])->name('orders.show');
+    });
+
+    Route::group(['prefix' => 'financing/requests'], function () {
+        Route::get('/', [FinancingRequestController::class, 'index'])->name('financing.requests.index');
+    });
 
     // Inspectors
     Route::resource('/inspectors', InspectorController::class);
@@ -82,7 +109,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     });
 
     Route::get('/customers', [UsersController::class, 'buyers'])->name('users.buyers');
-    Route::get('/vendors', [UsersController::class, 'vendors'])->name('users.vendors');
+    Route::get('/vendor-users', [UsersController::class, 'vendors'])->name('users.vendors');
     Route::get('/financiers', [UsersController::class, 'financiers'])->name('users.financiers');
     Route::get('/inspector-users', [UsersController::class, 'inspectors'])->name('users.inspectors');
     Route::get('/warehousemanagers', [UsersController::class, 'warehouseManagers'])->name('users.warehousemanagers');

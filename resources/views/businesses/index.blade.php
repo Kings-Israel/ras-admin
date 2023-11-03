@@ -17,9 +17,6 @@
                 <div class="card">
                     <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
-                        @can('create financier')
-                            <a class="btn btn-secondary btn-sm" href="{{ route('financing.institutions.create') }}">Add Financing Institution</a>
-                        @endcan
                     </div>
                     <div class="body">
                         <table class="table table-hover dataTable js-exportable">
@@ -27,26 +24,26 @@
                                 <tr>
                                     <th>Name</th>
                                     <th>Location</th>
-                                    <th>Admin(s)</th>
-                                    <th>No. of Pending Requests</th>
-                                    <th>No. of Processed Requests</th>
-                                    <th>Added on</th>
+                                    <th>User Name</th>
+                                    <th>Orders</th>
+                                    <th>Products</th>
+                                    <th>Created On</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($financing_institutions as $institution)
+                                @foreach ($businesses as $business)
                                     <tr>
-                                        <td>{{ $institution->name }}</td>
-                                        <td>{{ $institution->city ? $institution->city->name.', ' : '' }}{{ $institution->country->name }}</td>
-                                        <td>{{ $institution->users_count }}</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>{{ $institution->created_at->format('d M Y') }}</td>
+                                        <td>{{ $business->name }} @if($business->verified()) <i class="material-icons">verified_user</i> @endif</td>
+                                        <td>{{ $business->city ? $business->city->name.', ' : '' }}{{ $business->country->name }}</td>
+                                        <td>{{ $business->user->first_name }} {{ $business->user->last_name }}</td>
+                                        <td>{{ $business->orders_count }}</td>
+                                        <td>{{ $business->products_count }}</td>
+                                        <td>{{ $business->created_at->format('d M Y') }}</td>
                                         <td>
-                                            @can('update financier')
-                                                <a href="{{ route('financing.institutions.edit', ['financing_institution' => $institution]) }}" class="btn btn-sm btn-primary btn-round waves-effect">EDIT</a>
-                                            @endcan
+                                            @role('admin')
+                                                <a href="{{ route('vendors.show', ['business' => $business]) }}" class="btn btn-sm btn-primary btn-round waves-effect">VIEW</a>
+                                            @endrole
                                         </td>
                                     </tr>
                                 @endforeach

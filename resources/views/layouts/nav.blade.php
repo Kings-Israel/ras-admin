@@ -36,8 +36,11 @@
                         </ul>
                     </li>
                 @endrole
+                @role('admin')
+                    <li class="nav-item @if(Route::is('vendors.*')) active open @endif"> <a href="{{ route('vendors.index') }}"><i class="material-icons">polymer</i><span>Vendor Management</span></a></li>
+                @endrole
                 @can('view order')
-                    <li class="nav-item"> <a href="{{ route('dashboard') }}"><i class="material-icons">layers</i><span>Order Management</span></a></li>
+                    <li class="nav-item @if(Route::is('orders.*')) active open @endif""> <a href="{{ route('orders.index') }}"><i class="material-icons">layers</i><span>Order Management</span></a></li>
                 @endcan
                 @can('view warehouse')
                 {{-- <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a></li> --}}
@@ -74,17 +77,17 @@
                     </li>
                 @endcan
                 @can('view financing request', 'view financier')
-                    <li class="nav-item @if(Route::is('finance_request.*') || Route::is('financing-institutions.*')) active @endif">
+                    <li class="nav-item @if(Route::is('financing.*') || Route::is('financing-institutions.*')) active @endif">
                         <a href="javascript:void(0)" class="menu-toggle"><i class="material-icons">account_balance</i><span>Financing Management</span></a>
                         <ul class="ml-menu">
                             @can('view financiers')
-                                <li class="nav-item @if(Route::is('financing-institutions.index')) active open @endif">
-                                    <a href="{{ route('financing-institutions.index') }}">Financiers</a>
+                                <li class="nav-item @if(Route::is('financing.institutions.index')) active open @endif">
+                                    <a href="{{ route('financing.institutions.index') }}">Financiers</a>
                                 </li>
                             @endcan
                             @can('view financing request')
-                                <li class="nav-item @if(Route::is('financing-requests.index')) active open @endif">
-                                    <a href="{{ route('dashboard') }}">Financing Requests</a>
+                                <li class="nav-item @if(Route::is('financing.requests.index')) active open @endif">
+                                    <a href="{{ route('financing.requests.index') }}">Financing Requests</a>
                                 </li>
                             @endcan
                         </ul>

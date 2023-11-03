@@ -1,6 +1,12 @@
 @extends('layouts.app')
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css') }}">
+    <style>
+        #super{
+            vertical-align:super;
+            font-size: smaller;
+        }
+    </style>
 @endsection
 @section('content')
 <section class="content home">
@@ -9,32 +15,39 @@
         <div class="row clearfix">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="header">
+                    <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
                     </div>
                     <div class="body">
-                        <table class="table table-bordered table-striped table-hover dataTable js-exportable" id="logs">
+                        <table class="table table-hover dataTable js-exportable" id="financing_requests">
                             <thead>
                                 <tr>
-                                    <th>Log</th>
-                                    <th>Created</th>
+                                    <th>INVOICE ID</th>
+                                    <th>No. of Orders</th>
+                                    <th>Status</th>
+                                    <th>Customer</th>
+                                    <th>Requested On</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($logs as $log)
+                                @foreach ($financing_requests as $financing_request)
                                     <tr>
-                                        @if ($log->subject && $log->subject_type == App\Models\Product::class)
-                                            <td>{{ $log->causer->first_name }} {{ $log->causer->last_name }} {{ $log->description }} {{ $log->subject->name }}</td>
-                                        @else
-                                            <td>{{ $log->causer->first_name }} {{ $log->causer->last_name }} {{ $log->description }}</td>
-                                        @endif
-                                        <td>{{ $log->created_at->format('d M Y H:i A') }}</td>
+                                        <td>{{ $financing_request->invoice->invoice_id }}</td>
+                                        <td>{{ $financing_request->invoice->orders->count() }}</td>
+                                        <td>{{ Str::title($financing_request->status) }}</td>
+                                        <td>{{ $financing_request->invoice->user->first_name }} {{ $financing_request->invoice->user->last_name }}</td>
+                                        <td>{{ $financing_request->created_at->format('d M Y') }}</td>
+                                        <td>
+                                            @can('view financing request')
+                                                <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">VIEW</a>
+                                            @endcan
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
-                    {{-- <livewire:admin.logs.logs-list /> --}}
                 </div>
             </div>
         </div>
@@ -50,8 +63,6 @@
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
     {{-- <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script> --}}
     <script>
-        $('#logs').DataTable( {
-            ordering: true
-        } );
+        $('#financing_requests').DataTable().order([4, 'desc']).draw()
     </script>
 @endpush

@@ -21,7 +21,7 @@
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
                     </div>
                     <div class="body">
-                        <form action="{{ route('financing-institutions.store') }}" method="POST">
+                        <form action="{{ route('financing.institutions.store') }}" method="POST">
                             @csrf
                             <div class="row clearfix">
                                 <div class="col-6">

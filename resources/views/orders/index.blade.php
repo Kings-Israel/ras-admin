@@ -1,6 +1,12 @@
 @extends('layouts.app')
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css') }}">
+    <style>
+        #super{
+            vertical-align:super;
+            font-size: smaller;
+        }
+    </style>
 @endsection
 @section('content')
 <section class="content home">
@@ -9,32 +15,39 @@
         <div class="row clearfix">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="header">
+                    <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
                     </div>
                     <div class="body">
-                        <table class="table table-bordered table-striped table-hover dataTable js-exportable" id="logs">
+                        <table class="table table-bordered table-striped table-hover dataTable js-exportable" id="orders">
                             <thead>
                                 <tr>
-                                    <th>Log</th>
-                                    <th>Created</th>
+                                    <th>Order ID</th>
+                                    <th>User Name</th>
+                                    <th>Vendor</th>
+                                    <th>Products</th>
+                                    <th>Status</th>
+                                    <th>Created At</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($logs as $log)
+                                @foreach ($orders as $order)
                                     <tr>
-                                        @if ($log->subject && $log->subject_type == App\Models\Product::class)
-                                            <td>{{ $log->causer->first_name }} {{ $log->causer->last_name }} {{ $log->description }} {{ $log->subject->name }}</td>
-                                        @else
-                                            <td>{{ $log->causer->first_name }} {{ $log->causer->last_name }} {{ $log->description }}</td>
-                                        @endif
-                                        <td>{{ $log->created_at->format('d M Y H:i A') }}</td>
+                                        <td>{{ $order->order_id }}</td>
+                                        <td>{{ $order->user->first_name }} {{ $order->user->last_name }}</td>
+                                        <td>{{ $order->business->name }}</td>
+                                        <td>{{ $order->orderItems->count() }}</td>
+                                        <td><span class="badge {{ $order->resolveOrderBadgeStatus() }}">{{ Str::title($order->status) }}</span></td>
+                                        <td>{{ $order->created_at->format('d M Y') }}</td>
+                                        <td>
+                                            <a href="{{ route('orders.show', ['order' => $order]) }}" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
-                    {{-- <livewire:admin.logs.logs-list /> --}}
                 </div>
             </div>
         </div>
@@ -50,8 +63,6 @@
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
     {{-- <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script> --}}
     <script>
-        $('#logs').DataTable( {
-            ordering: true
-        } );
+        $('#orders').DataTable().order([5, 'desc']).draw();
     </script>
 @endpush

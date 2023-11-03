@@ -30,7 +30,7 @@ class FinancingInstitutionController extends Controller
         return view('financiers.index', [
             'page' => 'Financing Institutions',
             'breadcrumbs' => [
-                'Financing Institutions' => route('financing-institutions.index')
+                'Financing Institutions' => route('financing.institutions.index')
             ],
             'financing_institutions' => $financing_institutions
         ]);
@@ -44,8 +44,8 @@ class FinancingInstitutionController extends Controller
         return view('financiers.create', [
             'page' => 'Financing Institutions',
             'breadcrumbs' => [
-                'Financing Institutions' => route('financing-institutions.index'),
-                'Add Financing Institutions' => route('financing-institutions.create')
+                'Financing Institutions' => route('financing.institutions.index'),
+                'Add Financing Institutions' => route('financing.institutions.create')
             ],
             'countries' => $countries,
             'users' => $users

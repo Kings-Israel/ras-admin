@@ -5,33 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
 
 class Business extends Model
 {
-    use HasSlug;
-
     /**
-     * Get the options for generating the slug.
-     */
-    public function getSlugOptions() : SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug');
-    }
-
-    /**
-     * Get the route key for the model.
+     * The attributes that are mass assignable.
      *
-     * @return string
+     * @var array
      */
-    public function getRouteKeyName()
-    {
-        return 'slug';
-    }
-
+    protected $fillable = ['verified_on'];
     /**
      * Get the primary image
      *
@@ -54,6 +36,15 @@ class Business extends Model
         if ($value) {
             return config('app.frontend_url').'/storage/vendor/cover_image/'.$value;
         }
+    }
+
+    public function verified():bool
+    {
+        if ($this->verified_on) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -94,5 +85,13 @@ class Business extends Model
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
+    }
+
+    /**
+     * Get all of the orders for the Business
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 }
