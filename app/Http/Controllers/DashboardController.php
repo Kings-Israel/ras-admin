@@ -119,7 +119,7 @@ class DashboardController extends Controller
 
         $total_businesses_count = Business::count();
 
-        $financing_requests = FinancingRequest::count();
+        $financing_requests_count = FinancingRequest::count();
 
         foreach ($months as $month) {
             $users_monthly = User::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereHas('roles', function($query) { $query->where('name', 'buyer'); })->count();

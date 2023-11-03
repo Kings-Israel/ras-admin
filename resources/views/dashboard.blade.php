@@ -150,7 +150,7 @@
                     <div class="card text-center">
                         <div class="body">
                             <span>Approved Financing Requests</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $financing_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $financing_requests_count }}</h3>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">0</h3>
                         </div>
                     </div>
                 </div>
@@ -160,7 +160,7 @@
                 <div class="card text-center">
                     <div class="body">
                         <span>Rejected Financing Requests</span>
-                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $financing_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $financing_requests_count }}</h3>
+                        <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">0</h3>
                     </div>
                 </div>
             </div>
