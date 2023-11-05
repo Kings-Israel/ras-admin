@@ -166,6 +166,20 @@
             </div>
         @endcan
         </div>
+        @can('view financing request')
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12">
+                    <div class="card visitors-map">
+                        <div class="header">
+                            <h2><strong>Financing</strong> Requests</h2>
+                        </div>
+                        <div class="body m-b-10">
+                            <canvas id="financing_request_rate" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endcan
         @role('admin')
             <div class="row clearfix">
                 <div class="col-lg-12 col-md-12">
@@ -563,11 +577,11 @@
             let months = {!! json_encode($months) !!}
             let warehouses = {!! json_encode($warehouses) !!}
             let countries = {!! json_encode($countries) !!}
-            // console.log(countries)
+            // console.log(financing_requests_graph_data)
 
             new Chart(document.getElementById("user_registration_rate").getContext("2d"),
-                config = {
-                    type: 'line',
+            config = {
+                type: 'line',
                     data: {
                         labels: months,
                         datasets: [{
@@ -734,4 +748,33 @@
         });
     </script>
     @endrole
+    @can('view financing request')
+        <script>
+            $(function () {
+                let financing_requests_graph_data = {!! json_encode($financing_requests_graph_data) !!}
+                let months = {!! json_encode($months) !!}
+                new Chart(document.getElementById("financing_request_rate").getContext("2d"),
+                    config = {
+                        type: 'line',
+                        data: {
+                            labels: months,
+                            datasets: [{
+                                label: "Financing Requests",
+                                data: financing_requests_graph_data,
+                                borderColor: 'rgba(241,95,121, 0.2)',
+                                backgroundColor: 'rgba(241,95,121, 0.5)',
+                                pointBorderColor: 'rgba(241,95,121, 0.3)',
+                                pointBackgroundColor: 'rgba(241,95,121, 0.2)',
+                                pointBorderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            legend: false,
+                        }
+                    }
+                );
+            });
+        </script>
+    @endcan
 @endpush

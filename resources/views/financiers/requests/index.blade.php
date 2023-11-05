@@ -40,7 +40,7 @@
                                         <td>{{ $financing_request->created_at->format('d M Y') }}</td>
                                         <td>
                                             @can('view financing request')
-                                                <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">VIEW</a>
+                                                <a href="{{ route('financing.requests.show', ['financing_request' => $financing_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">VIEW</a>
                                             @endcan
                                         </td>
                                     </tr>

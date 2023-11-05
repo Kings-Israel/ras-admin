@@ -86,7 +86,7 @@
                                 </li>
                             @endcan
                             @can('view financing request')
-                                <li class="nav-item @if(Route::is('financing.requests.index')) active open @endif">
+                                <li class="nav-item @if(Route::is('financing.requests.*')) active open @endif">
                                     <a href="{{ route('financing.requests.index') }}">Financing Requests</a>
                                 </li>
                             @endcan

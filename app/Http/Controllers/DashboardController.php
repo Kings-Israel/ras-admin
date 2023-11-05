@@ -83,9 +83,11 @@ class DashboardController extends Controller
 
         // Financing Requests
         $financing_requests_count = 0;
+        $financing_requests_graph_data = [];
 
         // Site visits log
         $site_visits_series = [];
+
 
         $users_registered_in_current_month = User::whereHas('roles', function ($query) {$query->where('name', 'buyer')->orWhere('name', 'vendor');})->whereMonth('created_at', now())->count();
         $users_registered_in_previous_month = User::whereHas('roles', function ($query) {$query->where('name', 'buyer')->orWhere('name', 'vendor');})->whereMonth('created_at', now()->subMonth())->count();
@@ -118,8 +120,6 @@ class DashboardController extends Controller
                         ->count();
 
         $total_businesses_count = Business::count();
-
-        $financing_requests_count = FinancingRequest::count();
 
         foreach ($months as $month) {
             $users_monthly = User::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereHas('roles', function($query) { $query->where('name', 'buyer'); })->count();
@@ -261,6 +261,12 @@ class DashboardController extends Controller
                                 $country->color = $country_colors[$key];
                             });
 
+        $financing_requests_count = FinancingRequest::count();
+        foreach($months as $month) {
+            $requests_monthly = FinancingRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->count();
+            array_push($financing_requests_graph_data, $requests_monthly);
+        }
+
         return view('dashboard', [
             'breadcrumbs' => [
                 'Dashboard' => route('dashboard'),
@@ -284,6 +290,7 @@ class DashboardController extends Controller
             'product_categories_ratio' => $product_categories_ratio,
             'site_visits_series' => $site_visits_series,
             'financing_requests_count' => $financing_requests_count,
+            'financing_requests_graph_data' => $financing_requests_graph_data
         ]);
     }
 }

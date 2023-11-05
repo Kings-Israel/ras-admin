@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\FinancingRequest;
+use App\Models\OrderFinancing;
+use App\Notifications\FinancingRequestUpdated;
 use Illuminate\Http\Request;
 
 class FinancingRequestController extends Controller
@@ -26,24 +28,67 @@ class FinancingRequestController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(FinancingRequest $financing_request)
     {
-        //
-    }
+        $financing_request->load('invoice.orders.orderItems.product.business', 'invoice.user');
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return view('financiers.requests.show', [
+            'page' => 'Financing Request',
+            'breadcrumbs' => [
+                'Financing Requests' => route('financing.requests.index'),
+                $financing_request->invoice->invoice_id => route('financing.requests.show', ['financing_request' => $financing_request])
+            ],
+            'financing_request' => $financing_request
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(FinancingRequest $financing_request, $status)
     {
-        //
+        if ($status == 'reject') {
+            $financing_request->update([
+                'status' => 'rejected',
+            ]);
+
+            // Send notification to user
+            $financing_request->invoice->user->notify(new FinancingRequestUpdated($financing_request->load('invoice'), 'rejected'));
+
+            toastr()->success('', 'Financing request successfully updated');
+
+            return back();
+        }
+
+        $financing = OrderFinancing::where('invoice_id', $financing_request->invoice->id)->first();
+
+        if (!$financing) {
+            $financing = OrderFinancing::create([
+                'invoice_id' => $financing_request->invoice->id,
+                'financing_institution_id' => auth()->user()->financingInstitutions->first()->id,
+                'first_approved_by' => auth()->id(),
+                'first_approved_on' => now(),
+            ]);
+
+            toastr()->success('', 'Financing request successfully updated');
+
+            return back();
+        } else {
+            $financing->update([
+                'second_approval_by' => auth()->id(),
+                'second_approval_on' => now(),
+            ]);
+
+            $financing_request->update([
+                'status' => 'accepted'
+            ]);
+
+            // Send notification to user
+            $financing_request->invoice->user->notify(new FinancingRequestUpdated($financing_request->load('invoice'), 'accepted'));
+
+            toastr()->success('', 'Financing request successfully updated');
+
+            return back();
+        }
     }
 }
