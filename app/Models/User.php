@@ -65,7 +65,7 @@ class User extends Authenticatable
      */
     public function inspectors(): BelongsToMany
     {
-        return $this->belongsToMany(Inspector::class, 'inspector_users', 'user_id', 'inspector_id');
+        return $this->belongsToMany(InspectingInstitution::class, 'inspector_users', 'user_id', 'inspector_id');
     }
 
     /**

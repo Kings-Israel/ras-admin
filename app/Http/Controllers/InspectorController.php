@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Models\Country;
-use App\Models\Inspector;
+use App\Models\InspectingInstitution;
 use App\Models\InspectorUser;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -23,7 +23,7 @@ class InspectorController extends Controller
 
     public function index()
     {
-        $inspectors = Inspector::withCount('users')->get();
+        $inspectors = InspectingInstitution::withCount('users')->get();
 
         return view('inspectors.index', [
             'page' => 'Inspectors',
@@ -67,7 +67,7 @@ class InspectorController extends Controller
             'phone_number.required_without' => 'Enter admin\'s phone number'
         ]);
 
-        $inspector = Inspector::create([
+        $inspector = InspectingInstitution::create([
             'name' => $request->name,
             'email' => $request->inspector_email,
             'phone_number' => $request->inspector_phone_number,
@@ -123,22 +123,22 @@ class InspectorController extends Controller
         return redirect()->route('inspectors.index');
     }
 
-    public function show(Inspector $inspector)
+    public function show(InspectingInstitution $inspector)
     {
         //
     }
 
-    public function edit(Inspector $inspector)
+    public function edit(InspectingInstitution $inspector)
     {
         //
     }
 
-    public function update(Request $request, Inspector $inspector)
+    public function update(Request $request, InspectingInstitution $inspector)
     {
         //
     }
 
-    public function destroy(Inspector $inspector)
+    public function destroy(InspectingInstitution $inspector)
     {
         //
     }
