@@ -55,9 +55,16 @@
                 </div>
                 <div class="col-lg-4 col-md-6">
                     <div class="card text-center">
-                        <div class="body">
-                            <span>Vendors</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_vendors_count }}" data-speed="300" data-fresh-interval="100">{{ $total_vendors_count }}</h3>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="body">
+                                    <span>Vendors</span>
+                                    <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_vendors_count }}" data-speed="300" data-fresh-interval="100">{{ $total_vendors_count }}</h3>
+                                </div>
+                            </div>
+                            <div class="col-6">
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -175,6 +182,66 @@
                         </div>
                         <div class="body m-b-10">
                             <canvas id="financing_request_rate" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endcan
+        @can('view inspection report')
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <span>Accepted Inspection Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $accepted_inspection_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $accepted_inspection_requests_count }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <span>Pending Inspection Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_inspection_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $pending_inspection_requests_count }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <span>Rejected Inspection Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $rejected_inspection_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $rejected_inspection_requests_count }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <span>Completed Inspection Reports</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $completed_inspection_reports_count }}" data-speed="100" data-fresh-interval="200">{{ $completed_inspection_reports_count }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12">
+                    <div class="card visitors-map">
+                        <div class="header">
+                            <h2><strong>Inspection</strong> Requests</h2>
+                        </div>
+                        <div class="body m-b-10">
+                            <canvas id="inspection_requests_rate" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12">
+                    <div class="card visitors-map">
+                        <div class="header">
+                            <h2><strong>Completed</strong> Inspection Reports</h2>
+                        </div>
+                        <div class="body m-b-10">
+                            <canvas id="completed_reports_rate" height="100"></canvas>
                         </div>
                     </div>
                 </div>
@@ -775,6 +842,77 @@
                     }
                 );
             });
+        </script>
+    @endcan
+    @can('view inspection report')
+        <script>
+            let months = {!! json_encode($months) !!}
+            let pending_inspection_requests_graph_data = {!! json_encode($pending_inspection_requests_graph_data) !!}
+            let accepted_inspection_requests_graph_data = {!! json_encode($accepted_inspection_requests_graph_data) !!}
+            let rejected_inspection_requests_graph_data = {!! json_encode($rejected_inspection_requests_graph_data) !!}
+            let inspection_reports_graph_data = {!! json_encode($inspection_reports_graph_data) !!}
+            // console.log(financing_requests_graph_data)
+
+            new Chart(document.getElementById("inspection_requests_rate").getContext("2d"),
+            config = {
+                type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: "Pending",
+                            data: pending_inspection_requests_graph_data,
+                            borderColor: 'rgba(241,95,121, 0.2)',
+                            backgroundColor: 'rgba(241,95,121, 0.5)',
+                            pointBorderColor: 'rgba(241,95,121, 0.3)',
+                            pointBackgroundColor: 'rgba(241,95,121, 0.2)',
+                            pointBorderWidth: 1
+                        }, {
+                            label: "Accepted",
+                            data: accepted_inspection_requests_graph_data,
+                            borderColor: 'rgba(140,147,154, 0.2)',
+                            backgroundColor: 'rgba(140,147,154, 0.2)',
+                            pointBorderColor: 'rgba(140,147,154, 0)',
+                            pointBackgroundColor: 'rgba(140,147,154, 0.9)',
+                            pointBorderWidth: 1
+                        }, {
+                            label: "Rejected",
+                            data: rejected_inspection_requests_graph_data,
+                            borderColor: 'rgba(49,55,64, 0.2)',
+                            backgroundColor: 'rgba(49,55,64, 0.2)',
+                            pointBorderColor: 'rgba(49,55,64, 0)',
+                            pointBackgroundColor: 'rgba(49,55,64, 0.9)',
+                            pointBorderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: false,
+
+                    }
+                }
+            );
+
+            new Chart(document.getElementById("completed_reports_rate").getContext("2d"),
+                config = {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: "Completed Reports",
+                            data: completed_reports_rate,
+                            borderColor: 'rgba(241,95,121, 0.2)',
+                            backgroundColor: 'rgba(241,95,121, 0.5)',
+                            pointBorderColor: 'rgba(241,95,121, 0.3)',
+                            pointBackgroundColor: 'rgba(241,95,121, 0.2)',
+                            pointBorderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: false,
+                    }
+                }
+            );
         </script>
     @endcan
 @endpush

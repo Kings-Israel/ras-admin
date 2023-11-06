@@ -1,6 +1,17 @@
 @extends('layouts.app')
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css') }}">
+    <style>
+        .actions-dropdown {
+            position: absolute;
+            z-index: 99;
+            background: #c2c2c2;
+            border-radius: 10px;
+            width: 210px;
+            margin-top: 28px;
+            margin-left: -15px;
+        }
+    </style>
 @endsection
 @section('content')
 <section class="content home">
@@ -67,7 +78,40 @@
                                     <td>USD {{ $item->product->price ? $item->product->price : $item->product->min_price.' - '.$item->product->max_price }}</td>
                                     <td>{{ $item->product->business->name }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
+                                        <div class="btn-group" x-data="{ open: false }">
+                                            <button class="mr-2 btn btn-primary btn-sm dropdown-toggle btn-round" type="button"
+                                                x-on:click="open = ! open">
+                                                <i data-feather="eye"></i>
+                                                Action
+                                            </button>
+                                            <div
+                                                x-cloak
+                                                x-show="open"
+                                                x-transition
+                                                @click.away="open = false"
+                                                @keydown.escape.window = "open = false"
+                                                class="actions-dropdown"
+                                            >
+                                                <a class="dropdown-item" href="#">
+                                                    <span>Product Details</span>
+                                                </a>
+                                                @if ($item->inspectionReport()->exists())
+                                                    <a class="dropdown-item" href="#viewInspectionReport_{{ $item->id }}" data-toggle="modal" data-target="#viewInspectionReport_{{ $item->id }}">
+                                                        <span>View Inspection Report</span>
+                                                    </a>
+                                                    <div class="modal fade" id="viewInspectionReport_{{ $item->id }}" tabindex="-1" role="dialog">
+                                                        <div class="modal-dialog modal-lg" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h4 class="title" id="uploadInspectionDocumentsLabel">{{ $item->product->name }} Inspection Reprt</h4>
+                                                                </div>
+                                                                <iframe src="{{ $item->inspectionReport->report_file }}" class="w-[100%]" style="height: 600px"></iframe>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

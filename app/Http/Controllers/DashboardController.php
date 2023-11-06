@@ -6,6 +6,8 @@ use App\Models\Business;
 use App\Models\Category;
 use App\Models\Country;
 use App\Models\FinancingRequest;
+use App\Models\InspectionReport;
+use App\Models\InspectionRequest;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\UserWarehouse;
@@ -88,6 +90,16 @@ class DashboardController extends Controller
         // Site visits log
         $site_visits_series = [];
 
+        // Inspection Reports
+        $pending_inspection_requests_count = 0;
+        $accepted_inspection_requests_count = 0;
+        $rejected_inspection_requests_count = 0;
+        $completed_inspection_reports_count = 0;
+        $pending_inspection_requests_graph_data = [];
+        $accepted_inspection_requests_graph_data = [];
+        $rejected_inspection_requests_graph_data = [];
+        $inspection_reports_graph_data = [];
+
 
         $users_registered_in_current_month = User::whereHas('roles', function ($query) {$query->where('name', 'buyer')->orWhere('name', 'vendor');})->whereMonth('created_at', now())->count();
         $users_registered_in_previous_month = User::whereHas('roles', function ($query) {$query->where('name', 'buyer')->orWhere('name', 'vendor');})->whereMonth('created_at', now()->subMonth())->count();
@@ -163,7 +175,6 @@ class DashboardController extends Controller
             'site_visits_direction' => $site_visits_direction,
             'current_month_site_visits' => $current_month_site_visits
         ];
-
 
         $warehouses = Warehouse::with('users', 'products', 'country', 'city')->get();
         $warehouses_count = $warehouses->count();
@@ -267,6 +278,34 @@ class DashboardController extends Controller
             array_push($financing_requests_graph_data, $requests_monthly);
         }
 
+        // Inspection Reports
+        if (auth()->user()->hasRole('admin')) {
+            $pending_inspection_requests_count = InspectionRequest::where('status', 'pending')->count();
+            $accepted_inspection_requests_count = InspectionRequest::where('status', 'accepted')->count();
+            $rejected_inspection_requests_count = InspectionRequest::where('status', 'rejected')->count();
+            $completed_inspection_reports_count = InspectionReport::count();
+
+            foreach ($months as $month) {
+                array_push($pending_inspection_requests_graph_data, InspectionRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'pending')->count());
+                array_push($accepted_inspection_requests_graph_data, InspectionRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'accepted')->count());
+                array_push($rejected_inspection_requests_graph_data, InspectionRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'rejected')->count());
+                array_push($inspection_reports_graph_data, InspectionReport::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->count());
+            }
+        } else {
+            $user_inspecting_institutions_ids = auth()->user()->inspectors->pluck('id');
+            $pending_inspection_requests_count = InspectionRequest::where('status', 'pending')->whereIn('inspector_id', $user_inspecting_institutions_ids)->count();
+            $accepted_inspection_requests_count = InspectionRequest::where('status', 'accepted')->whereIn('inspector_id', $user_inspecting_institutions_ids)->count();
+            $rejected_inspection_requests_count = InspectionRequest::where('status', 'rejected')->whereIn('inspector_id', $user_inspecting_institutions_ids)->count();
+            $completed_inspection_reports_count = InspectionReport::whereIn('inspector_id', $user_inspecting_institutions_ids)->count();
+
+            foreach ($months as $month) {
+                array_push($pending_inspection_requests_graph_data, InspectionRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('inspector_id', $user_inspecting_institutions_ids)->where('status', 'pending')->count());
+                array_push($accepted_inspection_requests_graph_data, InspectionRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('inspector_id', $user_inspecting_institutions_ids)->where('status', 'accepted')->count());
+                array_push($rejected_inspection_requests_graph_data, InspectionRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('inspector_id', $user_inspecting_institutions_ids)->where('status', 'rejected')->count());
+                array_push($inspection_reports_graph_data, InspectionReport::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('inspector_id', $user_inspecting_institutions_ids)->count());
+            }
+        }
+
         return view('dashboard', [
             'breadcrumbs' => [
                 'Dashboard' => route('dashboard'),
@@ -290,7 +329,15 @@ class DashboardController extends Controller
             'product_categories_ratio' => $product_categories_ratio,
             'site_visits_series' => $site_visits_series,
             'financing_requests_count' => $financing_requests_count,
-            'financing_requests_graph_data' => $financing_requests_graph_data
+            'financing_requests_graph_data' => $financing_requests_graph_data,
+            'pending_inspection_requests_count' => $pending_inspection_requests_count,
+            'accepted_inspection_requests_count' => $accepted_inspection_requests_count,
+            'rejected_inspection_requests_count' => $rejected_inspection_requests_count,
+            'completed_inspection_reports_count' => $completed_inspection_reports_count,
+            'pending_inspection_requests_graph_data' => $pending_inspection_requests_graph_data,
+            'accepted_inspection_requests_graph_data' => $accepted_inspection_requests_graph_data,
+            'rejected_inspection_requests_graph_data' => $rejected_inspection_requests_graph_data,
+            'inspection_reports_graph_data' => $inspection_reports_graph_data,
         ]);
     }
 }

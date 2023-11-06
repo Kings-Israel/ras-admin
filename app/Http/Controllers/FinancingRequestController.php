@@ -14,7 +14,7 @@ class FinancingRequestController extends Controller
      */
     public function index()
     {
-        $financing_requests = FinancingRequest::with('invoice.orders.orderItems', )->get();
+        $financing_requests = FinancingRequest::with('invoice.orders.orderItems')->get();
 
         return view('financiers.requests.index', [
             'page' => 'Financing Requests',

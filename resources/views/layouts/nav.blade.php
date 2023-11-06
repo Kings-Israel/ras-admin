@@ -59,8 +59,8 @@
                 @can('view product')
                     <li class="nav-item @if(Route::is('products')) active open @endif"> <a href="{{ route('products') }}"><i class="material-icons">shop</i><span>Stock Management</span></a></li>
                 @endcan
-                @can('view inspector', 'view inpection report')
-                    <li class="nav-item @if(Route::is('inspection_reports.*') || Route::is('inspectors.*')) active @endif">
+                @can('view inspection report', 'view inspector')
+                    <li class="nav-item @if(Route::is('inspection.reports.*') || Route::is('inspectors.*') || Route::is('inspection.requests.*')) active @endif">
                         <a href="javascript:void(0)" class="menu-toggle"><i class="material-icons">assignment_turned_in</i><span>Inspection Management</span></a>
                         <ul class="ml-menu">
                             @can('view inspector')
@@ -69,8 +69,13 @@
                                 </li>
                             @endcan
                             @can('view inspection report')
-                                <li class="nav-item @if(Route::is('inspection_reports.index')) active open @endif">
-                                    <a href="{{ route('dashboard') }}">Inspection Reports</a>
+                                <li class="nav-item @if(Route::is('inspection.reports.*')) active open @endif">
+                                    <a href="{{ route('inspection.reports.index') }}">Inspection Reports</a>
+                                </li>
+                            @endcan
+                            @can('view inspection report')
+                                <li class="nav-item @if(Route::is('inspection.requests.*')) active open @endif">
+                                    <a href="{{ route('inspection.requests.index') }}">Inspection Requests</a>
                                 </li>
                             @endcan
                         </ul>

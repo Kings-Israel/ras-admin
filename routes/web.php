@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PackagingController;
 use App\Http\Controllers\FinancingInstitutionController;
 use App\Http\Controllers\FinancingRequestController;
+use App\Http\Controllers\InspectionRequestController;
 use App\Http\Controllers\InspectorController;
 use App\Http\Controllers\LogisticsController;
 use App\Http\Controllers\OrderController;
@@ -69,6 +70,15 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     // Inspectors
     Route::resource('/inspectors', InspectorController::class);
+    Route::group(['prefix' => 'inspection/requests'], function () {
+        Route::get('/', [InspectionRequestController::class, 'index'])->name('inspection.requests.index');
+        Route::get('{inspection_request}/details', [InspectionRequestController::class, 'show'])->name('inspection.requests.show');
+        Route::post('{inspection_request}/reports/store', [InspectionRequestController::class, 'store'])->name('inspection.requests.reports.store');
+    });
+
+    Route::group(['prefix' => 'inspection/reports'], function () {
+        Route::get('/', [InspectionRequestController::class, 'reports'])->name('inspection.reports.index');
+    });
 
     // Logistics
     Route::resource('/logistics', LogisticsController::class);

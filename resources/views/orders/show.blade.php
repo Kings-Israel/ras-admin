@@ -70,7 +70,7 @@
                             <tr>
                                 <td>{{ $item->product->name }}</td>
                                 <td>{{ $item->product->price ? $item->product->price : $item->product->min_price.' - '.$item->product->max_price }}</td>
-                                <td>{{ $item->product->warehouse }}</td>
+                                <td>{{ $item->product->warehouse ? $item->product->warehouse->name : '' }}</td>
                                 <td>{{ $item->product->created_at->format('d M Y H:i A') }}</td>
                                 <td>
                                     <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>

@@ -51,6 +51,18 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-12">
+                        @if ($business->documents)
+                            <h6>Business Documents</h6>
+                            <div class="card">
+                                <div class="body">
+                                    @foreach ($business->documents as $document)
+                                        <a href="{{ $document->file }}" target="_blank" class="btn btn-sm btn-round btn-primary wave-effect">{{ $document->name }} @if($document->expires_on) ({{ Carbon\Carbon::parse($document->expires_on)->format('d M Y') }}) @endif</a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    </div>
                     @if ($business->about || $business->mission || $business->vision || $business->tag_line)
                         <div class="col-12">
                             <div class="card">
