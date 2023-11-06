@@ -6,6 +6,7 @@ use App\Models\FinancingRequest;
 use App\Models\OrderFinancing;
 use App\Notifications\FinancingRequestUpdated;
 use Illuminate\Http\Request;
+use App\Models\FinancingInstitution;
 
 class FinancingRequestController extends Controller
 {
@@ -62,12 +63,14 @@ class FinancingRequestController extends Controller
 
         $financing = OrderFinancing::where('invoice_id', $financing_request->invoice->id)->first();
 
+        $financing_institution = FinancingInstitution::all();
+
         if (!$financing) {
             $financing = OrderFinancing::create([
                 'invoice_id' => $financing_request->invoice->id,
-                'financing_institution_id' => auth()->user()->financingInstitutions->first()->id,
-                'first_approved_by' => auth()->id(),
-                'first_approved_on' => now(),
+                'financing_institution_id' => $financing_institution->first()->id,
+                'first_approval_by' => auth()->id(),
+                'first_approval_on' => now(),
             ]);
 
             toastr()->success('', 'Financing request successfully updated');
