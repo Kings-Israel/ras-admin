@@ -41,16 +41,16 @@
                 @endcan
                 @can('view warehouse')
                     <li class="nav-item @if(Route::is('warehouses.*')) active @endif">
-{{--                        <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a></li>--}}
-                    <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-swap-alt"></i><span>Warehouse Management</span></a>
-                    <ul class="ml-menu">
-                        <li class="nav-item @if(Route::is('warehouses')) active open @endif">
-                            <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouses</span></a>
-                        </li>
-                        <li class="nav-item @if(Route::is('packaging')) active open @endif" >
-                            <a href="{{ route('packaging') }}"><i class="material-icons">package</i><span>Packaging</span></a>
-                        </li>
-                    </ul>
+                        <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a></li>
+{{--                    <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-swap-alt"></i><span>Warehouse Management</span></a>--}}
+{{--                    <ul class="ml-menu">--}}
+{{--                        <li class="nav-item @if(Route::is('warehouses')) active open @endif">--}}
+{{--                            <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouses</span></a>--}}
+{{--                        </li>--}}
+{{--                        <li class="nav-item @if(Route::is('packaging')) active open @endif" >--}}
+{{--                            <a href="{{ route('packaging') }}"><i class="material-icons">package</i><span>Packaging</span></a>--}}
+{{--                        </li>--}}
+{{--                    </ul>--}}
                 @endcan
                 @can('view product')
                     <li class="nav-item @if(Route::is('products')) active open @endif"> <a href="{{ route('products') }}"><i class="material-icons">shop</i><span>Stock Management</span></a></li>
