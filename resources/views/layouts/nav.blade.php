@@ -40,21 +40,22 @@
                     <li class="nav-item @if(Route::is('vendors.*')) active open @endif"> <a href="{{ route('vendors.index') }}"><i class="material-icons">polymer</i><span>Vendor Management</span></a></li>
                 @endrole
                 @can('view order')
-                    <li class="nav-item @if(Route::is('orders.*')) active open @endif""> <a href="{{ route('orders.index') }}"><i class="material-icons">layers</i><span>Order Management</span></a></li>
+                    <li class="nav-item @if(Route::is('orders.*')) active open @endif"> <a href="{{ route('orders.index') }}"><i class="material-icons">layers</i><span>Order Management</span></a></li>
                 @endcan
                 @can('view warehouse')
                 {{-- <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a></li> --}}
-                    <li class="nav-item @if(Route::is('warehouses.*')) active @endif">
-                        <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-swap-alt"></i><span>Warehouse Management</span></a>
-                        <ul class="ml-menu">
-                            <li class="nav-item @if(Route::is('warehouses.index')) active open @endif">
-                                <a href="{{ route('warehouses.index') }}"><i class="material-icons">local_convenience_store</i><span>Warehouses</span></a>
-                            </li>
-                            <li class="nav-item @if(Route::is('packaging')) active open @endif" >
-                                <a href="{{ route('packaging') }}"><i class="material-icons">package</i><span>Packaging</span></a>
-                            </li>
-                        </ul>
+                    <li class="nav-item @if(Route::is('warehouses.*')) active open @endif">
+                        <a href="{{ route('warehouses.index') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a>
                     </li>
+                   {{-- <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-swap-alt"></i><span>Warehouse Management</span></a>
+                   <ul class="ml-menu">
+                       <li class="nav-item @if(Route::is('warehouses')) active open @endif">
+                           <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouses</span></a>
+                       </li>
+                       <li class="nav-item @if(Route::is('packaging')) active open @endif" >
+                           <a href="{{ route('packaging') }}"><i class="material-icons">package</i><span>Packaging</span></a>
+                       </li>
+                   </ul> --}}
                 @endcan
                 @can('view product')
                     <li class="nav-item @if(Route::is('products')) active open @endif"> <a href="{{ route('products') }}"><i class="material-icons">shop</i><span>Stock Management</span></a></li>

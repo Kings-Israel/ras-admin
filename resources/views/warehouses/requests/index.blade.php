@@ -7,8 +7,8 @@
             font-size: smaller;
         }
     </style>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> --}}
 @endsection
 @section('content')
     <section class="content home">
@@ -22,27 +22,23 @@
                                 <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Location</th>
-                                    <th>Manager(s)</th>
-                                    <th>No. of Products</th>
-                                    <th>Price</th>
-                                    <th>Added on</th>
+                                    <th>Quantity</th>
+                                    <th>Requested On</th>
+                                    <th>Status</th>
+                                    <th>Payment Status</th>
                                     <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach ($storagerequests as $storagerequest)
+                                @foreach ($requests as $storagerequest)
                                     <tr>
-                                        <td>{{ $storagerequest->name }}</td>
-                                        <td>{{ $storagerequest->city ? $storagerequest->city->name.', ' : '' }}{{ $storagerequest->country->name }}</td>
-                                        <td>{{ $storagerequest->users_count }}</td>
-                                        <td>{{ $storagerequest->products_count }}</td>
-                                        <td>{{ number_format($storagerequest->price) }}</td>
-                                        <td>{{ $storagerequest->created_at->format('d M Y') }}</td>
+                                        <td>{{ $storagerequest->customer->first_name }} {{ $storagerequest->customer->last_name }}</td>
+                                        <td>{{ $storagerequest->quantity }}</td>
+                                        <td>{{ $storagerequest->requested_on->format('d M Y') }}</td>
+                                        <td>{{ Str::title($storagerequest->status) }}</td>
+                                        <td>{{ Str::title($storagerequest->payment_status) }}</td>
                                         <td>
-                                            <a class="dropdown-item" href="{{ route('storagerequests.edit', ['storagerequest' => $storagerequest]) }}" ><i data-feather='edit' class="mr-50 btn btn-sm btn-primary waves-effect"></i><span>View</span>
-                                            @can('update storagerequest')
-                                            @endcan
+                                            <a class="btn btn-sm btn-primary waves-effect btn-round" href="#" >View</a>
                                         </td>
                                     </tr>
                                 @endforeach

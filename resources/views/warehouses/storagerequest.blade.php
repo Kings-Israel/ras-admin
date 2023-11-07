@@ -21,28 +21,28 @@
                             <table class="table table-hover dataTable js-exportable">
                                 <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Location</th>
-                                    <th>Manager(s)</th>
-                                    <th>No. of Products</th>
-                                    <th>Price</th>
-                                    <th>Added on</th>
+                                    <th>Code</th>
+                                    <th>Vendor Name</th>
+                                    <th>Status</th>
+                                    <th>Requested On</th>
+{{--                                    <th>Stage</th>--}}
                                     <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach ($storagerequests as $storagerequest)
                                     <tr>
-                                        <td>{{ $storagerequest->name }}</td>
-                                        <td>{{ $storagerequest->city ? $storagerequest->city->name.', ' : '' }}{{ $storagerequest->country->name }}</td>
-                                        <td>{{ $storagerequest->users_count }}</td>
-                                        <td>{{ $storagerequest->products_count }}</td>
-                                        <td>{{ number_format($storagerequest->price) }}</td>
-                                        <td>{{ $storagerequest->created_at->format('d M Y') }}</td>
+                                        <td>{{ $storagerequest->requeste_code }}</td>
+                                        <td>{{ $storagerequest->customer->name ?? ''}}</td>
+                                        <td>{{ $storagerequest->status }}</td>
+                                        <td>{{ $storagerequest->requested_on->format('d M Y:H m s') }}</td>
                                         <td>
-                                                @can('update storagerequest')
-                                                        <a class="dropdown-item" href="{{ route('storagerequests.edit', ['storagerequest' => $storagerequest]) }}" ><i data-feather='edit' class="mr-50 btn btn-sm btn-primary waves-effect"></i><span>View</span>
-                                                            @endcan
+{{--                                                @can('update storagerequest')--}}
+                                            <a class="dropdown-item" href="{{ route('storagerequests.edit', ['storagerequest' => $storagerequest->id]) }}" ><i data-feather='edit' class="mr-50 btn btn-sm btn-primary waves-effect"></i><span>View</span></a>
+{{--                                                            @endcan --}}
+{{--                                                            @can('update storagerequest')--}}
+                                            <a class="dropdown-item" href="{{ route('storagerequests.products', ['storagerequest' => $storagerequest->id]) }}" ><i data-feather='view' class="mr-50 btn btn-sm btn-primary waves-effect"></i><span>Products</span></a>
+{{--                                                            @endcan--}}
                                         </td>
                                     </tr>
                                 @endforeach
