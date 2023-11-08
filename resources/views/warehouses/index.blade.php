@@ -77,7 +77,7 @@
                                                     <a class="dropdown-item" href="{{ route('warehouses.storage.requests', ['warehouse' => $warehouse->id]) }}">
                                                         <i data-feather='eye' class="btn btn-sm btn-primary waves-effect"></i><span>Storage Requests</span></a>
                                                         </a>
-                                                    @endcan
+
                                                     @can('view warehouse')
                                                         <a class="dropdown-item" href="#">
                                                             <span>View</span>
