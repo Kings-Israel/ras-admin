@@ -27,7 +27,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/warehouses/{warehouse}/show', [WarehouseController::class, 'show'])->name('warehouses.show');
     Route::patch('/warehouses/{warehouse}/update', [WarehouseController::class, 'update'])->name('warehouses.update');
 
-    Route::get('/warehouses/{warehouse}/storagerequests', [StoreRequestController::class, 'index'])->name('warehouses.storagerequests');
+    Route::get('/warehouses/storage/requests/{warehouse}', [StoreRequestController::class, 'index'])->name('warehouses.storage.requests');
 
     Route::resource('packaging', PackagingController::class);
     Route::get('/packaging', [PackagingController::class, 'index'])->name('packaging');

@@ -66,7 +66,7 @@
                                                     @endcan
                                                     <a class="dropdown-item" href="#">
                                                         <i data-feather='eye' class="btn btn-sm btn-primary waves-effect"></i><span>View</span></a>
-                                                    <a class="dropdown-item" href="{{ route('warehouses.storagerequests', ['warehouse' => $warehouse->id]) }}">
+                                                    <a class="dropdown-item" href="{{ route('warehouses.storage.requests', ['warehouse' => $warehouse->id]) }}">
                                                         <i data-feather='eye' class="btn btn-sm btn-primary waves-effect"></i><span>Storage Requests</span></a>
                                                         </a>
                                                 </div>
