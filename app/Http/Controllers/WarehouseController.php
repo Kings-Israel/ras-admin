@@ -9,9 +9,9 @@ use App\Models\StoreRequest;
 use App\Models\User;
 use App\Models\UserWarehouse;
 use App\Models\Warehouse;
+use App\Models\WarehouseOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Password;
 
 class WarehouseController extends Controller
@@ -166,22 +166,6 @@ class WarehouseController extends Controller
         ]);
     }
 
-    public function storageRequests(Warehouse $warehouse)
-    {
-        $users = User::whereHas('roles', fn ($query) => $query->where('name', 'warehouse manager'))->get();
-        $requests = StorageRequest::with('customer')->where('warehouse_id', $warehouse->id)->get();
-        return view('warehouses.requests.index', [
-            'page' => 'Requests Warehouse',
-            'breadcrumbs' => [
-                'Warehouses' => route('warehouses.index'),
-                Str::title($warehouse->name).' Storage Requests' => route('warehouses.storage.requests', ['warehouse' => $warehouse])
-            ],
-            'warehouse' => $warehouse->load('users'),
-            'users' => $users,
-            'requests' => $requests,
-        ]);
-    }
-
     public function show(Warehouse $warehouse)
     {
         return view('warehouses.show', [
@@ -283,5 +267,19 @@ class WarehouseController extends Controller
         toastr()->success('', 'Warehouse updated successfully');
 
         return redirect()->route('warehouses.index');
+    }
+
+    public function orders(Warehouse $warehouse)
+    {
+        $orders = WarehouseOrder::where('warehouse_id', $warehouse->id)->get();
+
+        return view('warehouses.orders.index', [
+            'page' => 'Warehouse Orders',
+            'breadcrumbs' => [
+                'Warehouses' => route('warehouses.index'),
+                'Warehouse Orders' => route('warehouses.orders.index', ['warehouse' => $warehouse])
+            ],
+            'orders' => $orders
+        ]);
     }
 }

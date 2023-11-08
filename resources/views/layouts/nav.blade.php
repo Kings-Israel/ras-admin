@@ -110,8 +110,8 @@
                                     </li>
                                 @endcan
                                 @can('create stocklift request', 'update stocklift request', 'view stocklift request')
-                                    <li class="nav-item @if(Route::is('financing-requests.index')) active open @endif">
-                                        <a href="{{ route('dashboard') }}">Logistics Reports</a>
+                                    <li class="nav-item @if(Route::is('deliveries.*')) active open @endif">
+                                        <a href="{{ route('deliveries.index') }}">Deliveries</a>
                                     </li>
                                 @endcan
                             </ul>

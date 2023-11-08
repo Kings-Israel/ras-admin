@@ -80,8 +80,11 @@
                                                             <span>View</span>
                                                         </a>
                                                     @endcan
-                                                    <a class="dropdown-item" href="{{ route('warehouses.storage.requests', ['warehouse' => $warehouse->id]) }}">
+                                                    <a class="dropdown-item" href="{{ route('warehouses.storage.requests.index', ['warehouse' => $warehouse->id]) }}">
                                                         <span>Storage Requests</span></a>
+                                                    </a>
+                                                    <a class="dropdown-item" href="{{ route('warehouses.orders.index', ['warehouse' => $warehouse->id]) }}">
+                                                        <span>Orders</span></a>
                                                     </a>
                                                 </div>
                                             </div>

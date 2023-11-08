@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\LogController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DeliveryRequestController;
 use App\Http\Controllers\PackagingController;
 use App\Http\Controllers\FinancingInstitutionController;
 use App\Http\Controllers\FinancingRequestController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\LogisticsController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StorageRequestController;
 use App\Http\Controllers\StoreRequestController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\VendorController;
@@ -25,14 +27,25 @@ use Livewire\Livewire;
 Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/warehouses', [WarehouseController::class, 'index'])->name('warehouses.index');
-    Route::get('/warehouses/create', [WarehouseController::class, 'create'])->name('warehouses.create');
-    Route::post('warehouses/store', [WarehouseController::class, 'store'])->name('warehouses.store');
-    Route::get('/warehouses/{warehouse}/edit', [WarehouseController::class, 'edit'])->name('warehouses.edit');
-    Route::get('/warehouses/{warehouse}/show', [WarehouseController::class, 'show'])->name('warehouses.show');
-    Route::patch('/warehouses/{warehouse}/update', [WarehouseController::class, 'update'])->name('warehouses.update');
+    // Warehouses
+    Route::group(['prefix' => 'warehouses', 'as' => 'warehouses.'], function () {
+        Route::get('/', [WarehouseController::class, 'index'])->name('index');
+        Route::get('/create', [WarehouseController::class, 'create'])->name('create');
+        Route::post('/store', [WarehouseController::class, 'store'])->name('store');
+        Route::get('/{warehouse}/edit', [WarehouseController::class, 'edit'])->name('edit');
+        Route::get('/{warehouse}/show', [WarehouseController::class, 'show'])->name('show');
+        Route::patch('/{warehouse}/update', [WarehouseController::class, 'update'])->name('update');
 
-    Route::get('/warehouses/{warehouse}/storagerequests', [WarehouseController::class, 'storageRequests'])->name('warehouses.storage.requests');
+        // Storage Requests
+        Route::group(['prefix' => '{warehouse}/storage/requests', 'as' => 'storage.requests.'], function () {
+            Route::get('/', [StorageRequestController::class, 'index'])->name('index');
+        });
+
+        // Orders
+        Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
+            Route::get('/{warehouse}/orders', [WarehouseController::class, 'orders'])->name('index');
+        });
+    });
 
     Route::resource('packaging', PackagingController::class);
     Route::get('/packaging', [PackagingController::class, 'index'])->name('packaging');
@@ -51,17 +64,20 @@ Route::middleware(['auth', 'web'])->group(function () {
         Route::delete('/{financing_institution}', [FinancingInstitutionController::class, 'destroy'])->name('financing.institutions.delete');
     });
 
+    // Vendors
     Route::group(['prefix' => '/vendors'], function () {
         Route::get('/', [VendorController::class, 'index'])->name('vendors.index');
         Route::get('/{business}', [VendorController::class, 'show'])->name('vendors.show');
         Route::get('/{business}/verify', [VendorController::class, 'verify'])->name('vendors.verify');
     });
 
+    // Orders
     Route::group(['prefix' => '/orders'], function () {
         Route::get('/', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/{order}', [OrderController::class, 'show'])->name('orders.show');
     });
 
+    // Financing Requests
     Route::group(['prefix' => 'financing/requests'], function () {
         Route::get('/', [FinancingRequestController::class, 'index'])->name('financing.requests.index');
         Route::get('{financing_request}/details', [FinancingRequestController::class, 'show'])->name('financing.requests.show');
@@ -76,13 +92,20 @@ Route::middleware(['auth', 'web'])->group(function () {
         Route::post('{inspection_request}/reports/store', [InspectionRequestController::class, 'store'])->name('inspection.requests.reports.store');
     });
 
+    // Inspection Reports
     Route::group(['prefix' => 'inspection/reports'], function () {
         Route::get('/', [InspectionRequestController::class, 'reports'])->name('inspection.reports.index');
     });
 
     // Logistics
     Route::resource('/logistics', LogisticsController::class);
+    Route::group(['prefix' => 'deliveries/', 'as' => 'deliveries.'], function () {
+        Route::get('/', [DeliveryRequestController::class, 'index'])->name('index');
+        Route::get('{order_delivery_request}', [DeliveryRequestController::class, 'show'])->name('show');
+        Route::post('{order_delivery_request}/update', [DeliveryRequestController::class, 'update'])->name('update');
+    });
 
+    // Roles and Permissions
     Route::group(['prefix' => 'permissions/', 'as' => 'permissions.'], function () {
         Route::get('/', [PermissionController::class, 'index'])->name('index');
         Route::get('/create', [PermissionController::class, 'create'])->name('create');
@@ -92,12 +115,14 @@ Route::middleware(['auth', 'web'])->group(function () {
         Route::get('/{role}/delete', [PermissionController::class, 'delete'])->name('delete');
     });
 
+    // Vendor Registration Documents
     Route::group(['prefix' => 'documents/', 'as' => 'documents.'], function () {
         Route::get('/', [DocumentController::class, 'index'])->name('index');
         Route::patch('/{document}/update', [DocumentController::class, 'update'])->name('update');
         Route::get('/{document}/delete', [DocumentController::class, 'delete'])->name('delete');
     });
 
+    // Settings
     Route::group(['prefix' => 'settings/', 'as' => 'settings.'], function() {
         Route::get('/', [SettingsController::class, 'index'])->name('index');
         // Categories
@@ -132,6 +157,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Logs
     Route::get('/logs', LogController::class)->name('logs');
 });
 
