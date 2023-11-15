@@ -70,9 +70,18 @@
                                                     class="search-results"
                                                 >
                                                     @can('update warehouse')
+<<<<<<< HEAD
                                                         <a class="dropdown-item" href="{{ route('warehouses.edit', ['warehouse' => $warehouse->id]) }}" >
                                                             {{-- <i data-feather='edit' class="btn btn-sm btn-primary waves-effect"></i> --}}
                                                             <span>Edit</span>
+=======
+                                                        <a class="dropdown-item" href="{{ route('warehouses.edit', ['warehouse' => $warehouse->id]) }}" ><i data-feather='edit' class="mr-50 btn btn-sm btn-primary waves-effect"></i><span>Edit</span>
+                                                    @endcan
+                                                    <a class="dropdown-item" href="#">
+                                                        <i data-feather='eye' class="btn btn-sm btn-primary waves-effect"></i><span>View</span></a>
+                                                    <a class="dropdown-item" href="{{ route('warehouses.storage.requests', ['warehouse' => $warehouse->id]) }}">
+                                                        <i data-feather='eye' class="btn btn-sm btn-primary waves-effect"></i><span>Storage Requests</span></a>
+>>>>>>> 4cd74771837a1a00c6f2f30ac09ef78f8c521ab3
                                                         </a>
                                                     @endcan
                                                     @can('view warehouse')
