@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class FinancingRequest extends Model
+class OrderStorageRequest extends Model
 {
     use HasFactory;
 
@@ -18,18 +18,18 @@ class FinancingRequest extends Model
     protected $guarded = [];
 
     /**
-     * Get the invoice that owns the FinancingRequest
+     * Get the orderItem that owns the OrderStorageRequest
      */
-    public function invoice(): BelongsTo
+    public function orderItem(): BelongsTo
     {
-        return $this->belongsTo(Invoice::class);
+        return $this->belongsTo(OrderItem::class);
     }
 
     /**
-     * Get the financingInstitution that owns the FinancingRequest
+     * Get the warehouse that owns the OrderStorageRequest
      */
-    public function financingInstitution(): BelongsTo
+    public function warehouse(): BelongsTo
     {
-        return $this->belongsTo(FinancingInstitution::class);
+        return $this->belongsTo(Warehouse::class);
     }
 }

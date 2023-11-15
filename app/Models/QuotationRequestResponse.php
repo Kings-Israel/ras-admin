@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class OrderDeliveryRequest extends Model
+class QuotationRequestResponse extends Model
 {
     use HasFactory;
 
@@ -18,7 +18,16 @@ class OrderDeliveryRequest extends Model
     protected $guarded = [];
 
     /**
-     * Get the user that owns the OrderDeliveryRequest
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'delivery_date' => 'date',
+    ];
+
+    /**
+     * Get the user that owns the QuotationRequestResponse
      */
     public function user(): BelongsTo
     {
@@ -26,15 +35,7 @@ class OrderDeliveryRequest extends Model
     }
 
     /**
-     * Get the logisticsCompany that owns the OrderDeliveryRequest
-     */
-    public function logisticsCompany(): BelongsTo
-    {
-        return $this->belongsTo(logisticsCompany::class);
-    }
-
-    /**
-     * Get the orderItem that owns the OrderDeliveryRequest
+     * Get the orderItem that owns the QuotationRequestResponse
      */
     public function orderItem(): BelongsTo
     {

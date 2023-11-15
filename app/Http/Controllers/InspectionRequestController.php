@@ -11,13 +11,13 @@ class InspectionRequestController extends Controller
     public function index()
     {
         if (auth()->user()->hasRole('admin')) {
-            $inspection_requests = InspectionRequest::with('order.orderItems')->get();
+            $inspection_requests = InspectionRequest::with('orderItem.product.business', 'orderItem.order', 'inspectingInstitution')->get();
         } else {
             if (auth()->user()->hasPermissionTo('view inspection report') && count(auth()->user()->inspectors) <= 0) {
-                $inspection_requests = InspectionRequest::with('order.orderItems')->get();
+                $inspection_requests = InspectionRequest::with('orderItem.product.business', 'orderItem.order', 'inspectingInstitution')->get();
             } else {
                 $user_inspecting_institutions_ids = auth()->user()->inspectors->pluck('id');
-                $inspection_requests = InspectionRequest::whereIn('inspector_id', $user_inspecting_institutions_ids)->get();
+                $inspection_requests = InspectionRequest::with('orderItem.product.business', 'orderItem.order')->whereIn('inspector_id', $user_inspecting_institutions_ids)->get();
             }
         }
 
@@ -54,7 +54,7 @@ class InspectionRequestController extends Controller
 
     public function show(InspectionRequest $inspection_request)
     {
-        $inspection_request->load('order.orderItems');
+        $inspection_request->load('orderItem.product.business', 'orderItem.product.media');
 
         return view('inspectors.requests.show', [
             'page' => 'Inspection Request',
@@ -90,6 +90,21 @@ class InspectionRequestController extends Controller
         }
 
         toastr()->success('', 'Inspection report uploaded successfully');
+
+        return back();
+    }
+
+    public function updateCost(Request $request, InspectionRequest $inspection_request)
+    {
+        $request->validate([
+            'inspection_cost' => ['required', 'integer']
+        ]);
+
+        $inspection_request->update([
+            'cost' => $request->inspection_cost
+        ]);
+
+        toastr()->success('', 'Inspection report updated successfully');
 
         return back();
     }

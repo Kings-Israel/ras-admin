@@ -56,4 +56,26 @@ class Invoice extends Model
     {
         return $this->hasOne(FinancingRequest::class);
     }
+
+    public function calculateTotalAmount(): int
+    {
+        $total_amount = 0;
+
+        foreach ($this->orders as $order) {
+            foreach($order->orderItems as $order_item) {
+                $quantity = explode(' ', $order_item->quantity)[0];
+                $total_amount += $order_item->amount * $quantity;
+            }
+        }
+
+        return $total_amount;
+    }
+
+    /**
+     * Get the orderFinancing associated with the Invoice
+     */
+    public function orderFinancing(): HasOne
+    {
+        return $this->hasOne(OrderFinancing::class);
+    }
 }

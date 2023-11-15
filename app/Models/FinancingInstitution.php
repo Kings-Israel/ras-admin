@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FinancingInstitution extends Model
 {
@@ -40,5 +41,21 @@ class FinancingInstitution extends Model
     public function city(): BelongsTo
     {
         return $this->belongsTo(City::class);
+    }
+
+    /**
+     * Get all of the financingRequests for the FinancingInstitution
+     */
+    public function financingRequests(): HasMany
+    {
+        return $this->hasMany(FinancingRequest::class);
+    }
+
+    /**
+     * Get all of the orderFinancings for the FinancingInstitution
+     */
+    public function orderFinancings(): HasMany
+    {
+        return $this->hasMany(OrderFinancing::class);
     }
 }

@@ -64,6 +64,8 @@ Route::middleware(['auth', 'web'])->group(function () {
         Route::get('/{financing_institution}/details', [FinancingInstitutionController::class, 'show'])->name('financing.institutions.show');
         Route::patch('/{financing_institution}', [FinancingInstitutionController::class, 'update'])->name('financing.institutions.update');
         Route::delete('/{financing_institution}', [FinancingInstitutionController::class, 'destroy'])->name('financing.institutions.delete');
+        Route::get('/customers', [FinancingInstitutionController::class, 'customers'])->name('financing.institutions.customers');
+        Route::geT('/customers/{user}', [FinancingInstitutionController::class, 'customer'])->name('financing.institutions.customer');
     });
 
     // Vendors
@@ -92,6 +94,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::group(['prefix' => 'inspection/requests'], function () {
         Route::get('/', [InspectionRequestController::class, 'index'])->name('inspection.requests.index');
         Route::get('{inspection_request}/details', [InspectionRequestController::class, 'show'])->name('inspection.requests.show');
+        Route::post('{inspection_request}/cost/update', [InspectionRequestController::class, 'updateCost'])->name('inspection.requests.cost.update');
         Route::post('{inspection_request}/reports/store', [InspectionRequestController::class, 'store'])->name('inspection.requests.reports.store');
     });
 

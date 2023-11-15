@@ -23,9 +23,12 @@
                             <thead>
                                 <tr>
                                     <th>ORDER ID</th>
-                                    <th>No. of Order Items</th>
+                                    {{-- <th>No. of Order Items</th> --}}
                                     <th>Status</th>
                                     <th>Customer</th>
+                                    @role('admin')
+                                        <th>Inspector</th>
+                                    @endrole
                                     <th>Requested On</th>
                                     <th></th>
                                 </tr>
@@ -33,10 +36,13 @@
                             <tbody>
                                 @foreach ($inspection_requests as $inspection_request)
                                     <tr>
-                                        <td>{{ $inspection_request->order->order_id }}</td>
-                                        <td>{{ $inspection_request->order->orderItems->count() }}</td>
+                                        <td>{{ $inspection_request->orderItem->order->order_id }}</td>
+                                        {{-- <td>{{ $inspection_request->order->orderItems->count() }}</td> --}}
                                         <td>{{ Str::title($inspection_request->status) }}</td>
-                                        <td>{{ $inspection_request->order->user->first_name }} {{ $inspection_request->order->user->last_name }}</td>
+                                        <td>{{ $inspection_request->orderItem->order->user->first_name }} {{ $inspection_request->orderItem->order->user->last_name }}</td>
+                                        @role('admin')
+                                            <td>{{ $inspection_request->inspectingInstitution->name }}</td>
+                                        @endrole
                                         <td>{{ $inspection_request->created_at->format('d M Y') }}</td>
                                         <td>
                                             @can('view inspection report')

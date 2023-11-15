@@ -87,15 +87,17 @@
                         <a href="javascript:void(0)" class="menu-toggle"><i class="material-icons">account_balance</i><span>Financing Management</span></a>
                         <ul class="ml-menu">
                             @can('view financing request', 'view financiers')
-                                <li class="nav-item @if(Route::is('financing.institutions.index')) active open @endif">
+                                <li class="nav-item @if(Route::is('financing.institutions.*')) active open @endif">
                                     <a href="{{ route('financing.institutions.index') }}">Financiers</a>
                                 </li>
                             @endcan
                             @can('view financing request')
-                                <li class="nav-item @if(Route::is('products')) active open @endif">
-                                    <a href="{{ route('products') }}">Customers</a>
+                                <li class="nav-item @if(Route::is('financing.institutions.customers') || Route::is('financing.institutions.customer')) active open @endif">
+                                    <a href="{{ route('financing.institutions.customers') }}">Customers</a>
                                 </li>
                             @endcan
+                            {{-- @if(!auth()->user()->hasRole('admin'))
+                            @endif --}}
                             @can('view financing request')
                                 <li class="nav-item @if(Route::is('financing.requests.*')) active open @endif">
                                     <a href="{{ route('financing.requests.index') }}">Financing Requests</a>

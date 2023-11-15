@@ -33,19 +33,6 @@
                                         <form action="{{ route('inspection.requests.reports.store', ['inspection_request' => $inspection_request]) }}" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             <div class="modal-body">
-                                                @foreach ($inspection_request->order->orderItems as $item)
-                                                    <div class="row clearfix">
-                                                        <div class="col-sm-6">
-                                                            <label for="role_name">{{ $item->product->name }}</label>
-                                                            <div class="form-group">
-                                                                <input type="hidden" class="form-control" placeholder="Name" name="order_item[{{ $item->id }}]" value="{{ $item->id }}" required autocomplete="off" />
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-6">
-                                                            <input type="file" accept=".pdf" name="order_item_report[{{ $item->id }}]" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
-                                                        </div>
-                                                    </div>
-                                                @endforeach
                                                 <div class="row clearfix">
                                                     <div class="col-sm-6">
                                                         <label for="role_name">Inspection Cost</label>
@@ -73,15 +60,17 @@
                 <div class="card">
                     <div class="d-flex justify-content-between">
                         <h6 class="card-title">Order Details</h6>
-                        <a href="{{ route('orders.show', ['order' => $inspection_request->order]) }}" class="btn btn-sm btn-secondary mb-2">View Order</a>
+                        <a href="{{ route('orders.show', ['order' => $inspection_request->orderItem->order]) }}" class="btn btn-sm btn-secondary mb-2">View Order</a>
                     </div>
                     <div class="body">
-                        <h5><span class="mr-2">Order ID:</span><strong>{{ $inspection_request->order->order_id }}</strong></h5>
-                        <h5><span class="mr-2">Business:</span><strong>{{ $inspection_request->order->business->name }}</strong></h5>
-                        <h5><span class="mr-2">Business Location(Country):</span><strong>{{ $inspection_request->order->business->country->name }}</strong></h5>
-                        @if ($inspection_request->order->business->city)
-                            <h5><span class="mr-2">Business Location(City):</span><strong>{{ $inspection_request->order->business->city->name }}</strong></h5>
+                        <h6><span class="mr-2">Order ID:</span><strong>{{ $inspection_request->orderItem->order->order_id }}</strong></h6>
+                        <h6><span class="mr-2">Business:</span><strong>{{ $inspection_request->orderItem->order->business->name }}</strong></h6>
+                        <h6><span class="mr-2">Business Location(Country):</span><strong>{{ $inspection_request->orderItem->order->business->country->name }}</strong></h6>
+                        @if ($inspection_request->orderItem->order->business->city)
+                            <h6><span class="mr-2">Business Location(City):</span><strong>{{ $inspection_request->orderItem->order->business->city->name }}</strong></h6>
                         @endif
+                        <h6><span class="mr-2">Delivery Location:</span><strong>{{ $inspection_request->orderItem->order->invoice->delivery_location_address }}</strong></h6>
+                        <h6><span class="mr-2">Quantity:</span><strong>{{ $inspection_request->orderItem->quantity }}</strong></h6>
                     </div>
                 </div>
             </div>
@@ -89,22 +78,100 @@
                 <div class="card">
                     <div class="d-flex justify-content-between">
                         <h6 class="card-title">Buyer</h6>
-                        <a href="{{ route('users.show', ['user' => $inspection_request->order->user]) }}" class="btn btn-primary btn-sm mb-2">View User</a>
+                        <a href="{{ route('users.show', ['user' => $inspection_request->orderItem->order->user]) }}" class="btn btn-primary btn-sm mb-2">View User</a>
                     </div>
                     <div class="body">
-                        <h5><span class="mr-2">Name:</span><strong>{{ $inspection_request->order->user->first_name }} {{ $inspection_request->order->user->last_name }}</strong></h5>
-                        <h5><span class="mr-2">Email:</span><strong>{{ $inspection_request->order->user->email }}</strong></h5>
-                        <h5><span class="mr-2">Phone Number:</span><strong>{{ $inspection_request->order->user->phone_number }}</strong></h5>
+                        <h6><span class="mr-2">Name:</span><strong>{{ $inspection_request->orderItem->order->user->first_name }} {{ $inspection_request->orderItem->order->user->last_name }}</strong></h6>
+                        <h6><span class="mr-2">Email:</span><strong>{{ $inspection_request->orderItem->order->user->email }}</strong></h6>
+                        <h6><span class="mr-2">Phone Number:</span><strong>{{ $inspection_request->orderItem->order->user->phone_number }}</strong></h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <div class="card">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title">Product</h6>
+                        <a href="#" class="btn btn-primary btn-sm mb-2">View Product</a>
+                    </div>
+                    <div class="body">
+                        <h6><span class="mr-2">Name:</span><strong>{{ $inspection_request->orderItem->product->name }}</strong></h6>
+                        <h6><span class="mr-2">Category:</span><strong>{{ $inspection_request->orderItem->product->category->name }}</strong></h6>
+                        <h6><span class="mr-2">Color:</span><strong>{{ $inspection_request->orderItem->product->color }}</strong></h6>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card">
             <div class="body">
-                <h6><span>Inspection Request Status: </span><strong>{{ Str::title($inspection_request->status) }}</strong></h6>
+                <div class="row">
+                    <div class="col-3">
+                        <h6><span>Inspection Request Status: </span><strong>{{ Str::title($inspection_request->status) }}</strong></h6>
+                    </div>
+                    @if ($inspection_request->cost)
+                        <div class="col-3">
+                            <h6><span>Inspection Request Cost: </span><strong>{{ number_format($inspection_request->cost) }}</strong></h6>
+                        </div>
+                    @endif
+                    <div class="col-6">
+                        @can('update inspection report')
+                            <form action="{{ route('inspection.requests.cost.update', ['inspection_request' => $inspection_request]) }}" method="POST">
+                                <div class="row clearfix">
+                                    @csrf
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <label for="role_name">Inspection Cost</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <input type="number" min="0" class="form-control" placeholder="Enter Cost of Inspection" name="inspection_cost" autocomplete="off" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="submit" class="btn btn-primary btn-round waves-effect">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        @endcan
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="card">
+        {{-- <div class="card">
+            <div class="body">
+                @can('create inspection report')
+                    <div class="modal fade" id="uploadInspectionDocuments" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="title" id="uploadInspectionDocumentsLabel">Add Inspection Report Documents for each product</h4>
+                                </div>
+                                <form action="{{ route('inspection.requests.reports.store', ['inspection_request' => $inspection_request]) }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="modal-body">
+                                        <div class="row clearfix">
+                                            <div class="col-sm-6">
+                                                <label for="role_name">Inspection Cost</label>
+                                                <div class="form-group">
+                                                    <input type="number" min="0" class="form-control" placeholder="Enter Cost of Inspection" name="inspection_code" autocomplete="off" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary btn-round waves-effect">UPLOAD</button>
+                                        <button type="button" class="btn btn-danger btn-simple btn-round waves-effect" data-dismiss="modal">CLOSE</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                @endcan
+            </div>
+        </div> --}}
+        {{-- <div class="card">
             <h6 class="card-title">Order Products</h6>
             <div class="body">
                 <table class="table table-bordered table-striped table-hover dataTable js-exportable" id="products">
@@ -127,7 +194,6 @@
                                 <td>{{ $item->product->price ? $item->product->price : $item->product->min_price.' - '.$item->product->max_price }}</td>
                                 <td>{{ $item->product->warehouse ? $item->product->warehouse->name : '' }}</td>
                                 <td>
-                                    {{-- <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a> --}}
                                     <div class="btn-group" x-data="{ open: false }">
                                         <button class="mr-2 btn btn-primary btn-sm dropdown-toggle btn-round" type="button"
                                             x-on:click="open = ! open">
@@ -207,7 +273,7 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div> --}}
     </div>
 </section>
 @endsection

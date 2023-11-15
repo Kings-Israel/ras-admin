@@ -18,10 +18,18 @@ class InspectionRequest extends Model
     protected $guarded = [];
 
     /**
-     * Get the order that owns the InspectionRequest
+     * Get the inspectingInstitution that owns the InspectionReport
      */
-    public function order(): BelongsTo
+    public function inspectingInstitution(): BelongsTo
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(InspectingInstitution::class, 'inspector_id');
+    }
+
+    /**
+     * Get the orderItem that owns the InspectionRequest
+     */
+    public function orderItem(): BelongsTo
+    {
+        return $this->belongsTo(OrderItem::class);
     }
 }

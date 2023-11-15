@@ -1,12 +1,6 @@
 @extends('layouts.app')
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css') }}">
-    <style>
-        #super{
-            vertical-align:super;
-            font-size: smaller;
-        }
-    </style>
 @endsection
 @section('content')
 <section class="content home">
@@ -15,33 +9,29 @@
         <div class="row clearfix">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="header d-flex justify-content-between">
+                    <div class="header">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
                     </div>
                     <div class="body">
-                        <table class="table table-hover dataTable js-exportable" id="financing_requests">
+                        <table class="table table-bordered table-striped table-hover dataTable js-exportable">
                             <thead>
                                 <tr>
-                                    <th>INVOICE ID</th>
-                                    <th>No. of Orders</th>
-                                    <th>Status</th>
-                                    <th>Customer</th>
-                                    <th>Requested On</th>
-                                    <th>Action</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone Number</th>
+                                    <th>Registered date</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($financing_requests as $financing_request)
+                                @foreach ($users as $user)
                                     <tr>
-                                        <td>{{ $financing_request->invoice->invoice_id }}</td>
-                                        <td>{{ $financing_request->invoice->orders->count() }}</td>
-                                        <td>{{ Str::title($financing_request->status) }}</td>
-                                        <td>{{ $financing_request->invoice->user->first_name }} {{ $financing_request->invoice->user->last_name }}</td>
-                                        <td>{{ $financing_request->created_at->format('d M Y') }}</td>
+                                        <td>{{ $user->first_name }} {{ $user->last_name }}</td>
+                                        <td>{{ $user->email }}</td>
+                                        <td>{{ $user->phone_number }}</td>
+                                        <td>{{ $user->created_at->diffForHumans() }}</td>
                                         <td>
-                                            @can('view financing request')
-                                                <a href="{{ route('financing.requests.show', ['financing_request' => $financing_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">VIEW</a>
-                                            @endcan
+                                            <a href="{{ route('financing.institutions.customer', ['user' => $user]) }}" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -61,8 +51,5 @@
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.colVis.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
-    {{-- <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script> --}}
-    <script>
-        $('#financing_requests').DataTable().order([4, 'desc']).draw()
-    </script>
+    <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script>
 @endpush

@@ -12,13 +12,13 @@ class FinancingRequestController extends Controller
 {
     public function index()
     {
-        $financing_requests = FinancingRequest::with('invoice.orders.orderItems')->get();
-
-        if (auth()->user()->hasPermissionTo('view financing request') && auth()->user()->financingInstitutions->count() <= 0) {
+        if(auth()->user()->hasRole('admin')) {
+            $financing_requests = FinancingRequest::with('invoice.orders.orderItems')->get();
+        } else if (auth()->user()->hasPermissionTo('view financing request') && auth()->user()->financingInstitutions->count() <= 0) {
             $financing_requests = FinancingRequest::with('invoice.orders.orderItems')->get();
         } else {
             $user_financing_institutions_ids = auth()->user()->financingInstitutions->pluck('id');
-            $financing_requests = FinancingRequest::with('invoice.orders.orderItems')->whereIn('financier_id', $user_financing_institutions_ids)->get();
+            $financing_requests = FinancingRequest::with('invoice.orders.orderItems')->whereIn('financing_institution_id', $user_financing_institutions_ids)->get();
         }
 
         return view('financiers.requests.index', [
@@ -28,11 +28,6 @@ class FinancingRequestController extends Controller
             ],
             'financing_requests' => $financing_requests
         ]);
-    }
-
-    public function customers()
-    {
-
     }
 
     public function show(FinancingRequest $financing_request)

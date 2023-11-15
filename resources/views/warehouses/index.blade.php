@@ -59,7 +59,7 @@
                                                 <button class="mr-2 btn btn-primary btn-sm dropdown-toggle" type="button"
                                                     x-on:click="open = ! open">
                                                     <i data-feather="eye"></i>
-                                                    Action
+                                                    Actions
                                                 </button>
                                                 <div
                                                     x-cloak

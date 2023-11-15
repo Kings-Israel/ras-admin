@@ -38,6 +38,7 @@
                     </div>
                     <div class="body">
                         <h5><span class="mr-2">Invoice ID:</span><strong>{{ $financing_request->invoice->invoice_id }}</strong></h5>
+                        <h6><span class="mr-2">Total Amount:</span><strong>{{ $financing_request->invoice->calculateTotalAmount() }}</strong></h6>
                         <h6><span class="mr-2">Number of Orders:</span><strong class="text-danger">{{ $financing_request->invoice->orders->count() }}</strong></h6>
                         <h6><span class="mr-2">Delivery Location:</span><strong class="text-danger">{{ $financing_request->invoice->delivery_location_address }}</strong></h6>
                         <h6><span class="mr-2">Created On:</span><strong class="text-danger">{{ $financing_request->created_at->format('d M Y') }}</strong></h6>

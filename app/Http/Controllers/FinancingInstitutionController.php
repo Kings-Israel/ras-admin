@@ -7,9 +7,12 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\FinancingInstitution;
 use App\Models\FinancingInstitutionUser;
+use App\Models\FinancingRequest;
+use App\Models\OrderFinancing;
 use App\Models\User;
 use App\Notifications\RoleUpdate;
 use App\Rules\PhoneNumber;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 
@@ -25,9 +28,9 @@ class FinancingInstitutionController extends Controller
 
     public function index()
     {
-        $financing_institutions = FinancingInstitution::withCount('users')->get();
-
-        if (auth()->user()->hasPermissionTo('view financing request') && auth()->user()->financingInstitutions->count() <= 0) {
+        if(auth()->user()->hasRole('admin')) {
+            $financing_institutions = FinancingInstitution::withCount('users')->get();
+        } else if (auth()->user()->hasPermissionTo('view financing request') && auth()->user()->financingInstitutions->count() <= 0) {
             $financing_institutions = FinancingInstitution::withCount('users')->get();
         } else {
             $user_financing_institutions_ids = auth()->user()->financingInstitutions->pluck('id');
@@ -179,6 +182,89 @@ class FinancingInstitutionController extends Controller
         ]);
     }
 
+    public function show(FinancingInstitution $financing_institution)
+    {
+        // Get past 12 months
+        $months = [];
+
+        for ($i = 12; $i >= 0; $i--) {
+            $month = Carbon::today()->startOfMonth()->subMonth($i);
+            $year = Carbon::today()->startOfMonth()->subMonth($i)->format('Y');
+            array_push($months, $month);
+        }
+
+        // Format months
+        $months_formatted = [];
+        foreach ($months as $key => $month) {
+            array_push($months_formatted, Carbon::parse($month)->format('M'));
+        }
+
+        // Amount Paid
+        $amount_paid_out = 0;
+        // Amount Pending
+        $amount_paid_back = 0;
+        // Total Number of Requests
+        $total_requests = 0;
+        // First Approved Requests
+        $first_approved_requests = 0;
+        // Fully Approved Requests
+        $fully_approved_requests = 0;
+        // Credit Limit
+        // No. of customers
+        $customers = [];
+
+        // Requests Rate
+        $finance_request_rate_graph_data = [];
+        // Approval Rate
+        $approval_rate_graph_data = [];
+
+        $financing_requests = FinancingRequest::with('invoice.user')->where('financing_institution_id', $financing_institution->id)->get();
+        $rejected_financing_requests = FinancingRequest::with('invoice.user')->where('financing_institution_id', $financing_institution->id)->where('status', 'rejected')->get();
+        $pending_requests_count = $financing_requests->where('status', 'pending')->count();
+        $total_requests = $financing_requests->count();
+        $rejected_requests_count = $rejected_financing_requests->count();
+        $fully_approved_requests = OrderFinancing::with('invoice.orders.orderItems')->where('financing_institution_id', $financing_institution->id)->where('first_approval_on', '!=', NULL)->where('second_approval_on', '!=', NULL)->get();
+        $first_approved_requests = OrderFinancing::with('invoice.orders.orderItems')->where('financing_institution_id', $financing_institution->id)->where('first_approval_on', '!=', NULL)->get();
+
+        foreach ($fully_approved_requests as $approved_requests) {
+            // foreach ($approved_requests->invoice as $invoice) {
+            //     foreach ($invoice->orders as $order) {
+            //         $amount_paid_out += $order->sum(fn ($order) => $order->orderItems->sum('amount'));
+            //     }
+            // }
+            $amount_paid_out = $approved_requests->sum(fn ($request) => $request->invoice->sum(fn ($inv) => $inv->order->sum(fn ($ord) => $ord->orderItems->sum('amount'))));
+        }
+
+        foreach ($financing_requests as $request) {
+            array_push($customers, $request->invoice->user);
+        }
+
+        foreach ($months as $month) {
+            $requests_rate = FinancingRequest::where('financing_institution_id', $financing_institution->id)->whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->count();
+            array_push($finance_request_rate_graph_data, $requests_rate);
+            $approval_rate = OrderFinancing::with('invoice.orders.orderItems')->where('financing_institution_id', $financing_institution->id)->where('first_approval_on', '!=', NULL)->where('second_approval_on', '!=', NULL)->count();
+            array_push($approval_rate_graph_data, $approval_rate);
+        }
+
+        return view('financiers.show', [
+            'page' => 'Financing Institution Details',
+            'breadcrumbs' => [
+                'Financing Institutions' => route('financing.institutions.index'),
+                $financing_institution->name => route('financing.institutions.show', ['financing_institution' => $financing_institution])
+            ],
+            'months' => $months_formatted,
+            'customers' => collect($customers)->unique()->count(),
+            'fully_approved_requests' => $fully_approved_requests->count(),
+            'first_approved_requests' => $first_approved_requests->count(),
+            'amount_paid_out' => $amount_paid_out,
+            'total_requests_count' => $total_requests,
+            'rejected_requests_count' => $rejected_requests_count,
+            'pending_requests_count' => $pending_requests_count,
+            'finance_request_rate_graph_data' => $finance_request_rate_graph_data,
+            'approval_rate_graph_data' => $approval_rate_graph_data
+        ]);
+    }
+
     public function update(Request $request, FinancingInstitution $financing_institution)
     {
         $request->validate([
@@ -280,5 +366,49 @@ class FinancingInstitutionController extends Controller
         toastr()->success('', 'Financing institution deleted successfully');
 
         return redirect()->route('financing-institutions.index');
+    }
+
+    public function customers()
+    {
+        $users = [];
+        if(auth()->user()->hasRole('admin')) {
+            $financing_requests = FinancingRequest::with('invoice.user')->get();
+            foreach ($financing_requests as $request) {
+                array_push($users, $request->invoice->user);
+            }
+        } else if (auth()->user()->hasPermissionTo('view financing request') && auth()->user()->financingInstitutions->count() <= 0) {
+            $financing_requests = FinancingRequest::with('invoice.user')->get();
+            foreach ($financing_requests as $request) {
+                array_push($users, $request->invoice->user);
+            }
+        } else {
+            $user_financing_institutions_ids = auth()->user()->financingInstitutions->pluck('id');
+            $financing_requests = FinancingRequest::with('invoice.user')->whereIn('financing_institution_id', $user_financing_institutions_ids)->get();
+            foreach ($financing_requests as $request) {
+                array_push($users, $request->invoice->user);
+            }
+        }
+
+        return view('financiers.customers.index', [
+            'page' => 'Financier Customers',
+            'breadcrumbs' => [
+                'Customers' => route('financing.institutions.customers')
+            ],
+            'users' => $users
+        ]);
+    }
+
+    public function customer(User $user)
+    {
+        $user->load('invoices.financingRequest');
+
+        return view('financiers.customers.show', [
+            'page' => 'Financier Customers',
+            'breadcrumbs' => [
+                'Customers' => route('financing.institutions.customers'),
+                'Customer' => route('financing.institutions.customers')
+            ],
+            'user' => $user
+        ]);
     }
 }
