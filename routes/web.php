@@ -36,10 +36,6 @@ Route::middleware(['auth', 'web'])->group(function () {
         Route::get('/{warehouse}/show', [WarehouseController::class, 'show'])->name('show');
         Route::patch('/{warehouse}/update', [WarehouseController::class, 'update'])->name('update');
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 58b0cf0d0c753a0b9e4cdfceef1b709bded68f4a
         // Storage Requests
         Route::group(['prefix' => '{warehouse}/storage/requests', 'as' => 'storage.requests.'], function () {
             Route::get('/', [StorageRequestController::class, 'index'])->name('index');
@@ -52,10 +48,6 @@ Route::middleware(['auth', 'web'])->group(function () {
     });
 
     Route::get('/warehouses/storage/requests/{warehouse}', [StoreRequestController::class, 'index'])->name('warehouses.storage.requests');
-<<<<<<< HEAD
-
-=======
->>>>>>> 58b0cf0d0c753a0b9e4cdfceef1b709bded68f4a
 
     Route::resource('packaging', PackagingController::class);
     Route::get('/packaging', [PackagingController::class, 'index'])->name('packaging');
