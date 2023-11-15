@@ -34,14 +34,14 @@
                                 <div class="col-3">
                                     <label for="Institution Email">Institution Email</label>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" name="institution_email" :value="old('institution_email')" min="1">
+                                        <input type="text" class="form-control" name="institution_email" :value="old('institution_email')">
                                         <x-input-error :messages="$errors->get('institution_email')" class="mt-2 list-unstyled"></x-input-error>
                                     </div>
                                 </div>
                                 <div class="col-3">
                                     <label for="Institution Phone Number">Institution Phone Number</label>
                                     <div class="form-group">
-                                        <input type="tel" class="form-control" name="institution_phone_number" :value="old('institution_phone_number')" min="1">
+                                        <input type="tel" class="form-control" name="institution_phone_number" :value="old('institution_phone_number')">
                                         <x-input-error :messages="$errors->get('institution_phone_number')" class="mt-2 list-unstyled"></x-input-error>
                                     </div>
                                 </div>
@@ -54,6 +54,13 @@
                                         @endforeach
                                     </select>
                                     <x-input-error :messages="$errors->get('country_id')" class="mt-2 list-unstyled"></x-input-error>
+                                </div>
+                                <div class="col-6">
+                                    <label for="country">Credit Limit</label>
+                                    <div class="form-group">
+                                        <input type="number" name="credit_limit" id="" class="form-control" :value="old('credit_limit')" min="10" placeholder="Enter amount limit which the financier can facilitate">
+                                        <x-input-error :messages="$errors->get('credit_limit')" class="mt-2 list-unstyled"></x-input-error>
+                                    </div>
                                 </div>
                                 {{-- <div class="col-6">
                                     <label for="city">City</label>
@@ -71,7 +78,7 @@
                                 <div class="col-6">
                                     <label for="maker">Select Maker</label>
                                     <div class="form-group">
-                                        <select name="maker_user_id" id="maker_user" class="form-control">
+                                        <select name="maker_user" id="maker_user" class="form-control">
                                             <option value="">Select Maker</option>
                                             @foreach ($users as $user)
                                                 <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }} ({{ $user->email }})</option>
@@ -119,7 +126,7 @@
                                 <div class="col-6">
                                     <label for="checker">Select Checker</label>
                                     <div class="form-group">
-                                        <select name="checker_user_id" id="checker_user" class="form-control">
+                                        <select name="checker_user" id="checker_user" class="form-control">
                                             <option value="">Select Checker</option>
                                             @foreach ($users as $user)
                                                 <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }} ({{ $user->email }})</option>

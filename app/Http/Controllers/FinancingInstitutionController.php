@@ -68,16 +68,17 @@ class FinancingInstitutionController extends Controller
             'institution_name' => ['required'],
             'institution_phone_number' => ['required', new PhoneNumber],
             'institution_email' => ['required'],
+            'credit_limit' => ['required', 'integer'],
             'maker_first_name' => ['required_without:maker_user',],
             'maker_last_name' => ['required_without:maker_user'],
             'maker_email' => ['required_without:maker_user', 'nullable', 'different:checker_email'],
-            'maker_phone_number' => ['required_without:maker_users', 'nullable', 'different:checker_phone_number'],
-            'maker_user_id' => ['required_without:maker_first_name', 'required_without:maker_last_name', 'required_without:maker_email', 'required_without:maker_phone_number', 'nullable', 'different:checker_user_id'],
+            'maker_phone_number' => ['required_without:maker_user', 'nullable', 'different:checker_phone_number'],
+            'maker_user' => ['required_without:maker_first_name', 'required_without:maker_last_name', 'required_without:maker_email', 'required_without:maker_phone_number', 'nullable', 'different:checker_user_id'],
             'checker_first_name' => ['required_without:checker_user'],
             'checker_last_name' => ['required_without:checker_user'],
             'checker_email' => ['required_without:checker_user', 'nullable', 'different:maker_email'],
             'checker_phone_number' => ['required_without:checker_user', 'nullable', 'different:maker_phone_number'],
-            'checker_user_id' => ['required_without:checker_first_name', 'required_without:checker_last_name', 'required_without:checker_email', 'required_without:checker_phone_number', 'nullable', 'different:maker_user_id'],
+            'checker_user' => ['required_without:checker_first_name', 'required_without:checker_last_name', 'required_without:checker_email', 'required_without:checker_phone_number', 'nullable', 'different:maker_user_id'],
             'institution_name' => ['required'],
             'institution_email' => ['required'],
             'institution_phone_number' => ['required'],
@@ -98,11 +99,12 @@ class FinancingInstitutionController extends Controller
             'email' => $request->institution_email,
             'country_id' => $request->has('country_id') ? $request->country_id : NULL,
             'city_id' => $request->has('city_id') ? $request->city_id : NULL,
+            'credit_limit' => $request->credit_limit
         ]);
 
         // Create Maker User
         if ($request->has('maker_user')) {
-            $maker = User::find($request->maker_user_id);
+            $maker = User::find($request->maker_user);
         } else {
             $maker = User::where('email', $request->maker_email)->orWhere('phone_number', $request->maker_phone_number)->first();
             if (!$maker) {
@@ -131,7 +133,7 @@ class FinancingInstitutionController extends Controller
 
         // Create Maker User
         if ($request->has('checker_user')) {
-            $checker = User::find($request->checker_user_id);
+            $checker = User::find($request->checker_user);
         } else {
             $checker = User::where('email', $request->checker_email)->orWhere('phone_number', $request->checker_phone_number)->first();
             if (!$checker) {
@@ -160,7 +162,7 @@ class FinancingInstitutionController extends Controller
 
         toastr()->success('', 'Financing institution has been added successfully');
 
-        return redirect()->route('financing-institutions.index');
+        return redirect()->route('financing.institutions.index');
     }
 
     public function edit(FinancingInstitution $financingInstitution)
@@ -172,8 +174,8 @@ class FinancingInstitutionController extends Controller
         return view('financiers.edit', [
             'page' => 'Edit Financing Institutions',
             'breadcrumbs' => [
-                'Financing Institutions' => route('financing-institutions.index'),
-                'Edit Financing Institutions' => route('financing-institutions.edit', ['financing_institution' => $financingInstitution])
+                'Financing Institutions' => route('financing.institutions.index'),
+                'Edit Financing Institutions' => route('financing.institutions.edit', ['financing_institution' => $financingInstitution])
             ],
             'countries' => $countries,
             'cities' => $cities,
@@ -209,9 +211,10 @@ class FinancingInstitutionController extends Controller
         $first_approved_requests = 0;
         // Fully Approved Requests
         $fully_approved_requests = 0;
-        // Credit Limit
         // No. of customers
         $customers = [];
+        // Users
+        $users = $financing_institution->users;
 
         // Requests Rate
         $finance_request_rate_graph_data = [];
@@ -252,6 +255,8 @@ class FinancingInstitutionController extends Controller
                 'Financing Institutions' => route('financing.institutions.index'),
                 $financing_institution->name => route('financing.institutions.show', ['financing_institution' => $financing_institution])
             ],
+            'financing_institution' => $financing_institution,
+            'users' => $users,
             'months' => $months_formatted,
             'customers' => collect($customers)->unique()->count(),
             'fully_approved_requests' => $fully_approved_requests->count(),
@@ -281,6 +286,7 @@ class FinancingInstitutionController extends Controller
             'institution_name' => ['required'],
             'institution_email' => ['required'],
             'institution_phone_number' => ['required'],
+            'credit_limit' => ['required', 'integer'],
         ], [
             'checker_first_name.required_without' => 'Enter checker\'s first name',
             'checker_last_name.required_without' => 'Enter checker\'s last name',
@@ -298,6 +304,7 @@ class FinancingInstitutionController extends Controller
             'email' => $request->institution_email,
             'country_id' => $request->has('country_id') ? $request->country_id : NULL,
             'city_id' => $request->has('city_id') ? $request->city_id : NULL,
+            'credit_limit' => $request->credit_limit
         ]);
 
         // Create Maker User

@@ -74,11 +74,57 @@
             </div>
         </div>
     </div>
+    <div class="row clearfix">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="header">
+                    <h2><strong>Admins</strong></h2>
+                </div>
+                <div class="body">
+                    <table class="table table-bordered table-striped table-hover dataTable js-exportable" id="finance_users">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone Number</th>
+                                <th>Last Login</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($users as $user)
+                                <tr>
+                                    <td>{{ $user->first_name }} {{ $user->last_name }}</td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>{{ $user->phone_number }}</td>
+                                    <td>{{ Carbon\Carbon::parse($user->last_login)->diffForHumans() }}</td>
+                                    <td>
+                                        <a href="{{ route('users.show', ['user' => $user]) }}" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 @endsection
 @push('scripts')
     <script src="{{ asset('assets/plugins/chartjs/Chart.bundle.js') }}"></script>
+    <script src="{{ asset('assets/bundles/datatablescripts.bundle.js') }}"></script>
+    <script src="{{ asset('assets/plugins/jquery-datatable/buttons/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.colVis.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
     <script>
+        $('#finance_users').DataTable({
+            paging: true,
+            ordering: true,
+        })
+
         $(function () {
             let finance_request_rate_graph_data = {!! json_encode($finance_request_rate_graph_data) !!}
             let approval_rate_graph_data = {!! json_encode($approval_rate_graph_data) !!}
