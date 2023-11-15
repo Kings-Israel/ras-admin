@@ -27,6 +27,7 @@
                                     <th>User Name</th>
                                     <th>Orders</th>
                                     <th>Products</th>
+                                    <th>Approval Status</th>
                                     <th>Created On</th>
                                     <th></th>
                                 </tr>
@@ -40,6 +41,9 @@
                                         <td>{{ $business->orders_count }}</td>
                                         <td>{{ $business->products_count }}</td>
                                         <td>{{ $business->created_at->format('d M Y') }}</td>
+                                        <td>
+                                            <span class="{{ $business->resolveApprovalStatus() }}">{{ Str::title($business->approval_status) }}</span>
+                                        </td>
                                         <td>
                                             @role('admin')
                                                 <a href="{{ route('vendors.show', ['business' => $business]) }}" class="btn btn-sm btn-primary btn-round waves-effect">VIEW</a>

@@ -10,12 +10,16 @@ use App\Models\FinancingInstitution;
 
 class FinancingRequestController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $financing_requests = FinancingRequest::with('invoice.orders.orderItems')->get();
+
+        if (auth()->user()->hasPermissionTo('view financing request') && auth()->user()->financingInstitutions->count() <= 0) {
+            $financing_requests = FinancingRequest::with('invoice.orders.orderItems')->get();
+        } else {
+            $user_financing_institutions_ids = auth()->user()->financingInstitutions->pluck('id');
+            $financing_requests = FinancingRequest::with('invoice.orders.orderItems')->whereIn('financier_id', $user_financing_institutions_ids)->get();
+        }
 
         return view('financiers.requests.index', [
             'page' => 'Financing Requests',
@@ -26,9 +30,11 @@ class FinancingRequestController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
+    public function customers()
+    {
+
+    }
+
     public function show(FinancingRequest $financing_request)
     {
         $financing_request->load('invoice.orders.orderItems.product.business', 'invoice.user');
@@ -43,9 +49,6 @@ class FinancingRequestController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(FinancingRequest $financing_request, $status)
     {
         if ($status == 'reject') {

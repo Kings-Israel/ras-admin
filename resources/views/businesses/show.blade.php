@@ -11,10 +11,49 @@
                 <div class="card">
                     <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
-                        @if (!$business->verified())
-                            <a href="{{ route('vendors.verify', ['business' => $business]) }}" class="btn btn-primary btn-sm btn-round">Verify</a>
+                        @if ($business->approval_status == 'approved')
+                            @if (!$business->verified())
+                                <a href="{{ route('vendors.verify', ['business' => $business]) }}" class="btn btn-primary btn-sm btn-round">Verify</a>
+                            @else
+                                <span class="btn btn-success btn-sm btn-round">Verified</span>
+                            @endif
+                        @elseif ($business->approval_status == 'rejected')
+                            <form method="POST" action="{{ route('vendors.update', ['business' => $business]) }}">
+                                @csrf
+                                <input type="hidden" name="approval_status" value="approved">
+                                <a href="{{ route('vendors.update', ['business' => $business]) }}"
+                                    onclick="event.preventDefault();
+                                    this.closest('form').submit();"
+                                    class="btn btn-primary btn-sm btn-round">Approve
+                                </a>
+                            </form>
                         @else
-                            <span class="btn btn-success btn-sm btn-round">Verified</span>
+                            <div class="row">
+                                <div class="col-6">
+                                    {{-- <a href="" class="btn btn-primary btn-sm btn-round">Approve</a> --}}
+                                    <form method="POST" action="{{ route('vendors.update', ['business' => $business]) }}">
+                                        @csrf
+                                        <input type="hidden" name="approval_status" value="approved">
+                                        <a href="{{ route('vendors.update', ['business' => $business]) }}"
+                                            onclick="event.preventDefault();
+                                            this.closest('form').submit();"
+                                            class="btn btn-primary btn-sm btn-round">Approve
+                                        </a>
+                                    </form>
+                                </div>
+                                <div class="col-6">
+                                    {{-- <a href="" class="btn btn-danger btn-sm btn-round">Reject</a> --}}
+                                    <form method="POST" action="{{ route('vendors.update', ['business' => $business]) }}">
+                                        @csrf
+                                        <input type="hidden" name="approval_status" value="rejected">
+                                        <a href="{{ route('vendors.update', ['business' => $business]) }}"
+                                            onclick="event.preventDefault();
+                                            this.closest('form').submit();"
+                                            class="btn btn-danger btn-sm btn-round">Reject
+                                        </a>
+                                    </form>
+                                </div>
+                            </div>
                         @endif
                     </div>
                 </div>

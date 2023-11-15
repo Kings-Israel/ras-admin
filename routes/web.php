@@ -68,6 +68,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::group(['prefix' => '/vendors'], function () {
         Route::get('/', [VendorController::class, 'index'])->name('vendors.index');
         Route::get('/{business}', [VendorController::class, 'show'])->name('vendors.show');
+        Route::post('/{business}/update', [VendorController::class, 'update'])->name('vendors.update');
         Route::get('/{business}/verify', [VendorController::class, 'verify'])->name('vendors.verify');
     });
 
