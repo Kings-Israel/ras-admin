@@ -13,7 +13,7 @@ class Business extends Model
      *
      * @var array
      */
-    protected $fillable = ['verified_on'];
+    protected $fillable = ['verified_on', 'approval_status', 'rejected_approval_reason'];
     /**
      * Get the primary image
      *
@@ -93,5 +93,23 @@ class Business extends Model
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function resolveApprovalStatus(): string
+    {
+        switch ($this->approval_status) {
+            case 'pending':
+                return 'bg-grey p-2 rounded-lg';
+                break;
+            case 'approved':
+                return 'bg-green p-2 rounded-lg';
+                break;
+            case 'rejected':
+                return 'bg-red p-2 rounded-lg';
+                break;
+            default:
+                return 'bg-grey p-2 rounded-lg';
+                break;
+        }
     }
 }

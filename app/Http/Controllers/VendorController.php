@@ -34,6 +34,22 @@ class VendorController extends Controller
         ]);
     }
 
+    public function update(Request $request, Business $business)
+    {
+        $request->validate([
+            'approval_status' => ['required', 'in:approved,rejected']
+        ]);
+
+        $business->update([
+            'approval_status' => $request->approval_status,
+            'rejected_approval_reason' => $request->has('rejected_reason') ? $request->rejected_reason : NULL,
+        ]);
+
+        toastr()->success('', 'Vendor updated successfully');
+
+        return back();
+    }
+
     public function verify(Business $business)
     {
         $business->update([

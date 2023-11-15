@@ -48,6 +48,9 @@ class DashboardController extends Controller
         $total_buyers_count = 0;
         $total_vendors_count = 0;
         $total_businesses_count = 0;
+        $approved_businesses_count = 0;
+        $pending_businesses_count = 0;
+        $rejected_businesses_count = 0;
         $drivers_count = 0;
         $total_users_count = 0;
         $users_registered_in_current_month = 0;
@@ -132,6 +135,10 @@ class DashboardController extends Controller
                         ->count();
 
         $total_businesses_count = Business::count();
+
+        $pending_businesses_count = Business::where('approval_status', 'pending')->count();
+        $approved_businesses_count = Business::where('approval_status', 'approved')->count();
+        $rejected_businesses_count = Business::where('approval_status', 'rejected')->count();
 
         foreach ($months as $month) {
             $users_monthly = User::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereHas('roles', function($query) { $query->where('name', 'buyer'); })->count();
@@ -315,6 +322,9 @@ class DashboardController extends Controller
             'total_buyers_count' => $total_buyers_count,
             'total_vendors_count' => $total_vendors_count,
             'total_businesses_count' => $total_businesses_count,
+            'approved_businesses_count' => $approved_businesses_count,
+            'pending_businesses_count' => $pending_businesses_count,
+            'rejected_businesses_count' => $rejected_businesses_count,
             'user_registration_rate' => $user_registration_rate,
             'user_registration_direction' => $user_registration_direction,
             'user_registration_rate_graph_data' => $user_registration_rate_graph_data,

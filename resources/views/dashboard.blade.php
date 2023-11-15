@@ -45,11 +45,27 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6">
+                <div class="col-lg-8 col-md-6">
                     <div class="card text-center">
                         <div class="body">
-                            <span>Businesses</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $total_businesses_count }}</h3>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>Total Businesses</span>
+                                    <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $total_businesses_count }}</h3>
+                                </div>
+                                <div class="col-3">
+                                    <span>Pending</span>
+                                    <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $pending_businesses_count }}</h3>
+                                </div>
+                                <div class="col-3">
+                                    <span>Approved</span>
+                                    <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $approved_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $approved_businesses_count }}</h3>
+                                </div>
+                                <div class="col-3">
+                                    <span>Rejected</span>
+                                    <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $rejected_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $rejected_businesses_count }}</h3>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -63,16 +79,11 @@
                                 </div>
                             </div>
                             <div class="col-6">
-
+                                <div class="body">
+                                    <span>Buyers</span>
+                                    <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_buyers_count }}" data-speed="300" data-fresh-interval="100">{{ $total_buyers_count }}</h3>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="card text-center">
-                        <div class="body">
-                            <span>Buyers</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_buyers_count }}" data-speed="300" data-fresh-interval="100">{{ $total_buyers_count }}</h3>
                         </div>
                     </div>
                 </div>

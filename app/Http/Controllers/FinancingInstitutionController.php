@@ -17,15 +17,22 @@ class FinancingInstitutionController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:view financier', ['only' => ['index', 'show']]);
-        $this->middleware('can:create financier', ['only' => ['create', 'store']]);
-        $this->middleware('can:update financier', ['only' => ['edit', 'update']]);
-        $this->middleware('can:delete financier', ['only' => ['destroy']]);
+        // $this->middleware('can:view financier', ['only' => ['index', 'show']]);
+        // $this->middleware('can:create financier', ['only' => ['create', 'store']]);
+        // $this->middleware('can:update financier', ['only' => ['edit', 'update']]);
+        // $this->middleware('can:delete financier', ['only' => ['destroy']]);
     }
 
     public function index()
     {
         $financing_institutions = FinancingInstitution::withCount('users')->get();
+
+        if (auth()->user()->hasPermissionTo('view financing request') && auth()->user()->financingInstitutions->count() <= 0) {
+            $financing_institutions = FinancingInstitution::withCount('users')->get();
+        } else {
+            $user_financing_institutions_ids = auth()->user()->financingInstitutions->pluck('id');
+            $financing_institutions = FinancingInstitution::withCount('users')->whereIn('id', $user_financing_institutions_ids)->get();
+        }
 
         return view('financiers.index', [
             'page' => 'Financing Institutions',
