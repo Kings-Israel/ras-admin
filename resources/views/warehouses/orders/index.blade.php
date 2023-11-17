@@ -19,22 +19,21 @@
                                     <th>Order ID</th>
                                     <th>User Name</th>
                                     <th>Vendor</th>
-                                    <th>Products</th>
                                     <th>Status</th>
                                     <th>Created At</th>
-                                    <th></th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($orders as $warehouse_order)
                                     <tr>
                                         <td>{{ $warehouse_order->order->order_id }}</td>
-                                        <td>{{ $warehouse_order->user->first_name }} {{ $warehouse_order->user->last_name }}</td>
+                                        <td>{{ $warehouse_order->orderItem->order->user->first_name }} {{ $warehouse_order->orderItem->order->user->last_name }}</td>
                                         <td>{{ $warehouse_order->order->business->name }}</td>
                                         <td><span class="badge {{ $warehouse_order->order->resolveOrderBadgeStatus() }}">{{ Str::title($warehouse_order->order->status) }}</span></td>
                                         <td>{{ $warehouse_order->order->created_at->format('d M Y') }}</td>
                                         <td>
-                                            <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
+                                            <a href="{{ route('warehouses.orders.request.details', ['warehouse' => $warehouse_order->warehouse, 'warehouse_order' => $warehouse_order]) }}" class="btn btn-sm btn-primary btn-round waves-effect">Details</a>
                                         </td>
                                     </tr>
                                 @endforeach

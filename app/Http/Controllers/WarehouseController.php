@@ -274,12 +274,28 @@ class WarehouseController extends Controller
         $orders = WarehouseOrder::where('warehouse_id', $warehouse->id)->get();
 
         return view('warehouses.orders.index', [
-            'page' => 'Warehouse Orders',
+            'page' => 'Warehouse Order Storage Request',
             'breadcrumbs' => [
                 'Warehouses' => route('warehouses.index'),
                 'Warehouse Orders' => route('warehouses.orders.index', ['warehouse' => $warehouse])
             ],
             'orders' => $orders
+        ]);
+    }
+
+    public function storageRequest(WarehouseOrder $warehouse_order)
+    {
+        dd($warehouse_order);
+        $warehouse_order->load('orderItem.product.media');
+
+        return view('warehouses.orders.show', [
+            'page' => 'Order Storage Request',
+            'breadcrumbs' => [
+                'Warehouses' => route('warehouses.index'),
+                'Order Storage Requests' => route('warehouses.orders.index', ['warehouse' => $warehouse_order->warehouse]),
+                'Storage Request' => route('warehouses.orders.request.details', ['warehouse_order' => $warehouse_order])
+            ],
+            'warehouse_storage_request' => $warehouse_order
         ]);
     }
 }

@@ -21,6 +21,7 @@ use App\Http\Controllers\StoreRequestController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\InsuranceController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 
@@ -45,6 +46,7 @@ Route::middleware(['auth', 'web'])->group(function () {
         // Orders
         Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
             Route::get('/{warehouse}/orders', [WarehouseController::class, 'orders'])->name('index');
+            Route::geT('/{warehouse}/{warehouse_order}/details', [WarehouseController::class, 'orders'])->name('request.details');
         });
     });
 
@@ -129,6 +131,31 @@ Route::middleware(['auth', 'web'])->group(function () {
         Route::get('/{document}/delete', [DocumentController::class, 'delete'])->name('delete');
     });
 
+    // Insurance Companies
+    Route::group(['prefix' => 'insurance', 'as' => 'insurance.'], function () {
+        Route::group(['prefix' => '/companies', 'as' => 'companies.'], function () {
+            Route::get('/', [InsuranceController::class, 'companies'])->name('index');
+            Route::get('/create', [InsuranceController::class, 'createCompany'])->name('create');
+            Route::post('/store', [InsuranceController::class, 'storeCompany'])->name('store');
+            Route::get('/{insurance_company}', [InsuranceController::class, 'company'])->name('show');
+            Route::get('/{insurance_company}/edit', [InsuranceController::class, 'editCompany'])->name('edit');
+            Route::put('/{insurance_company}/update', [InsuranceController::class, 'updateCompany'])->name('update');
+        });
+
+        Route::group(['prefix' => '/requests', 'as' => 'requests.'], function () {
+            Route::get('/', [InsuranceController::class, 'requests'])->name('index');
+            Route::get('/{insurance_request}', [InsuranceController::class, 'request'])->name('show');
+            Route::put('/{insurance_request}/update', [InsuranceController::class, 'updateRequest'])->name('update');
+            Route::post('/{insurance_request}/cost/update', [InsuranceController::class, 'updateCost'])->name('cost.update');
+        });
+
+        Route::group(['prefix' => '/reports', 'as' => 'reports.'], function () {
+            Route::get('/', [InsuranceController::class, 'reports'])->name('index');
+            Route::post('/store', [InsuranceController::class, 'storeReport'])->name('store');
+            Route::put('/{insurance_report}/update', [InsuranceController::class, 'updateReport'])->name('update');
+        });
+    });
+
     // Settings
     Route::group(['prefix' => 'settings/', 'as' => 'settings.'], function() {
         Route::get('/', [SettingsController::class, 'index'])->name('index');
@@ -171,7 +198,7 @@ Route::middleware(['auth', 'web'])->group(function () {
         Route::post('/store', [MarketingController::class, 'store'])->name('store');
         Route::get('/{marketing_poster}/edit', [MarketingController::class, 'edit'])->name('edit');
         Route::put('/{marketing_poster}/update', [MarketingController::class, 'update'])->name('update');
-        Route::delete('/{marketing_poster}/delete', [MarketingController::class, 'delete'])->name('delete');
+        Route::get('/{marketing_poster}/delete', [MarketingController::class, 'delete'])->name('delete');
     });
 
     // Logs

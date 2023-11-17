@@ -100,42 +100,34 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="card">
-            <div class="body">
-                <div class="row">
-                    <div class="col-3">
-                        <h6><span>Inspection Request Status: </span><strong>{{ Str::title($inspection_request->status) }}</strong></h6>
-                    </div>
-                    @if ($inspection_request->cost)
-                        <div class="col-3">
-                            <h6><span>Inspection Request Cost: </span><strong>{{ number_format($inspection_request->cost) }}</strong></h6>
-                        </div>
-                    @endif
-                    <div class="col-6">
+            <div class="col-md-6 col-sm-12">
+                <div class="card">
+                    <div class="body">
                         @can('update inspection report')
                             <form action="{{ route('inspection.requests.cost.update', ['inspection_request' => $inspection_request]) }}" method="POST">
                                 <div class="row clearfix">
                                     @csrf
-                                    <div class="col-6">
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <label for="role_name">Inspection Cost</label>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="form-group">
-                                                    <input type="number" min="0" class="form-control" placeholder="Enter Cost of Inspection" name="inspection_cost" autocomplete="off" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <button type="submit" class="btn btn-primary btn-round waves-effect">Submit</button>
-                                    </div>
+                                    <h6 for="role_name">Inspection Cost</h6>
+                                    <input type="number" min="0" class="form-control" placeholder="Enter Cost of Inspection" name="inspection_cost" autocomplete="off" />
+                                    <button type="submit" class="btn btn-primary btn-round waves-effect">Submit</button>
                                 </div>
                             </form>
                         @endcan
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="body">
+                <div class="row">
+                    <div class="col-6">
+                        <h6><span>Inspection Request Status: </span><strong>{{ Str::title($inspection_request->status) }}</strong></h6>
+                    </div>
+                    @if ($inspection_request->cost)
+                        <div class="col-6">
+                            <h6><span>Inspection Request Cost: </span><strong>{{ number_format($inspection_request->cost) }}</strong></h6>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

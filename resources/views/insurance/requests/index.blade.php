@@ -17,31 +17,34 @@
                 <div class="card">
                     <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
-                        @can('create logistics company')
-                            <a class="btn btn-secondary btn-sm btn-round" href="{{ route('logistics.create') }}">Add Logistics Company</a>
-                        @endcan
                     </div>
                     <div class="body">
-                        <table class="table table-hover dataTable js-exportable">
+                        <table class="table table-hover dataTable js-exportable" id="insurance_requests">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Location</th>
-                                    <th>Manager(s)</th>
-                                    <th>Added on</th>
+                                    <th>ORDER ID</th>
+                                    <th>Status</th>
+                                    <th>Customer</th>
+                                    @role('admin')
+                                        <th>Insurer</th>
+                                    @endrole
+                                    <th>Requested On</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($logistics_companies as $company)
+                                @foreach ($insurance_requests as $insurance_request)
                                     <tr>
-                                        <td>{{ $company->name }}</td>
-                                        <td>{{ $company->city ? $company->city->name.', ' : '' }}{{ $company->country ? $company->country->name : ''}}</td>
-                                        <td>{{ $company->users_count }}</td>
-                                        <td>{{ $company->created_at->format('d M Y') }}</td>
+                                        <td>{{ $insurance_request->orderItem->order->order_id }}</td>
+                                        <td>{{ Str::title($insurance_request->status) }}</td>
+                                        <td>{{ $insurance_request->orderItem->order->user->first_name }} {{ $insurance_request->orderItem->order->user->last_name }}</td>
+                                        @role('admin')
+                                            <td>{{ $insurance_request->insuranceCompany->name }}</td>
+                                        @endrole
+                                        <td>{{ $insurance_request->created_at->format('d M Y') }}</td>
                                         <td>
-                                            @can('update logistics company')
-                                                <a href="{{ route('logistics.edit', ['logistic' => $company]) }}" class="btn btn-sm btn-primary btn-round waves-effect">EDIT</a>
+                                            @can('view insurance report')
+                                                <a href="{{ route('insurance.requests.show', ['insurance_request' => $insurance_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">VIEW</a>
                                             @endcan
                                         </td>
                                     </tr>
@@ -62,5 +65,8 @@
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.colVis.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script> --}}
+    <script>
+        $('#insurance_requests').DataTable().order([4, 'desc']).draw()
+    </script>
 @endpush

@@ -91,6 +91,7 @@
                                         <td>{{ $poster->created_at->format('d M Y H:i A') }}</td>
                                         <td>
                                             <button class="btn btn-round btn-primary btn-sm" data-toggle="modal" data-target="#defaultModal_{{ $poster->id }}">Edit</button>
+                                            <a href="{{ route('marketing.delete', ['marketing_poster' => $poster]) }}" class="btn btn-sm btn-danger btn-round">Delete</a>
                                             <div class="modal fade" id="defaultModal_{{ $poster->id }}" tabindex="-1" role="dialog">
                                                 <div class="modal-dialog modal-lg" role="document">
                                                     <div class="modal-content">

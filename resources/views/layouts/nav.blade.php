@@ -70,18 +70,40 @@
                                 </li>
                             @endcan
                             @can('view inspection report')
-                                <li class="nav-item @if(Route::is('inspection.reports.*')) active open @endif">
-                                    <a href="{{ route('inspection.reports.index') }}">Inspection Reports</a>
+                                <li class="nav-item @if(Route::is('inspection.requests.*')) active open @endif">
+                                    <a href="{{ route('inspection.requests.index') }}">Inspection Requests</a>
                                 </li>
                             @endcan
                             @can('view inspection report')
-                                <li class="nav-item @if(Route::is('inspection.requests.*')) active open @endif">
-                                    <a href="{{ route('inspection.requests.index') }}">Inspection Requests</a>
+                                <li class="nav-item @if(Route::is('inspection.reports.*')) active open @endif">
+                                    <a href="{{ route('inspection.reports.index') }}">Inspection Reports</a>
                                 </li>
                             @endcan
                         </ul>
                     </li>
                 @endcan
+                @role('admin')
+                    <li class="nav-item @if(Route::is('insurance.*')) active @endif">
+                        <a href="javascript:void(0)" class="menu-toggle"><i class="material-icons">assignment_late</i><span>Insurance Management</span></a>
+                        <ul class="ml-menu">
+                            @can('view insurance company')
+                                <li class="nav-item @if(Route::is('insurance.companies.*')) active open @endif">
+                                    <a href="{{ route('insurance.companies.index') }}">Insurers</a>
+                                </li>
+                            @endcan
+                            @can('view insurance request')
+                                <li class="nav-item @if(Route::is('insurance.requests.*')) active open @endif">
+                                    <a href="{{ route('insurance.requests.index') }}">Insurance Requests</a>
+                                </li>
+                            @endcan
+                            @can('view insurance report')
+                                <li class="nav-item @if(Route::is('insurance.reports.*')) active open @endif">
+                                    <a href="{{ route('insurance.reports.index') }}">Insurance Reports</a>
+                                </li>
+                            @endcan
+                        </ul>
+                    </li>
+                @endrole
                 @can('view financing request', 'view financier')
                     <li class="nav-item @if(Route::is('financing.*') || Route::is('financing-institutions.*')) active @endif">
                         <a href="javascript:void(0)" class="menu-toggle"><i class="material-icons">account_balance</i><span>Financing Management</span></a>
