@@ -125,6 +125,9 @@
                         @endcan
                     </li>
                 @endcan
+                @role('admin')
+                    <li class="nav-item @if(Route::is('marketing.*')) active open @endif"> <a href="{{ route('marketing.index') }}"><i class="material-icons">extension</i><span>Marketing Management</span></a></li>
+                @endrole
                 @can('view role')
                     <li class="nav-item @if(Route::is('permissions.*')) active open @endif"> <a href="{{ route('permissions.index') }}"><i class="material-icons">extension</i><span>Roles and Permissions</span></a></li>
                 @endcan

@@ -62,6 +62,14 @@ return [
             'url' => env('APP_URL').'/storage/reports',
             'visibility' => 'public',
             'throw' => false,
+        ],
+
+        'marketing' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/marketing'),
+            'url' => env('APP_URL').'/storage/marketing',
+            'visibility' => 'public',
+            'throw' => false,
         ]
     ],
 

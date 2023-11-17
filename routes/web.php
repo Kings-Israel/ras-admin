@@ -12,6 +12,7 @@ use App\Http\Controllers\FinancingRequestController;
 use App\Http\Controllers\InspectionRequestController;
 use App\Http\Controllers\InspectorController;
 use App\Http\Controllers\LogisticsController;
+use App\Http\Controllers\MarketingController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -162,6 +163,16 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Marketing
+    Route::group(['prefix' => 'marketing', 'as' => 'marketing.'], function () {
+        Route::get('/', [MarketingController::class, 'index'])->name('index');
+        Route::get('/create', [MarketingController::class, 'create'])->name('create');
+        Route::post('/store', [MarketingController::class, 'store'])->name('store');
+        Route::get('/{marketing_poster}/edit', [MarketingController::class, 'edit'])->name('edit');
+        Route::put('/{marketing_poster}/update', [MarketingController::class, 'update'])->name('update');
+        Route::delete('/{marketing_poster}/delete', [MarketingController::class, 'delete'])->name('delete');
+    });
 
     // Logs
     Route::get('/logs', LogController::class)->name('logs');
