@@ -9,7 +9,7 @@
                     <div class="card text-center">
                         <div class="body">
                             <p class="m-b-20"><i class="zmdi zmdi-balance zmdi-hc-3x col-amber"></i></p>
-                            <span>Total Revenue</span>
+                            <span class="font-bold">Total Revenue</span>
                             <h3 class="m-b-10">$<span class="number count-to" data-from="0" data-to="0" data-speed="2000" data-fresh-interval="700">0</span></h3>
                             <small class="text-muted">0% lower growth</small>
                         </div>
@@ -19,7 +19,7 @@
                     <div class="card text-center">
                         <div class="body">
                             <p class="m-b-20"><i class="zmdi zmdi-assignment zmdi-hc-3x col-blue"></i></p>
-                            <span>Total Orders</span>
+                            <span class="font-bold">Total Orders</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="2000" data-fresh-interval="700">0</h3>
                             <small class="text-muted">0% lower growth</small>
                         </div>
@@ -29,7 +29,7 @@
                     <div class="card text-center">
                         <div class="body">
                             <p class="m-b-20"><i class="zmdi zmdi-shopping-basket zmdi-hc-3x"></i></p>
-                            <span>Total Sales</span>
+                            <span class="font-bold">Total Sales</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="2000" data-fresh-interval="700">0</h3>
                             <small class="text-muted">0% lower growth</small>
                         </div>
@@ -39,7 +39,7 @@
                     <div class="card text-center">
                         <div class="body">
                             <p class="m-b-20"><i class="zmdi zmdi-account-box zmdi-hc-3x col-green"></i></p>
-                            <span>Users</span>
+                            <span class="font-bold">Users</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_users_count }}" data-speed="300" data-fresh-interval="100">{{ $total_users_count }}</h3>
                             <small class="text-muted">{{ $user_registration_rate }}% {{ $user_registration_direction }} growth</small>
                         </div>
@@ -52,7 +52,7 @@
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
                         <div class="body">
-                            <span>Total Warehouses</span>
+                            <span class="font-bold">Total Warehouses</span>
                             <h3 class="m-b-10"><span class="number count-to" data-from="0" data-to="{{ $warehouses_count }}" data-speed="10" data-fresh-interval="5">{{ $warehouses_count }}</span></h3>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
                         <div class="body">
-                            <span>Total Products</span>
+                            <span class="font-bold">Total Products</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $products_count }}" data-speed="10" data-fresh-interval="5">{{ $products_count }}</h3>
                         </div>
                     </div>
@@ -95,19 +95,19 @@
                         </div>
                         <div class="body">
                             <div id="total-businesses-number" style="display: block">
-                                <span>Total Businesses</span>
+                                <span class="font-bold">Total Businesses</span>
                                 <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $total_businesses_count }}</h3>
                             </div>
                             <div id="businesses-pending-approval" style="display: none">
-                                <span>Business Pending Approval</span>
+                                <span class="font-bold">Business Pending Approval</span>
                                 <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $pending_businesses_count }}</h3>
                             </div>
                             <div id="approved-businesses" style="display: none">
-                                <span>Approved Businesses</span>
+                                <span class="font-bold">Approved Businesses</span>
                                 <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $approved_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $approved_businesses_count }}</h3>
                             </div>
                             <div id="rejected-businesses" style="display: none">
-                                <span>Rejected Businesses</span>
+                                <span class="font-bold">Rejected Businesses</span>
                                 <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $rejected_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $rejected_businesses_count }}</h3>
                             </div>
                         </div>
@@ -126,11 +126,11 @@
                             </ul>
                         </div>
                         <div class="body" id="total-vendors" style="display: block">
-                            <span>Vendors</span>
+                            <span class="font-bold">Vendors</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_vendors_count }}" data-speed="300" data-fresh-interval="100">{{ $total_vendors_count }}</h3>
                         </div>
                         <div class="body" id="total-buyers" style="display: none">
-                            <span>Buyers</span>
+                            <span class="font-bold">Buyers</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_buyers_count }}" data-speed="300" data-fresh-interval="100">{{ $total_buyers_count }}</h3>
                         </div>
                     </div>
@@ -152,11 +152,11 @@
                             </ul>
                         </div>
                         <div class="body" id="pending-storage-requests" style="display: block">
-                            <span>Pending Storage Requests</span>
+                            <span class="font-bold">Pending Storage Requests</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_storage_requests }}" data-speed="100" data-fresh-interval="200">{{ $pending_storage_requests }}</h3>
                         </div>
                         <div class="body" id="approved-storage-requests" style="display: none">
-                            <span>Approved Storage Requests</span>
+                            <span class="font-bold">Approved Storage Requests</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $approved_storage_requests }}" data-speed="100" data-fresh-interval="200">{{ $approved_storage_requests }}</h3>
                         </div>
                     </div>
@@ -177,53 +177,53 @@
                             </ul>
                         </div>
                         <div class="body" id="pending-financing-requests" style="display: block">
-                            <span>Pending Financing Requests</span>
+                            <span class="font-bold">Pending Financing Requests</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $financing_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $financing_requests_count }}</h3>
                         </div>
                         <div class="body" id="approved-financing-requests" style="display: none">
-                            <span>Approved Financing Requests</span>
+                            <span class="font-bold">Approved Financing Requests</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">0</h3>
                         </div>
                         <div class="body" id="rejected-financing-requests" style="display: none">
-                            <span>Rejected Financing Requests</span>
+                            <span class="font-bold">Rejected Financing Requests</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">0</h3>
                         </div>
                     </div>
                 </div>
             @endcan
             @can('view inspection request')
-            <div class="col-lg-4 col-md-6">
-                <div class="card text-center">
-                    <div class="header">
-                        <ul class="header-dropdown">
-                            <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
-                                <ul class="dropdown-menu slideUp">
-                                    <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('accpeted-inspection-requests')">Pending</a></li>
-                                    <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('pending-inspection-requests')">Approved</a></li>
-                                    <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('rejected-inspection-request')">Rejected</a></li>
-                                    <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('completed-inspection-requests')">Completed</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="body" id="accpeted-inspection-requests" style="display: block">
-                        <span>Accepted Inspection Requests</span>
-                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $accepted_inspection_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $accepted_inspection_requests_count }}</h3>
-                    </div>
-                    <div class="body" id="pending-inspection-requests" style="display: none">
-                        <span>Pending Inspection Requests</span>
-                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_inspection_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $pending_inspection_requests_count }}</h3>
-                    </div>
-                    <div class="body" id="rejected-inspection-requests" style="display: none">
-                        <span>Rejected Inspection Requests</span>
-                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $rejected_inspection_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $rejected_inspection_requests_count }}</h3>
-                    </div>
-                    <div class="body" id="completed-inspection-requests" style="display: none">
-                        <span>Completed Inspection Reports</span>
-                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $completed_inspection_reports_count }}" data-speed="100" data-fresh-interval="200">{{ $completed_inspection_reports_count }}</h3>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card text-center">
+                        <div class="header">
+                            <ul class="header-dropdown">
+                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
+                                    <ul class="dropdown-menu slideUp">
+                                        <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('accpeted-inspection-requests')">Pending</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('pending-inspection-requests')">Approved</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('rejected-inspection-request')">Rejected</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('completed-inspection-requests')">Completed</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body" id="accpeted-inspection-requests" style="display: block">
+                            <span class="font-bold">Accepted Inspection Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $accepted_inspection_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $accepted_inspection_requests_count }}</h3>
+                        </div>
+                        <div class="body" id="pending-inspection-requests" style="display: none">
+                            <span class="font-bold">Pending Inspection Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_inspection_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $pending_inspection_requests_count }}</h3>
+                        </div>
+                        <div class="body" id="rejected-inspection-requests" style="display: none">
+                            <span class="font-bold">Rejected Inspection Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $rejected_inspection_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $rejected_inspection_requests_count }}</h3>
+                        </div>
+                        <div class="body" id="completed-inspection-requests" style="display: none">
+                            <span class="font-bold">Completed Inspection Reports</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $completed_inspection_reports_count }}" data-speed="100" data-fresh-interval="200">{{ $completed_inspection_reports_count }}</h3>
+                        </div>
                     </div>
                 </div>
-            </div>
             @endcan
         </div>
         @can('view financing request')
