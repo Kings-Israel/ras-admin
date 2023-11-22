@@ -156,5 +156,5 @@ return [
 
     'pagination_theme' => 'bootstrap',
 
-    'asset_url' => config('app.env') === 'production' ? 'ras-admin/livewire/livewire.js' : '',
+    'asset_url' => config('app.env') === 'production' ? 'rsa-admin/livewire/livewire.js' : '',
 ];
