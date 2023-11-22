@@ -24,12 +24,12 @@
                                 <tr>
                                     <th>Name</th>
                                     <th>Location</th>
-                                    <th>User Name</th>
+                                    <th>Owner</th>
                                     <th>Orders</th>
                                     <th>Products</th>
                                     <th>Approval Status</th>
                                     <th>Created On</th>
-                                    <th></th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -40,13 +40,13 @@
                                         <td>{{ $business->user->first_name }} {{ $business->user->last_name }}</td>
                                         <td>{{ $business->orders_count }}</td>
                                         <td>{{ $business->products_count }}</td>
-                                        <td>{{ $business->created_at->format('d M Y') }}</td>
                                         <td>
                                             <span class="{{ $business->resolveApprovalStatus() }}">{{ Str::title($business->approval_status) }}</span>
                                         </td>
+                                        <td>{{ $business->created_at->format('d M Y') }}</td>
                                         <td>
                                             @role('admin')
-                                                <a href="{{ route('vendors.show', ['business' => $business]) }}" class="btn btn-sm btn-primary btn-round waves-effect">VIEW</a>
+                                                <a href="{{ route('vendors.show', ['business' => $business]) }}" class="btn btn-sm btn-primary btn-round waves-effect">View</a>
                                             @endrole
                                         </td>
                                     </tr>

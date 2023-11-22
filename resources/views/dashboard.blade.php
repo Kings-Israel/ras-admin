@@ -45,56 +45,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-8 col-md-6">
-                    <div class="card text-center">
-                        <div class="body">
-                            <div class="row">
-                                <div class="col-3">
-                                    <span>Total Businesses</span>
-                                    <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $total_businesses_count }}</h3>
-                                </div>
-                                <div class="col-3">
-                                    <span>Pending</span>
-                                    <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $pending_businesses_count }}</h3>
-                                </div>
-                                <div class="col-3">
-                                    <span>Approved</span>
-                                    <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $approved_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $approved_businesses_count }}</h3>
-                                </div>
-                                <div class="col-3">
-                                    <span>Rejected</span>
-                                    <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $rejected_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $rejected_businesses_count }}</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="card text-center">
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="body">
-                                    <span>Vendors</span>
-                                    <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_vendors_count }}" data-speed="300" data-fresh-interval="100">{{ $total_vendors_count }}</h3>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="body">
-                                    <span>Buyers</span>
-                                    <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_buyers_count }}" data-speed="300" data-fresh-interval="100">{{ $total_buyers_count }}</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         @endrole
         <div class="row clearfix">
             @can('view warehouse')
-                <div class="col-lg-4 col-md-6">
+                <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
                         <div class="body">
-                            <p class="m-b-20"><i class="zmdi zmdi-balance zmdi-hc-3x col-amber"></i></p>
                             <span>Total Warehouses</span>
                             <h3 class="m-b-10"><span class="number count-to" data-from="0" data-to="{{ $warehouses_count }}" data-speed="10" data-fresh-interval="5">{{ $warehouses_count }}</span></h3>
                         </div>
@@ -102,28 +59,16 @@
                 </div>
             @endcan
             @can('view product')
-                <div class="col-lg-4 col-md-6">
+                <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
                         <div class="body">
-                            <p class="m-b-20"><i class="zmdi zmdi-assignment zmdi-hc-3x col-blue"></i></p>
                             <span>Total Products</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $products_count }}" data-speed="10" data-fresh-interval="5">{{ $products_count }}</h3>
                         </div>
                     </div>
                 </div>
             @endcan
-            @can('view order')
-                <div class="col-lg-4 col-md-6">
-                    <div class="card text-center">
-                        <div class="body">
-                            <p class="m-b-20"><i class="zmdi zmdi-shopping-basket zmdi-hc-3x"></i></p>
-                            <span>Total Orders</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">0</h3>
-                        </div>
-                    </div>
-                </div>
-            @endcan
-            @can('view stocklift requests')
+            {{-- @can('view stocklift requests')
                 <div class="col-lg-4 col-md-6">
                     <div class="card text-center">
                         <div class="body">
@@ -132,57 +77,154 @@
                         </div>
                     </div>
                 </div>
-            @endcan
+            @endcan --}}
+            @role('admin')
+                <div class="col-lg-3 col-md-3">
+                    <div class="card text-center">
+                        <div class="header">
+                            <ul class="header-dropdown">
+                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
+                                    <ul class="dropdown-menu slideUp">
+                                        <li><a href="javascript:void(0);" onclick="changeBusinessesView('total-businesses-number')">Total Number of Businesses</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeBusinessesView('businesses-pending-approval')">Businesses Pending Approval</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeBusinessesView('approved-businesses')">Approved Businesses</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeBusinessesView('rejected-businesses')">Rejected Businesses</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body">
+                            <div id="total-businesses-number" style="display: block">
+                                <span>Total Businesses</span>
+                                <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $total_businesses_count }}</h3>
+                            </div>
+                            <div id="businesses-pending-approval" style="display: none">
+                                <span>Business Pending Approval</span>
+                                <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $pending_businesses_count }}</h3>
+                            </div>
+                            <div id="approved-businesses" style="display: none">
+                                <span>Approved Businesses</span>
+                                <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $approved_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $approved_businesses_count }}</h3>
+                            </div>
+                            <div id="rejected-businesses" style="display: none">
+                                <span>Rejected Businesses</span>
+                                <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $rejected_businesses_count }}" data-speed="300" data-fresh-interval="100">{{ $rejected_businesses_count }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="header">
+                            <ul class="header-dropdown">
+                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
+                                    <ul class="dropdown-menu slideUp">
+                                        <li><a href="javascript:void(0);" onclick="changeUsersView('total-vendors')">Total Number of Vendors</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeUsersView('total-buyers')">Total Number of Buyers</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body" id="total-vendors" style="display: block">
+                            <span>Vendors</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_vendors_count }}" data-speed="300" data-fresh-interval="100">{{ $total_vendors_count }}</h3>
+                        </div>
+                        <div class="body" id="total-buyers" style="display: none">
+                            <span>Buyers</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_buyers_count }}" data-speed="300" data-fresh-interval="100">{{ $total_buyers_count }}</h3>
+                        </div>
+                    </div>
+                </div>
+            @endrole
+        </div>
+        <div class="row clearfix">
             @can('view warehouse')
                 <div class="col-lg-4 col-md-6">
                     <div class="card text-center">
-                        <div class="body">
+                        <div class="header">
+                            <ul class="header-dropdown">
+                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
+                                    <ul class="dropdown-menu slideUp">
+                                        <li><a href="javascript:void(0);" onclick="changeStorageRequestsView('pending-storage-requests')">Pending</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeStorageRequestsView('approved-storage-requests')">Approved</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body" id="pending-storage-requests" style="display: block">
+                            <span>Pending Storage Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_storage_requests }}" data-speed="100" data-fresh-interval="200">{{ $pending_storage_requests }}</h3>
+                        </div>
+                        <div class="body" id="approved-storage-requests" style="display: none">
                             <span>Approved Storage Requests</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $approved_storage_requests }}" data-speed="100" data-fresh-interval="200">{{ $approved_storage_requests }}</h3>
                         </div>
                     </div>
                 </div>
             @endcan
-            @can('view warehouse')
-                <div class="col-lg-4 col-md-6">
-                    <div class="card text-center">
-                        <div class="body">
-                            <span>Pending Storage Requests</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_storage_requests }}" data-speed="100" data-fresh-interval="200">{{ $pending_storage_requests }}</h3>
-                        </div>
-                    </div>
-                </div>
-            @endcan
             @can('view financing request')
                 <div class="col-lg-4 col-md-6">
                     <div class="card text-center">
-                        <div class="body">
+                        <div class="header">
+                            <ul class="header-dropdown">
+                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
+                                    <ul class="dropdown-menu slideUp">
+                                        <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('pending-financing-requests')">Pending</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('approved-financing-requests')">Approved</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('rejected-financing-requests')">Rejected</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body" id="pending-financing-requests" style="display: block">
                             <span>Pending Financing Requests</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $financing_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $financing_requests_count }}</h3>
                         </div>
-                    </div>
-                </div>
-            @endcan
-            @can('view financing request')
-                <div class="col-lg-4 col-md-6">
-                    <div class="card text-center">
-                        <div class="body">
+                        <div class="body" id="approved-financing-requests" style="display: none">
                             <span>Approved Financing Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">0</h3>
+                        </div>
+                        <div class="body" id="rejected-financing-requests" style="display: none">
+                            <span>Rejected Financing Requests</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">0</h3>
                         </div>
                     </div>
                 </div>
             @endcan
-            @can('view financing request')
+            @can('view inspection request')
             <div class="col-lg-4 col-md-6">
                 <div class="card text-center">
-                    <div class="body">
-                        <span>Rejected Financing Requests</span>
-                        <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">0</h3>
+                    <div class="header">
+                        <ul class="header-dropdown">
+                            <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
+                                <ul class="dropdown-menu slideUp">
+                                    <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('accpeted-inspection-requests')">Pending</a></li>
+                                    <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('pending-inspection-requests')">Approved</a></li>
+                                    <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('rejected-inspection-request')">Rejected</a></li>
+                                    <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('completed-inspection-requests')">Completed</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="body" id="accpeted-inspection-requests" style="display: block">
+                        <span>Accepted Inspection Requests</span>
+                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $accepted_inspection_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $accepted_inspection_requests_count }}</h3>
+                    </div>
+                    <div class="body" id="pending-inspection-requests" style="display: none">
+                        <span>Pending Inspection Requests</span>
+                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_inspection_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $pending_inspection_requests_count }}</h3>
+                    </div>
+                    <div class="body" id="rejected-inspection-requests" style="display: none">
+                        <span>Rejected Inspection Requests</span>
+                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $rejected_inspection_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $rejected_inspection_requests_count }}</h3>
+                    </div>
+                    <div class="body" id="completed-inspection-requests" style="display: none">
+                        <span>Completed Inspection Reports</span>
+                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $completed_inspection_reports_count }}" data-speed="100" data-fresh-interval="200">{{ $completed_inspection_reports_count }}</h3>
                     </div>
                 </div>
             </div>
-        @endcan
+            @endcan
         </div>
         @can('view financing request')
             <div class="row clearfix">
@@ -199,40 +241,6 @@
             </div>
         @endcan
         @can('view inspection report')
-            <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="card text-center">
-                        <div class="body">
-                            <span>Accepted Inspection Requests</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $accepted_inspection_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $accepted_inspection_requests_count }}</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="card text-center">
-                        <div class="body">
-                            <span>Pending Inspection Requests</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_inspection_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $pending_inspection_requests_count }}</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="card text-center">
-                        <div class="body">
-                            <span>Rejected Inspection Requests</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $rejected_inspection_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $rejected_inspection_requests_count }}</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="card text-center">
-                        <div class="body">
-                            <span>Completed Inspection Reports</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $completed_inspection_reports_count }}" data-speed="100" data-fresh-interval="200">{{ $completed_inspection_reports_count }}</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="row clearfix">
                 <div class="col-lg-12 col-md-12">
                     <div class="card visitors-map">
@@ -926,4 +934,109 @@
             );
         </script>
     @endcan
+    <script>
+        function changeBusinessesView(view) {
+            const total_businesses_number = document.getElementById('total-businesses-number');
+            const businesses_pending_approval = document.getElementById('businesses-pending-approval');
+            const approved_businesses = document.getElementById('approved-businesses');
+            const rejected_businesses = document.getElementById('rejected-businesses');
+
+            if (view == 'total-businesses-number') {
+                total_businesses_number.style.display = 'block';
+                businesses_pending_approval.style.display = 'none';
+                approved_businesses.style.display = 'none';
+                rejected_businesses.style.display = 'none';
+            } else if (view == 'approved-businesses') {
+                total_businesses_number.style.display = 'none';
+                businesses_pending_approval.style.display = 'none';
+                approved_businesses.style.display = 'block';
+                rejected_businesses.style.display = 'none';
+            } else if (view == 'businesses-pending-approval') {
+                total_businesses_number.style.display = 'none';
+                businesses_pending_approval.style.display = 'block';
+                approved_businesses.style.display = 'none';
+                rejected_businesses.style.display = 'none';
+            } else if (view == 'rejected-businesses') {
+                total_businesses_number.style.display = 'none';
+                businesses_pending_approval.style.display = 'none';
+                approved_businesses.style.display = 'none';
+                rejected_businesses.style.display = 'block';
+            }
+        }
+
+        function changeInspectionRequestsView(view) {
+            const accepted_inspection_requests = document.getElementById('accpeted-inspection-requests');
+            const pending_inspection_requests = document.getElementById('pending-inspection-requests');
+            const rejected_inspection_requests = document.getElementById('rejected-inspection-request');
+            const completed_inspection_requests = document.getElementById('completed-inspection-requests');
+
+            if (view == 'accpeted-inspection-requests') {
+                accepted_inspection_requests.style.display = 'block';
+                pending_inspection_requests.style.display = 'none';
+                rejected_inspection_requests.style.display = 'none';
+                completed_inspection_requests.style.display = 'none';
+            } else if (view == 'rejected-inspection-request') {
+                accepted_inspection_requests.style.display = 'none';
+                pending_inspection_requests.style.display = 'none';
+                rejected_inspection_requests.style.display = 'block';
+                completed_inspection_requests.style.display = 'none';
+            } else if (view == 'pending-inspection-requests') {
+                accepted_inspection_requests.style.display = 'none';
+                pending_inspection_requests.style.display = 'block';
+                rejected_inspection_requests.style.display = 'none';
+                completed_inspection_requests.style.display = 'none';
+            } else if (view == 'completed-inspection-requests') {
+                accepted_inspection_requests.style.display = 'none';
+                pending_inspection_requests.style.display = 'none';
+                rejected_inspection_requests.style.display = 'none';
+                completed_inspection_requests.style.display = 'block';
+            }
+        }
+
+        function changeUsersView(view) {
+            const total_vendors = document.getElementById('total-vendors');
+            const total_buyers = document.getElementById('total-buyers');
+
+            if (view == 'total-vendors') {
+                total_vendors.style.display = 'block';
+                total_buyers.style.display = 'none';
+            } else if (view == 'total-buyers') {
+                total_vendors.style.display = 'none';
+                total_buyers.style.display = 'block';
+            }
+        }
+
+        function changeStorageRequestsView(view) {
+            const pending_requests = document.getElementById('pending-storage-requests');
+            const approved_requests = document.getElementById('approved-storage-requests');
+
+            if (view == 'pending-storage-requests') {
+                pending_requests.style.display = 'block';
+                approved_requests.style.display = 'none';
+            } else if (view == 'approved-storage-requests') {
+                pending_requests.style.display = 'none';
+                approved_requests.style.display = 'block';
+            }
+        }
+
+        function changeFinancingRequestsView(view) {
+            const pending_financing_requests = document.getElementById('pending-financing-requests');
+            const approved_financing_requests = document.getElementById('approved-financing-requests');
+            const rejected_financing_requests = document.getElementById('rejected-financing-requests');
+
+            if (view == 'pending-financing-requests') {
+                pending_financing_requests.style.display = 'block';
+                approved_financing_requests.style.display = 'none';
+                rejected_financing_requests.style.display = 'none';
+            } else if (view == 'rejected-financing-requests') {
+                pending_financing_requests.style.display = 'none';
+                approved_financing_requests.style.display = 'none';
+                rejected_financing_requests.style.display = 'block';
+            } else if (view == 'approved-financing-requests') {
+                pending_financing_requests.style.display = 'none';
+                approved_financing_requests.style.display = 'block';
+                rejected_financing_requests.style.display = 'none';
+            }
+        }
+    </script>
 @endpush
