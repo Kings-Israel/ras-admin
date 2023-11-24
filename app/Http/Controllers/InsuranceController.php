@@ -258,12 +258,21 @@ class InsuranceController extends Controller
     public function updateCost(Request $request, InsuranceRequest $insurance_request)
     {
         $request->validate([
-            'insurance_cost' => ['required', 'integer']
+            'insurance_cost' => ['required', 'integer'],
+            'cost_description' => ['nullable', 'string'],
+            'cost_description_file' => ['nullable', 'mimes:pdf']
         ]);
 
         $insurance_request->update([
-            'cost' => $request->insurance_cost
+            'cost' => $request->insurance_cost,
+            'cost_description' => $request->cost_description,
         ]);
+
+        if ($request->hasFile('cost_description_file')) {
+            $insurance_request->update([
+                'cost_description_file' => pathinfo($request->cost_description_file->store('insurance', 'requests'), PATHINFO_BASENAME)
+            ]);
+        }
 
         toastr()->success('', 'Insurance request updated successfully');
 

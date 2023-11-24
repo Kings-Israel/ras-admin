@@ -97,14 +97,23 @@ class InspectionRequestController extends Controller
     public function updateCost(Request $request, InspectionRequest $inspection_request)
     {
         $request->validate([
-            'inspection_cost' => ['required', 'integer']
+            'inspection_cost' => ['required', 'integer'],
+            'cost_description' => ['nullable', 'string'],
+            'cost_description_file' => ['nullable', 'mimes:pdf']
         ]);
 
         $inspection_request->update([
-            'cost' => $request->inspection_cost
+            'cost' => $request->inspection_cost,
+            'cost_description' => $request->cost_description,
         ]);
 
-        toastr()->success('', 'Inspection report updated successfully');
+        if ($request->hasFile('cost_description_file')) {
+            $inspection_request->update([
+                'cost_description_file' => pathinfo($request->cost_description_file->store('inspection', 'requests'), PATHINFO_BASENAME)
+            ]);
+        }
+
+        toastr()->success('', 'Inspection request updated successfully');
 
         return back();
     }

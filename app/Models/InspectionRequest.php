@@ -18,6 +18,17 @@ class InspectionRequest extends Model
     protected $guarded = [];
 
     /**
+     * Get the cost description file
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getCostDescriptionFileAttribute($value)
+    {
+        return config('app.url').'/storage/requests/inspection/'.$value;
+    }
+
+    /**
      * Get the inspectingInstitution that owns the InspectionReport
      */
     public function inspectingInstitution(): BelongsTo

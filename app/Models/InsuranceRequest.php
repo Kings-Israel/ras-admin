@@ -11,11 +11,22 @@ class InsuranceRequest extends Model
     use HasFactory;
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that aren't mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['cost'];
+    protected $guarded = [];
+
+    /**
+     * Get the cost description file
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getCostDescriptionFileAttribute($value)
+    {
+        return config('app.url').'/storage/requests/insurance/'.$value;
+    }
 
     /**
      * Get the orderItem that owns the InsuranceRequest
