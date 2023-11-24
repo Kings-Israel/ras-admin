@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Models\Country;
+use App\Models\OrderStorageRequest;
 use App\Models\StorageRequest;
 use App\Models\StoreRequest;
 use App\Models\User;
@@ -285,7 +286,6 @@ class WarehouseController extends Controller
 
     public function storageRequest(WarehouseOrder $warehouse_order)
     {
-        dd($warehouse_order);
         $warehouse_order->load('orderItem.product.media');
 
         return view('warehouses.orders.show', [
@@ -297,5 +297,24 @@ class WarehouseController extends Controller
             ],
             'warehouse_storage_request' => $warehouse_order
         ]);
+    }
+
+    public function updateCost(Request $request, OrderStorageRequest $order_storage)
+    {
+        $request->validate([
+            'storage_cost' => ['required', 'integer'],
+            'cost_description' => ['nullable', 'string'],
+            'cost_description_file' => ['nullable', 'mimes:pdf']
+        ]);
+
+        $order_storage->update([
+            'cost' => $request->storage_cost,
+            'cost_description' => $request->cost_description,
+            'cost_description_file' => pathinfo($request->cost_description_file->store('storage', 'requests'), PATHINFO_BASENAME)
+        ]);
+
+        toastr()->success('', 'Storage Request updated successfully');
+
+        return back();
     }
 }

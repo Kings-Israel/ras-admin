@@ -60,7 +60,7 @@
                 <div class="card">
                     <div class="d-flex justify-content-between">
                         <h6 class="card-title">Order Details</h6>
-                        <a href="{{ route('orders.show', ['order' => $inspection_request->orderItem->order]) }}" class="btn btn-sm btn-secondary mb-2">View Order</a>
+                        <a href="{{ route('orders.show', ['order' => $inspection_request->orderItem->order]) }}" class="btn btn-sm btn-secondary mb-2 btn-round">View Order</a>
                     </div>
                     <div class="body">
                         <h6><span class="mr-2">Order ID:</span><strong>{{ $inspection_request->orderItem->order->order_id }}</strong></h6>
@@ -78,7 +78,9 @@
                 <div class="card">
                     <div class="d-flex justify-content-between">
                         <h6 class="card-title">Buyer</h6>
-                        <a href="{{ route('users.show', ['user' => $inspection_request->orderItem->order->user]) }}" class="btn btn-primary btn-sm mb-2">View User</a>
+                        @role('admin')
+                            <a href="{{ route('users.show', ['user' => $inspection_request->orderItem->order->user]) }}" class="btn btn-primary btn-sm mb-2 btn-round">View User</a>
+                        @endrole
                     </div>
                     <div class="body">
                         <h6><span class="mr-2">Name:</span><strong>{{ $inspection_request->orderItem->order->user->first_name }} {{ $inspection_request->orderItem->order->user->last_name }}</strong></h6>
@@ -91,7 +93,7 @@
                 <div class="card">
                     <div class="d-flex justify-content-between">
                         <h6 class="card-title">Product</h6>
-                        <a href="#" class="btn btn-primary btn-sm mb-2">View Product</a>
+                        <a href="#" class="btn btn-secondary btn-sm mb-2 btn-round">View Product</a>
                     </div>
                     <div class="body">
                         <h6><span class="mr-2">Name:</span><strong>{{ $inspection_request->orderItem->product->name }}</strong></h6>
@@ -102,34 +104,86 @@
             </div>
             <div class="col-md-6 col-sm-12">
                 <div class="card">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="card-title">Vendor/Seller</h6>
+                        @role('admin')
+                            <a href="{{ route('vendors.show', ['business' => $inspection_request->orderItem->product->business]) }}" class="btn btn-primary btn-sm mb-2 btn-round">View Vendor</a>
+                        @endrole
+                    </div>
                     <div class="body">
-                        @can('update inspection report')
-                            <form action="{{ route('inspection.requests.cost.update', ['inspection_request' => $inspection_request]) }}" method="POST">
-                                <div class="row clearfix">
-                                    @csrf
-                                    <h6 for="role_name">Inspection Cost</h6>
-                                    <input type="number" min="0" class="form-control" placeholder="Enter Cost of Inspection" name="inspection_cost" autocomplete="off" />
+                        <h6><span class="mr-2">Name:</span><strong>{{ $inspection_request->orderItem->product->business->name }}</strong></h6>
+                        <h6><span class="mr-2">Email:</span><strong>{{ $inspection_request->orderItem->product->business->user->email }}</strong></h6>
+                        <h6><span class="mr-2">Phone Number:</span><strong>{{ $inspection_request->orderItem->product->business->user->phone_number }}</strong></h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="body">
+                        <div class="row">
+                            <div class="col-12">
+                                <h6><span>Inspection Request Status: </span><strong>{{ Str::title($inspection_request->status) }}</strong></h6>
+                            </div>
+                            <div class="col-12 row">
+                                @if ($inspection_request->cost)
+                                    <div class="col-12">
+                                        <span>Inspection Request Cost: </span>
+                                        <h6>
+                                            <strong>{{ number_format($inspection_request->cost) }}</strong>
+                                        </h6>
+                                    </div>
+                                @endif
+                                @if ($inspection_request->cost_description)
+                                    <div class="col-6">
+                                        <span>Inspection Request Cost Description: </span><br>
+                                        <span>
+                                            <strong>{{ $inspection_request->cost_description }}</strong>
+                                        </span>
+                                    </div>
+                                @endif
+                                @if ($inspection_request->cost_description_file)
+                                    <div class="col-6">
+                                        <span>Inspection Request Pro-forma: </span>
+                                        <h6>
+                                            <a href="{{ $inspection_request->cost_description_file }}" class="btn btn-sm btn-primary btn-round">View Pro-forma</a>
+                                        </h6>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @can('update inspection request')
+                <div class="col-md-12 col-sm-12">
+                    <form action="{{ route('inspection.requests.cost.update', ['inspection_request' => $inspection_request]) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="card">
+                            <div class="body">
+                                <h6>Enter/Update Inspection Cost</h6>
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="cost">Enter Inspection Cost</label>
+                                            <input type="number" min="0" class="form-control" placeholder="Enter Cost of Inspection" name="inspection_cost" autocomplete="off" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cost_description_file">Upload Pro-forma</label>
+                                            <input type="file" accept=".pdf" name="cost_description_file" class="form-control" id="" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <textarea name="cost_description" id="" rows="6" class="form-control" placeholder="Enter Cost Description"></textarea>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end">
                                     <button type="submit" class="btn btn-primary btn-round waves-effect">Submit</button>
                                 </div>
-                            </form>
-                        @endcan
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="body">
-                <div class="row">
-                    <div class="col-6">
-                        <h6><span>Inspection Request Status: </span><strong>{{ Str::title($inspection_request->status) }}</strong></h6>
-                    </div>
-                    @if ($inspection_request->cost)
-                        <div class="col-6">
-                            <h6><span>Inspection Request Cost: </span><strong>{{ number_format($inspection_request->cost) }}</strong></h6>
+                            </div>
                         </div>
-                    @endif
+                    </form>
                 </div>
-            </div>
+            @endcan
         </div>
         {{-- <div class="card">
             <div class="body">

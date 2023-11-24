@@ -64,6 +64,14 @@ return [
             'throw' => false,
         ],
 
+        'requests' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/requests'),
+            'url' => env('APP_URL').'/storage/requests',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         'marketing' => [
             'driver' => 'local',
             'root' => storage_path('app/public/marketing'),

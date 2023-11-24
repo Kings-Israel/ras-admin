@@ -30,7 +30,7 @@
                                         <th>Inspector</th>
                                     @endrole
                                     <th>Requested On</th>
-                                    <th></th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -46,7 +46,7 @@
                                         <td>{{ $inspection_request->created_at->format('d M Y') }}</td>
                                         <td>
                                             @can('view inspection report')
-                                                <a href="{{ route('inspection.requests.show', ['inspection_request' => $inspection_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">VIEW</a>
+                                                <a href="{{ route('inspection.requests.show', ['inspection_request' => $inspection_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">View</a>
                                             @endcan
                                         </td>
                                     </tr>
