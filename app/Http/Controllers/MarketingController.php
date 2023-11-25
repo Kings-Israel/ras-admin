@@ -47,7 +47,7 @@ class MarketingController extends Controller
 
         if ($request->hasFile('poster')) {
             $marketing_poster->update([
-                'poster' => pathinfo($request->poster->store('poster', 'marketing'), PATHINFO_BASENAME),
+                'image' => pathinfo($request->poster->store('poster', 'marketing'), PATHINFO_BASENAME),
             ]);
         }
 
