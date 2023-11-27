@@ -43,4 +43,13 @@ class InsuranceRequest extends Model
     {
         return $this->belongsTo(InsuranceCompany::class);
     }
+
+    public function hasCostDescriptionFile(): bool
+    {
+        if ($this->cost_description_file && $this->cost_description_file != config('app.url').'/storage/requests/insurance/') {
+            return true;
+        }
+
+        return false;
+    }
 }

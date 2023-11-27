@@ -28,6 +28,15 @@ class InspectionRequest extends Model
         return config('app.url').'/storage/requests/inspection/'.$value;
     }
 
+    public function hasCostDescriptionFile(): bool
+    {
+        if ($this->cost_descriptions_file && $this->cost_descriptions_file != config('app.url').'/storage/requests/inspection/') {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Get the inspectingInstitution that owns the InspectionReport
      */

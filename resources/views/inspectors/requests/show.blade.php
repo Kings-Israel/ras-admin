@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/chatapp.css') }}">
     <style>
         .actions-dropdown {
             position: absolute;
@@ -141,7 +142,7 @@
                                         </span>
                                     </div>
                                 @endif
-                                @if ($inspection_request->cost_description_file)
+                                @if ($inspection_request->hasCostDescriptionFile())
                                     <div class="col-6">
                                         <span>Inspection Request Pro-forma: </span>
                                         <h6>
@@ -155,24 +156,26 @@
                 </div>
             </div>
             @can('update inspection request')
-                <div class="col-md-12 col-sm-12">
+                <div class="col-md-5 col-sm-12">
                     <form action="{{ route('inspection.requests.cost.update', ['inspection_request' => $inspection_request]) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="card">
                             <div class="body">
                                 <h6>Enter/Update Inspection Cost</h6>
                                 <div class="row">
-                                    <div class="col-md-6 col-sm-12">
+                                    <div class="col-md-12 col-sm-12">
                                         <div class="form-group">
                                             <label for="cost">Enter Inspection Cost</label>
                                             <input type="number" min="0" class="form-control" placeholder="Enter Cost of Inspection" name="inspection_cost" autocomplete="off" />
                                         </div>
+                                    </div>
+                                    <div class="col-12">
                                         <div class="form-group">
                                             <label for="cost_description_file">Upload Pro-forma</label>
                                             <input type="file" accept=".pdf" name="cost_description_file" class="form-control" id="" />
                                         </div>
                                     </div>
-                                    <div class="col-md-6 col-sm-12">
+                                    <div class="col-md-12 col-sm-12">
                                         <textarea name="cost_description" id="" rows="6" class="form-control" placeholder="Enter Cost Description"></textarea>
                                     </div>
                                 </div>
@@ -182,6 +185,18 @@
                             </div>
                         </div>
                     </form>
+                </div>
+                <div class="col-md-7 col-sm-12">
+                    <div class="card">
+                        <div class="body overflowhidden" id="app">
+                            <order-chat-component
+                                email={{ $inspection_request->inspectingInstitution->email }}
+                                type='App\Models\InspectingInstitution'
+                                sender={{ $inspection_request->inspectingInstitution->id }}
+                                conversation={{ $conversation_id }}
+                            ></order-chat-component>
+                        </div>
+                    </div>
                 </div>
             @endcan
         </div>

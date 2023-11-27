@@ -72,6 +72,14 @@ return [
             'throw' => false,
         ],
 
+        'chat' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/chat'),
+            'url' => env('APP_URL').'/storage/chat',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         'marketing' => [
             'driver' => 'local',
             'root' => storage_path('app/public/marketing'),

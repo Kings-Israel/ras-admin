@@ -29,7 +29,7 @@
                                         <th>Insurer</th>
                                     @endrole
                                     <th>Requested On</th>
-                                    <th></th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -44,7 +44,7 @@
                                         <td>{{ $insurance_request->created_at->format('d M Y') }}</td>
                                         <td>
                                             @can('view insurance report')
-                                                <a href="{{ route('insurance.requests.show', ['insurance_request' => $insurance_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">VIEW</a>
+                                                <a href="{{ route('insurance.requests.show', ['insurance_request' => $insurance_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">View</a>
                                             @endcan
                                         </td>
                                     </tr>

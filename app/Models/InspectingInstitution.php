@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\Notifiable;
+use Musonza\Chat\Traits\Messageable;
 
 class InspectingInstitution extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, Messageable;
 
     /**
      * The attributes that aren't mass assignable.

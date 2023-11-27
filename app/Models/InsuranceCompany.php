@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Notifications\Notifiable;
+use Musonza\Chat\Traits\Messageable;
 
 class InsuranceCompany extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable, Messageable;
 
     /**
      * The attributes that aren't mass assignable.

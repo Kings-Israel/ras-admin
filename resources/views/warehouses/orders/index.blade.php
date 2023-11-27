@@ -27,13 +27,13 @@
                             <tbody>
                                 @foreach ($orders as $warehouse_order)
                                     <tr>
-                                        <td>{{ $warehouse_order->order->order_id }}</td>
+                                        <td>{{ $warehouse_order->orderItem->order->order_id }}</td>
                                         <td>{{ $warehouse_order->orderItem->order->user->first_name }} {{ $warehouse_order->orderItem->order->user->last_name }}</td>
-                                        <td>{{ $warehouse_order->order->business->name }}</td>
-                                        <td><span class="badge {{ $warehouse_order->order->resolveOrderBadgeStatus() }}">{{ Str::title($warehouse_order->order->status) }}</span></td>
-                                        <td>{{ $warehouse_order->order->created_at->format('d M Y') }}</td>
+                                        <td>{{ $warehouse_order->orderItem->order->business->name }}</td>
+                                        <td><span class="badge {{ $warehouse_order->orderItem->order->resolveOrderBadgeStatus() }}">{{ Str::title($warehouse_order->orderItem->order->status) }}</span></td>
+                                        <td>{{ $warehouse_order->created_at->format('d M Y') }}</td>
                                         <td>
-                                            <a href="{{ route('warehouses.orders.request.details', ['warehouse' => $warehouse_order->warehouse, 'warehouse_order' => $warehouse_order]) }}" class="btn btn-sm btn-primary btn-round waves-effect">Details</a>
+                                            <a href="{{ route('warehouses.orders.requests.details', ['storage_request' => $warehouse_order]) }}" class="btn btn-sm btn-primary btn-round waves-effect">Details</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -55,6 +55,6 @@
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
     {{-- <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script> --}}
     <script>
-        $('#orders').DataTable().order([5, 'desc']).draw();
+        $('#orders').DataTable().order([4, 'desc']).draw();
     </script>
 @endpush

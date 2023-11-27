@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\InspectionReport;
 use App\Models\InspectionRequest;
+use App\Models\OrderConversation;
 use Illuminate\Http\Request;
+use Chat;
 
 class InspectionRequestController extends Controller
 {
@@ -54,7 +56,25 @@ class InspectionRequestController extends Controller
 
     public function show(InspectionRequest $inspection_request)
     {
-        $inspection_request->load('orderItem.product.business', 'orderItem.product.media');
+        $inspection_request->load('orderItem.product.business', 'orderItem.product.media', 'orderItem.order.business', 'orderItem.order.user');
+
+        $inspector = $inspection_request->inspectingInstitution;
+        $user = $inspection_request->orderItem->order->user;
+
+        $conversation = Chat::conversations()->between($user, $inspector);
+
+        if (!$conversation) {
+            $participants = [$user, $inspector];
+            $conversation = Chat::createConversation($participants);
+            $conversation->update([
+                'direct_message' => true,
+            ]);
+        }
+
+        OrderConversation::firstOrCreate([
+            'order_id' => $inspection_request->orderItem->order->id,
+            'conversation_id' => $conversation->id,
+        ]);
 
         return view('inspectors.requests.show', [
             'page' => 'Inspection Request',
@@ -62,7 +82,8 @@ class InspectionRequestController extends Controller
                 'Inspection Requests' => route('inspection.requests.index'),
                 'Inpection Request Details' => route('inspection.requests.show', ['inspection_request' => $inspection_request])
             ],
-            'inspection_request' => $inspection_request
+            'inspection_request' => $inspection_request,
+            'conversation_id' => $conversation->id,
         ]);
     }
 
