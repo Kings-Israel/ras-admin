@@ -13,28 +13,28 @@
                             <table class="table table-hover dataTable js-exportable">
                                 <thead>
                                 <tr>
-                                    <th>Name</th>
+                                    <th>Order ID</th>
                                     @role('admin')
                                         <th>Logistics Company</th>
                                     @endrole
                                     <th>Quantity</th>
                                     <th>Requested On</th>
                                     <th>Status</th>
-                                    <th></th>
+                                    <th>Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach ($requests as $delivery_request)
                                     <tr>
-                                        <td>{{ $delivery_request->order->user->first_name }} {{ $delivery_request->order->user->last_name }}</td>
+                                        <td>{{ $delivery_request->orderItem->order->order_id }}</td>
                                         @role('admin')
                                             <td>{{ $delivery_request->logisticsCompany->name }}</td>
                                         @endrole
-                                        <td>{{ $delivery_request->order->orderItems->count() }}</td>
+                                        <td>{{ $delivery_request->orderItem->quantity }}</td>
                                         <td>{{ $delivery_request->created_at->format('d M Y') }}</td>
                                         <td>{{ Str::title($delivery_request->status) }}</td>
                                         <td>
-                                            <a class="btn btn-sm btn-primary waves-effect btn-round" href="#" >View</a>
+                                            <a class="btn btn-sm btn-primary waves-effect btn-round" href="{{ route('deliveries.show', ['delivery_request' => $delivery_request]) }}" >View</a>
                                         </td>
                                     </tr>
                                 @endforeach

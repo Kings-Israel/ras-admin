@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\Admin\LogController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryRequestController;
 use App\Http\Controllers\PackagingController;
@@ -29,6 +30,12 @@ use Livewire\Livewire;
 Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
+    Route::get('/conversations/{user?}', [ChatController::class, 'conversations']);
+    Route::get('/conversations/order/{order}', [ChatController::class, 'orderConversations']);
+    Route::get('/chat/{user?}', [ChatController::class, 'index'])->name('messages');
+    Route::get('/messages/chat/{id}', [ChatController::class, 'view'])->name('messages.chat');
+    Route::post('/messages/send', [ChatController::class, 'store'])->name('messages.send');
+
     // Warehouses
     Route::group(['prefix' => 'warehouses', 'as' => 'warehouses.'], function () {
         Route::get('/', [WarehouseController::class, 'index'])->name('index');
@@ -39,14 +46,15 @@ Route::middleware(['auth', 'web'])->group(function () {
         Route::patch('/{warehouse}/update', [WarehouseController::class, 'update'])->name('update');
 
         // Storage Requests
-        Route::group(['prefix' => '{warehouse}/storage/requests', 'as' => 'storage.requests.'], function () {
-            Route::get('/', [StorageRequestController::class, 'index'])->name('index');
-        });
+        // Route::group(['prefix' => '{warehouse}/storage/requests', 'as' => 'storage.requests.'], function () {
+        //     Route::get('/', [StorageRequestController::class, 'index'])->name('index');
+        // });
 
         // Orders
         Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
-            Route::get('/{warehouse}/orders', [WarehouseController::class, 'orders'])->name('index');
-            Route::geT('/{warehouse}/{warehouse_order}/details', [WarehouseController::class, 'orders'])->name('request.details');
+            Route::get('/{warehouse}/orders', [WarehouseController::class, 'orders'])->name('requests.index');
+            Route::get('/{storage_request}/details', [WarehouseController::class, 'order'])->name('requests.details');
+            Route::post('/{storage_request}/cost/update', [WarehouseController::class, 'updateCost'])->name('requests.cost.update');
         });
     });
 
@@ -110,8 +118,9 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::resource('/logistics', LogisticsController::class);
     Route::group(['prefix' => 'deliveries/', 'as' => 'deliveries.'], function () {
         Route::get('/', [DeliveryRequestController::class, 'index'])->name('index');
-        Route::get('{order_delivery_request}', [DeliveryRequestController::class, 'show'])->name('show');
-        Route::post('{order_delivery_request}/update', [DeliveryRequestController::class, 'update'])->name('update');
+        Route::get('{delivery_request}', [DeliveryRequestController::class, 'show'])->name('show');
+        Route::post('{delivery_request}/update', [DeliveryRequestController::class, 'update'])->name('update');
+        Route::post('{delivery_request}/cost/update', [DeliveryRequestController::class, 'updateCost'])->name('requests.cost.update');
     });
 
     // Roles and Permissions
@@ -207,7 +216,7 @@ Route::middleware(['auth', 'web'])->group(function () {
 
 if (config('app.env') == 'production') {
     Livewire::setUpdateRoute(function ($handle) {
-        return Route::post('/rsa-admin/livewire/update', $handle);
+        return Route::post('/livewire/update', $handle);
     });
 }
 

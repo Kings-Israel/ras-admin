@@ -18,6 +18,17 @@ class OrderStorageRequest extends Model
     protected $guarded = [];
 
     /**
+     * Get the cost description file
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getCostDescriptionFileAttribute($value)
+    {
+        return config('app.url').'/storage/requests/warehousing/'.$value;
+    }
+
+    /**
      * Get the orderItem that owns the OrderStorageRequest
      */
     public function orderItem(): BelongsTo
@@ -31,5 +42,14 @@ class OrderStorageRequest extends Model
     public function warehouse(): BelongsTo
     {
         return $this->belongsTo(Warehouse::class);
+    }
+
+    public function hasCostDescriptionFile(): bool
+    {
+        if ($this->cost_description_file && $this->cost_description_file != config('app.url').'/storage/requests/warehousing/') {
+            return true;
+        }
+
+        return false;
     }
 }

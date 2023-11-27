@@ -8,9 +8,11 @@ use App\Models\InsuranceCompany;
 use App\Models\InsuranceRequest;
 use App\Models\InsuranceCompanyUser;
 use App\Models\InsuranceReport;
+use App\Models\OrderConversation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
+use Chat;
 
 class InsuranceController extends Controller
 {
@@ -245,13 +247,32 @@ class InsuranceController extends Controller
     {
         $insurance_request->load('orderItem.product.business', 'orderItem.product.media');
 
+        $insurer = $insurance_request->insuranceCompany;
+        $user = $insurance_request->orderItem->order->user;
+
+        $conversation = Chat::conversations()->between($user, $insurer);
+
+        if (!$conversation) {
+            $participants = [$user, $insurer];
+            $conversation = Chat::createConversation($participants);
+            $conversation->update([
+                'direct_message' => true,
+            ]);
+        }
+
+        OrderConversation::firstOrCreate([
+            'order_id' => $insurance_request->orderItem->order->id,
+            'conversation_id' => $conversation->id,
+        ]);
+
         return view('insurance.requests.show', [
             'page' => 'Insurance Request',
             'breadcrumbs' => [
                 'Insurance Requests' => route('insurance.requests.index'),
                 'Insurance Request Details' => route('insurance.requests.show', ['insurance_request' => $insurance_request])
             ],
-            'insurance_request' => $insurance_request
+            'insurance_request' => $insurance_request,
+            'conversation_id' => $conversation->id,
         ]);
     }
 

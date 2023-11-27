@@ -40,4 +40,13 @@ class OrderDeliveryRequest extends Model
     {
         return $this->belongsTo(OrderItem::class);
     }
+
+    public function hasCostDescriptionFile(): bool
+    {
+        if ($this->cost_description_file) {
+            return true;
+        }
+
+        return false;
+    }
 }

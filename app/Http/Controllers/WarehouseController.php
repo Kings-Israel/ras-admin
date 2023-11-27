@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Models\Country;
+use App\Models\OrderConversation;
 use App\Models\OrderStorageRequest;
 use App\Models\StorageRequest;
 use App\Models\StoreRequest;
@@ -14,6 +15,7 @@ use App\Models\WarehouseOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Password;
+use Chat;
 
 class WarehouseController extends Controller
 {
@@ -272,34 +274,68 @@ class WarehouseController extends Controller
 
     public function orders(Warehouse $warehouse)
     {
-        $orders = WarehouseOrder::where('warehouse_id', $warehouse->id)->get();
+        $orders = OrderStorageRequest::with('orderItem.order.business', 'orderItem.product.media')->where('warehouse_id', $warehouse->id)->get();
 
         return view('warehouses.orders.index', [
             'page' => 'Warehouse Order Storage Request',
             'breadcrumbs' => [
                 'Warehouses' => route('warehouses.index'),
-                'Warehouse Orders' => route('warehouses.orders.index', ['warehouse' => $warehouse])
+                'Warehouse Orders' => route('warehouses.orders.requests.index', ['warehouse' => $warehouse])
             ],
             'orders' => $orders
         ]);
     }
 
-    public function storageRequest(WarehouseOrder $warehouse_order)
+    public function order(OrderStorageRequest $storage_request)
     {
-        $warehouse_order->load('orderItem.product.media');
+        $storage_request->load('orderItem.product.business', 'orderItem.product.media', 'orderItem.order.business', 'orderItem.order.user');
+
+        $warehouse = $storage_request->warehouse;
+        $user = $storage_request->orderItem->order->user;
+
+        $conversation = Chat::conversations()->between($user, $warehouse);
+
+        if (!$conversation) {
+            $participants = [$user, $warehouse];
+            $conversation = Chat::createConversation($participants);
+            $conversation->update([
+                'direct_message' => true,
+            ]);
+
+        }
+
+        OrderConversation::firstOrCreate([
+            'order_id' => $storage_request->orderItem->order->id,
+            'conversation_id' => $conversation->id,
+        ]);
 
         return view('warehouses.orders.show', [
-            'page' => 'Order Storage Request',
+            'page' => 'Storage Request',
             'breadcrumbs' => [
-                'Warehouses' => route('warehouses.index'),
-                'Order Storage Requests' => route('warehouses.orders.index', ['warehouse' => $warehouse_order->warehouse]),
-                'Storage Request' => route('warehouses.orders.request.details', ['warehouse_order' => $warehouse_order])
+                'Storage Requests' => route('warehouses.orders.requests.index', ['warehouse' => $storage_request->warehouse]),
+                'Storage Request Details' => route('warehouses.orders.requests.details', ['storage_request' => $storage_request])
             ],
-            'warehouse_storage_request' => $warehouse_order
+            'storage_request' => $storage_request,
+            'conversation_id' => $conversation->id,
         ]);
     }
 
-    public function updateCost(Request $request, OrderStorageRequest $order_storage)
+    // public function storageRequest(WarehouseOrder $warehouse_order)
+    // {
+    //     $warehouse_order->load('orderItem.product.media');
+
+    //     return view('warehouses.orders.show', [
+    //         'page' => 'Order Storage Request',
+    //         'breadcrumbs' => [
+    //             'Warehouses' => route('warehouses.index'),
+    //             'Order Storage Requests' => route('warehouses.orders.index', ['warehouse' => $warehouse_order->warehouse]),
+    //             'Storage Request' => route('warehouses.orders.request.details', ['warehouse_order' => $warehouse_order])
+    //         ],
+    //         'warehouse_storage_request' => $warehouse_order
+    //     ]);
+    // }
+
+    public function updateCost(Request $request, OrderStorageRequest $storage_request)
     {
         $request->validate([
             'storage_cost' => ['required', 'integer'],
@@ -307,10 +343,10 @@ class WarehouseController extends Controller
             'cost_description_file' => ['nullable', 'mimes:pdf']
         ]);
 
-        $order_storage->update([
+        $storage_request->update([
             'cost' => $request->storage_cost,
             'cost_description' => $request->cost_description,
-            'cost_description_file' => pathinfo($request->cost_description_file->store('storage', 'requests'), PATHINFO_BASENAME)
+            'cost_description_file' => pathinfo($request->cost_description_file->store('warehousing', 'requests'), PATHINFO_BASENAME)
         ]);
 
         toastr()->success('', 'Storage Request updated successfully');

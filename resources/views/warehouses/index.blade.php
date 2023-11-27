@@ -11,9 +11,9 @@
             z-index: 99;
             background: #c2c2c2;
             border-radius: 10px;
-            width: 180px;
+            width: 200px;
             margin-top: 15px;
-            margin-left: -20px;
+            margin-left: -10px;
         }
     </style>
     {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
@@ -42,7 +42,7 @@
                                     <th>No. of Products</th>
                                     <th>Price</th>
                                     <th>Added on</th>
-                                    <th></th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -56,7 +56,7 @@
                                         <td>{{ $warehouse->created_at->format('d M Y') }}</td>
                                         <td>
                                             <div class="btn-group" x-data="{ open: false }">
-                                                <button class="mr-2 btn btn-primary btn-sm dropdown-toggle" type="button"
+                                                <button class="mr-2 btn btn-primary btn-sm dropdown-toggle btn-round" type="button"
                                                     x-on:click="open = ! open">
                                                     <i data-feather="eye"></i>
                                                     Actions
@@ -81,11 +81,11 @@
                                                             <span>View</span>
                                                         </a>
                                                     @endcan
-                                                    <a class="dropdown-item" href="{{ route('warehouses.storage.requests.index', ['warehouse' => $warehouse->id]) }}">
+                                                    {{-- <a class="dropdown-item" href="{{ route('warehouses.storage.requests.index', ['warehouse' => $warehouse->id]) }}">
                                                         <span>Storage Requests</span></a>
-                                                    </a>
-                                                    <a class="dropdown-item" href="{{ route('warehouses.orders.index', ['warehouse' => $warehouse->id]) }}">
-                                                        <span>Orders</span></a>
+                                                    </a> --}}
+                                                    <a class="dropdown-item" href="{{ route('warehouses.orders.requests.index', ['warehouse' => $warehouse->id]) }}">
+                                                        <span>Orders Storage Requests</span></a>
                                                     </a>
                                                 </div>
                                             </div>
