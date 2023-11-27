@@ -216,7 +216,7 @@ Route::middleware(['auth', 'web'])->group(function () {
 
 if (config('app.env') == 'production') {
     Livewire::setUpdateRoute(function ($handle) {
-        return Route::post('/rsa-admin/livewire/update', $handle);
+        return Route::post('/livewire/update', $handle);
     });
 }
 

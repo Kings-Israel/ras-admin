@@ -84,7 +84,7 @@
                                                     {{-- <a class="dropdown-item" href="{{ route('warehouses.storage.requests.index', ['warehouse' => $warehouse->id]) }}">
                                                         <span>Storage Requests</span></a>
                                                     </a> --}}
-                                                    <a class="dropdown-item" href="{{ route('warehouses.orders.index', ['warehouse' => $warehouse->id]) }}">
+                                                    <a class="dropdown-item" href="{{ route('warehouses.orders.requests.index', ['warehouse' => $warehouse->id]) }}">
                                                         <span>Orders Storage Requests</span></a>
                                                     </a>
                                                 </div>
