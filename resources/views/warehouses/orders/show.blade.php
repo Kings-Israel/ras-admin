@@ -191,7 +191,7 @@
                     <div class="card">
                         <div class="body overflowhidden" id="app">
                             <order-chat-component
-                                email={{ $storage_request->warehouse->email }}
+                                email={{ auth()->user()->email }}
                                 type='App\Models\Warehouse'
                                 sender={{ $storage_request->warehouse->id }}
                                 conversation={{ $conversation_id }}
