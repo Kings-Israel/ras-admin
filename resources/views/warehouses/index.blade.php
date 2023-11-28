@@ -29,7 +29,7 @@
                     <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
                         @can('create warehouse')
-                            <a class="btn btn-secondary btn-sm" href="{{ route('warehouses.create') }}">Add Warehouse</a>
+                            <a class="btn btn-secondary btn-sm btn-round" href="{{ route('warehouses.create') }}">Add Warehouse</a>
                         @endcan
                     </div>
                     <div class="body">
