@@ -34,19 +34,19 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($inspection_requests as $inspection_request)
+                                @foreach ($orders as $inspection_request)
                                     <tr>
                                         <td>{{ $inspection_request->orderItem->order->order_id }}</td>
                                         {{-- <td>{{ $inspection_request->order->orderItems->count() }}</td> --}}
                                         <td>{{ Str::title($inspection_request->status) }}</td>
                                         <td>{{ $inspection_request->orderItem->order->user->first_name }} {{ $inspection_request->orderItem->order->user->last_name }}</td>
                                         @role('admin')
-                                            <td>{{ $inspection_request->inspectingInstitution->name }}</td>
+                                            <td>{{ $inspection_request->requesteable->name }}</td>
                                         @endrole
                                         <td>{{ $inspection_request->created_at->format('d M Y') }}</td>
                                         <td>
                                             @can('view inspection report')
-                                                <a href="{{ route('inspection.requests.show', ['inspection_request' => $inspection_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">View</a>
+                                                <a href="{{ route('inspection.requests.show', ['order_request' => $inspection_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">View</a>
                                             @endcan
                                         </td>
                                     </tr>

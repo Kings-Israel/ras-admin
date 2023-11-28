@@ -46,6 +46,15 @@
                                     </div>
                                 </div>
                                 <div class="col-6">
+                                    <label for="country">Transportation Methods</label>
+                                    <select name="transportation_methods[]" class="form-control show-tick" id="transportation_method" multiple>
+                                        @foreach ($transportation_methods as $method)
+                                            <option value="{{ $method }}" @if(old('transportation_methods') && in_array($method, old('transportation_methods'))) selected @endif>{{ $method }}</option>
+                                        @endforeach
+                                    </select>
+                                    <x-input-error :messages="$errors->get('country_id')" class="mt-2 list-unstyled"></x-input-error>
+                                </div>
+                                <div class="col-6">
                                     <label for="country">Country</label>
                                     <select name="country_id" class="form-control show-tick" id="country">
                                         <option value="">Select Country</option>

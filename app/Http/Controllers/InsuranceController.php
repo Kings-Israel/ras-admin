@@ -9,6 +9,7 @@ use App\Models\InsuranceRequest;
 use App\Models\InsuranceCompanyUser;
 use App\Models\InsuranceReport;
 use App\Models\OrderConversation;
+use App\Models\OrderRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -230,25 +231,37 @@ class InsuranceController extends Controller
         return redirect()->route('insurance.companies.index');
     }
 
-    public function requests()
+    public function orders()
     {
-        $insurance_requests = InsuranceRequest::with('insuranceCompany', 'orderItem.product.media')->get();
+        // $orders = OrderStorageRequest::with('orderItem.order.business', 'orderItem.product.media')->where('warehouse_id', $warehouse->id)->get();
+        $orders = OrderRequest::with('orderItem.order.business', 'orderItem.product.media')->where('requesteable_type', InsuranceCompany::class)->get();
+
+        if (auth()->user()->hasRole('admin')) {
+            $orders = OrderRequest::with('orderItem.product.business', 'orderItem.order')->where('requesteable_type', InsuranceCompany::class)->get();
+        } else {
+            if (auth()->user()->hasPermissionTo('view inspection report') && count(auth()->user()->insuranceCompanies) <= 0) {
+                $orders = OrderRequest::with('orderItem.product.business', 'orderItem.order')->where('requesteable_type', InsuranceCompany::class)->get();
+            } else {
+                $user_insurance_companies_ids = auth()->user()->insuranceCompanies->pluck('id');
+                $orders = OrderRequest::with('orderItem.product.business', 'orderItem.order')->whereIn('requesteable_id', $user_insurance_companies_ids)->where('requesteable_type', InsuranceCompany::class)->get();
+            }
+        }
 
         return view('insurance.requests.index', [
-            'page' => 'Insurance Requests',
+            'page' => 'Inspection Requests',
             'breadcrumbs' => [
-                'Insurance Requests' => route('insurance.requests.index'),
+                'Insurance Requests' => route('insurance.requests.index')
             ],
-            'insurance_requests' => $insurance_requests
+            'orders' => $orders
         ]);
     }
 
-    public function request(InsuranceRequest $insurance_request)
+    public function order(OrderRequest $order_request)
     {
-        $insurance_request->load('orderItem.product.business', 'orderItem.product.media');
+        $order_request->load('orderItem.product.business', 'orderItem.product.media', 'orderItem.order.business', 'orderItem.order.user');
 
-        $insurer = $insurance_request->insuranceCompany;
-        $user = $insurance_request->orderItem->order->user;
+        $insurer = $order_request->requesteable;
+        $user = $order_request->orderItem->order->user;
 
         $conversation = Chat::conversations()->between($user, $insurer);
 
@@ -258,46 +271,23 @@ class InsuranceController extends Controller
             $conversation->update([
                 'direct_message' => true,
             ]);
+
         }
 
         OrderConversation::firstOrCreate([
-            'order_id' => $insurance_request->orderItem->order->id,
+            'order_id' => $order_request->orderItem->order->id,
             'conversation_id' => $conversation->id,
         ]);
 
         return view('insurance.requests.show', [
-            'page' => 'Insurance Request',
+            'page' => 'Storage Request',
             'breadcrumbs' => [
                 'Insurance Requests' => route('insurance.requests.index'),
-                'Insurance Request Details' => route('insurance.requests.show', ['insurance_request' => $insurance_request])
+                'Insurance Request Details' => route('insurance.requests.show', ['order_request' => $order_request])
             ],
-            'insurance_request' => $insurance_request,
+            'order_request' => $order_request,
             'conversation_id' => $conversation->id,
         ]);
-    }
-
-    public function updateCost(Request $request, InsuranceRequest $insurance_request)
-    {
-        $request->validate([
-            'insurance_cost' => ['required', 'integer'],
-            'cost_description' => ['nullable', 'string'],
-            'cost_description_file' => ['nullable', 'mimes:pdf']
-        ]);
-
-        $insurance_request->update([
-            'cost' => $request->insurance_cost,
-            'cost_description' => $request->cost_description,
-        ]);
-
-        if ($request->hasFile('cost_description_file')) {
-            $insurance_request->update([
-                'cost_description_file' => pathinfo($request->cost_description_file->store('insurance', 'requests'), PATHINFO_BASENAME)
-            ]);
-        }
-
-        toastr()->success('', 'Insurance request updated successfully');
-
-        return back();
     }
 
     public function reports()

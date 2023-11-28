@@ -23,6 +23,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\InsuranceController;
+use App\Http\Controllers\OrderRequestController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 
@@ -35,6 +36,9 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/chat/{user?}', [ChatController::class, 'index'])->name('messages');
     Route::get('/messages/chat/{id}', [ChatController::class, 'view'])->name('messages.chat');
     Route::post('/messages/send', [ChatController::class, 'store'])->name('messages.send');
+
+    // Update Order Request
+    Route::post('/order-request/{order_request}/update', OrderRequestController::class)->name('order.request.update');
 
     // Warehouses
     Route::group(['prefix' => 'warehouses', 'as' => 'warehouses.'], function () {
@@ -53,8 +57,7 @@ Route::middleware(['auth', 'web'])->group(function () {
         // Orders
         Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
             Route::get('/{warehouse}/orders', [WarehouseController::class, 'orders'])->name('requests.index');
-            Route::get('/{storage_request}/details', [WarehouseController::class, 'order'])->name('requests.details');
-            Route::post('/{storage_request}/cost/update', [WarehouseController::class, 'updateCost'])->name('requests.cost.update');
+            Route::get('/{order_request}/details', [WarehouseController::class, 'order'])->name('requests.details');
         });
     });
 
@@ -103,9 +106,8 @@ Route::middleware(['auth', 'web'])->group(function () {
     // Inspectors
     Route::resource('/inspectors', InspectorController::class);
     Route::group(['prefix' => 'inspection/requests'], function () {
-        Route::get('/', [InspectionRequestController::class, 'index'])->name('inspection.requests.index');
-        Route::get('{inspection_request}/details', [InspectionRequestController::class, 'show'])->name('inspection.requests.show');
-        Route::post('{inspection_request}/cost/update', [InspectionRequestController::class, 'updateCost'])->name('inspection.requests.cost.update');
+        Route::get('/', [InspectorController::class, 'orders'])->name('inspection.requests.index');
+        Route::get('{order_request}/details', [InspectorController::class, 'order'])->name('inspection.requests.show');
         Route::post('{inspection_request}/reports/store', [InspectionRequestController::class, 'store'])->name('inspection.requests.reports.store');
     });
 
@@ -117,10 +119,11 @@ Route::middleware(['auth', 'web'])->group(function () {
     // Logistics
     Route::resource('/logistics', LogisticsController::class);
     Route::group(['prefix' => 'deliveries/', 'as' => 'deliveries.'], function () {
-        Route::get('/', [DeliveryRequestController::class, 'index'])->name('index');
-        Route::get('{delivery_request}', [DeliveryRequestController::class, 'show'])->name('show');
-        Route::post('{delivery_request}/update', [DeliveryRequestController::class, 'update'])->name('update');
-        Route::post('{delivery_request}/cost/update', [DeliveryRequestController::class, 'updateCost'])->name('requests.cost.update');
+        Route::group(['prefix' => 'requests/', 'as' => 'requests.'], function () {
+            Route::get('/', [LogisticsController::class, 'orders'])->name('index');
+            Route::get('{order_request}', [LogisticsController::class, 'order'])->name('show');
+            Route::post('{delivery_request}/update', [DeliveryRequestController::class, 'update'])->name('update');
+        });
     });
 
     // Roles and Permissions
@@ -152,10 +155,9 @@ Route::middleware(['auth', 'web'])->group(function () {
         });
 
         Route::group(['prefix' => '/requests', 'as' => 'requests.'], function () {
-            Route::get('/', [InsuranceController::class, 'requests'])->name('index');
-            Route::get('/{insurance_request}', [InsuranceController::class, 'request'])->name('show');
+            Route::get('/', [InsuranceController::class, 'orders'])->name('index');
+            Route::get('/{order_request}/details', [InsuranceController::class, 'order'])->name('show');
             Route::put('/{insurance_request}/update', [InsuranceController::class, 'updateRequest'])->name('update');
-            Route::post('/{insurance_request}/cost/update', [InsuranceController::class, 'updateCost'])->name('cost.update');
         });
 
         Route::group(['prefix' => '/reports', 'as' => 'reports.'], function () {

@@ -104,32 +104,8 @@
                         </ul>
                     </li>
                 @endrole
-                @can('view financing request', 'view financier')
-                    <li class="nav-item @if(Route::is('financing.*') || Route::is('financing-institutions.*')) active @endif">
-                        <a href="javascript:void(0)" class="menu-toggle"><i class="material-icons">account_balance</i><span>Financing Management</span></a>
-                        <ul class="ml-menu">
-                            @can('view financing request', 'view financiers')
-                                <li class="nav-item @if(Route::is('financing.institutions.*')) active open @endif">
-                                    <a href="{{ route('financing.institutions.index') }}">Financiers</a>
-                                </li>
-                            @endcan
-                            @can('view financing request')
-                                <li class="nav-item @if(Route::is('financing.institutions.customers') || Route::is('financing.institutions.customer')) active open @endif">
-                                    <a href="{{ route('financing.institutions.customers') }}">Customers</a>
-                                </li>
-                            @endcan
-                            {{-- @if(!auth()->user()->hasRole('admin'))
-                            @endif --}}
-                            @can('view financing request')
-                                <li class="nav-item @if(Route::is('financing.requests.*')) active open @endif">
-                                    <a href="{{ route('financing.requests.index') }}">Financing Requests</a>
-                                </li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endcan
                 @can('view logistics company', 'update logistics company', 'create logistics company', 'create stocklift request', 'update stocklift request', 'view stocklift request')
-                    <li class="nav-item @if(Route::is('logistics.*') || Route::is('logistics-reports.*')) active @endif">
+                    <li class="nav-item @if(Route::is('logistics.*') || Route::is('logistics-reports.*') || Route::is('deliveries.*')) active @endif">
                         <a href="javascript:void(0)" class="menu-toggle"><i class="material-icons">flight_takeoff</i><span>Logistics Management</span></a>
                         @can('view stocklift request', 'create stocklift request', 'update stocklift request')
                             <ul class="ml-menu">
@@ -139,14 +115,43 @@
                                     </li>
                                 @endcan
                                 @can('create stocklift request', 'update stocklift request', 'view stocklift request')
-                                    <li class="nav-item @if(Route::is('deliveries.*')) active open @endif">
-                                        <a href="{{ route('deliveries.index') }}">Deliveries</a>
+                                    <li class="nav-item @if(Route::is('deliveries.requests.*')) active open @endif">
+                                        <a href="{{ route('deliveries.requests.index') }}">Delivery Requests</a>
+                                    </li>
+                                @endcan
+                                @can('view stocklift request')
+                                    <li class="nav-item @if(Route::is('deliveries.reports.*')) active open @endif">
+                                        <a href="#">Delivery Reports</a>
                                     </li>
                                 @endcan
                             </ul>
                         @endcan
                     </li>
                 @endcan
+                @can('view financing request', 'view financier')
+                <li class="nav-item @if(Route::is('financing.*') || Route::is('financing-institutions.*')) active @endif">
+                    <a href="javascript:void(0)" class="menu-toggle"><i class="material-icons">account_balance</i><span>Financing Management</span></a>
+                    <ul class="ml-menu">
+                        @can('view financing request', 'view financiers')
+                            <li class="nav-item @if(Route::is('financing.institutions.*')) active open @endif">
+                                <a href="{{ route('financing.institutions.index') }}">Financiers</a>
+                            </li>
+                        @endcan
+                        @can('view financing request')
+                            <li class="nav-item @if(Route::is('financing.institutions.customers') || Route::is('financing.institutions.customer')) active open @endif">
+                                <a href="{{ route('financing.institutions.customers') }}">Customers</a>
+                            </li>
+                        @endcan
+                        {{-- @if(!auth()->user()->hasRole('admin'))
+                        @endif --}}
+                        @can('view financing request')
+                            <li class="nav-item @if(Route::is('financing.requests.*')) active open @endif">
+                                <a href="{{ route('financing.requests.index') }}">Financing Requests</a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endcan
                 @role('admin')
                     <li class="nav-item @if(Route::is('marketing.*')) active open @endif"> <a href="{{ route('marketing.index') }}"><i class="material-icons">extension</i><span>Marketing Management</span></a></li>
                 @endrole

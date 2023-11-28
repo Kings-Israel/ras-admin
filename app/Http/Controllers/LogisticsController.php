@@ -7,11 +7,14 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\LogisticsCompany;
 use App\Models\LogisticsCompanyUser;
+use App\Models\OrderConversation;
+use App\Models\OrderRequest;
 use App\Models\User;
 use App\Notifications\RoleUpdate;
 use App\Rules\PhoneNumber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
+use Chat;
 
 class LogisticsController extends Controller
 {
@@ -40,6 +43,7 @@ class LogisticsController extends Controller
     {
         $countries = Country::with('cities')->orderBy('name', 'ASC')->get();
         $users = User::where('email', '!=', 'admin@ras.com')->get();
+        $transportation_methods = ['Air', 'Road', 'Water', 'Rail'];
 
         return view('logistics.create', [
             'page' => 'Logistics Company',
@@ -48,7 +52,8 @@ class LogisticsController extends Controller
                 'Add Logistics Company' => route('logistics.create')
             ],
             'countries' => $countries,
-            'users' => $users
+            'users' => $users,
+            'transportation_methods' => $transportation_methods,
         ]);
     }
 
@@ -57,10 +62,10 @@ class LogisticsController extends Controller
         $request->validate([
             'company_name' => ['required'],
             'company_phone_number' => ['required', new PhoneNumber],
-            'company_email' => ['required'],
+            'company_email' => ['required', 'email'],
             'first_name' => ['required_without:users_ids',],
             'last_name' => ['required_without:users_ids'],
-            'email' => ['required_without:users_ids'],
+            'email' => ['required_without:users_ids', 'nullable', 'email'],
             'phone_number' => ['required_without:users', new PhoneNumber],
             'users_ids' => ['required_without:first_name', 'required_without:last_name', 'required_without:email', 'required_without:phone_number', 'array', 'nullable'],
             'users_ids.*' => ['integer'],
@@ -72,6 +77,7 @@ class LogisticsController extends Controller
             'email' => $request->company_email,
             'country_id' => $request->has('country_id') ? $request->country_id : NULL,
             'city_id' => $request->has('city_id') ? $request->city_id : NULL,
+            'transportation_methods' => $request->has('transportation_methods') ? json_encode($request->transportation_methods) : NULL,
         ]);
 
         if ($request->has('users') && $request->users != NULL) {
@@ -231,5 +237,63 @@ class LogisticsController extends Controller
         toastr()->success('', 'Logistics Company deleted successfully');
 
         return redirect()->route('financing-institutions.index');
+    }
+
+    public function orders()
+    {
+        // $orders = OrderStorageRequest::with('orderItem.order.business', 'orderItem.product.media')->where('warehouse_id', $warehouse->id)->get();
+        $orders = OrderRequest::with('orderItem.order.business', 'orderItem.product.media')->where('requesteable_type', LogisticsCompany::class)->get();
+
+        if (auth()->user()->hasRole('admin')) {
+            $orders = OrderRequest::with('orderItem.product.business', 'orderItem.order')->where('requesteable_type', LogisticsCompany::class)->get();
+        } else {
+            if (auth()->user()->hasPermissionTo('view inspection report') && count(auth()->user()->inspectors) <= 0) {
+                $orders = OrderRequest::with('orderItem.product.business', 'orderItem.order')->where('requesteable_type', LogisticsCompany::class)->get();
+            } else {
+                $user_inspecting_institutions_ids = auth()->user()->inspectors->pluck('id');
+                $orders = OrderRequest::with('orderItem.product.business', 'orderItem.order')->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', LogisticsCompany::class)->get();
+            }
+        }
+
+        return view('logistics.deliveries.requests.index', [
+            'page' => 'Delivery Requests',
+            'breadcrumbs' => [
+                'Delivery Requests' => route('deliveries.requests.index')
+            ],
+            'orders' => $orders
+        ]);
+    }
+
+    public function order(OrderRequest $order_request)
+    {
+        $order_request->load('orderItem.product.business', 'orderItem.product.media', 'orderItem.order.business', 'orderItem.order.user');
+
+        $logistics_company = $order_request->requesteable;
+        $user = $order_request->orderItem->order->user;
+
+        $conversation = Chat::conversations()->between($user, $logistics_company);
+
+        if (!$conversation) {
+            $participants = [$user, $logistics_company];
+            $conversation = Chat::createConversation($participants);
+            $conversation->update([
+                'direct_message' => true,
+            ]);
+        }
+
+        OrderConversation::firstOrCreate([
+            'order_id' => $order_request->orderItem->order->id,
+            'conversation_id' => $conversation->id,
+        ]);
+
+        return view('logistics.deliveries.requests.show', [
+            'page' => 'Delivery Request',
+            'breadcrumbs' => [
+                'Delivery Requests' => route('deliveries.requests.index', ['warehouse' => $order_request->requesteable]),
+                'Delivery Request Details' => route('deliveries.requests.show', ['order_request' => $order_request])
+            ],
+            'order_request' => $order_request,
+            'conversation_id' => $conversation->id,
+        ]);
     }
 }

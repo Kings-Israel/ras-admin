@@ -1,6 +1,12 @@
 @extends('layouts.app')
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css') }}">
+    <style>
+        #super{
+            vertical-align:super;
+            font-size: smaller;
+        }
+    </style>
 @endsection
 @section('content')
 <section class="content home">
@@ -13,27 +19,33 @@
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
                     </div>
                     <div class="body">
-                        <table class="table table-bordered table-striped table-hover dataTable js-exportable" id="orders">
+                        <table class="table table-hover dataTable js-exportable" id="delivery_requests">
                             <thead>
                                 <tr>
-                                    <th>Order ID</th>
-                                    <th>User Name</th>
-                                    <th>Vendor</th>
+                                    <th>ORDER ID</th>
                                     <th>Status</th>
-                                    <th>Created At</th>
-                                    <th>Actions</th>
+                                    <th>Customer</th>
+                                    @role('admin')
+                                        <th>Insurer</th>
+                                    @endrole
+                                    <th>Requested On</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($orders as $warehouse_order)
+                                @foreach ($orders as $delivery_request)
                                     <tr>
-                                        <td>{{ $warehouse_order->orderItem->order->order_id }}</td>
-                                        <td>{{ $warehouse_order->orderItem->order->user->first_name }} {{ $warehouse_order->orderItem->order->user->last_name }}</td>
-                                        <td>{{ $warehouse_order->orderItem->order->business->name }}</td>
-                                        <td><span class="badge {{ $warehouse_order->orderItem->order->resolveOrderBadgeStatus() }}">{{ Str::title($warehouse_order->orderItem->order->status) }}</span></td>
-                                        <td>{{ $warehouse_order->created_at->format('d M Y') }}</td>
+                                        <td>{{ $delivery_request->orderItem->order->order_id }}</td>
+                                        <td>{{ Str::title($delivery_request->status) }}</td>
+                                        <td>{{ $delivery_request->orderItem->order->user->first_name }} {{ $delivery_request->orderItem->order->user->last_name }}</td>
+                                        @role('admin')
+                                            <td>{{ $delivery_request->requesteable->name }}</td>
+                                        @endrole
+                                        <td>{{ $delivery_request->created_at->format('d M Y') }}</td>
                                         <td>
-                                            <a href="{{ route('warehouses.orders.requests.details', ['order_request' => $warehouse_order]) }}" class="btn btn-sm btn-primary btn-round waves-effect">Details</a>
+                                            @can('view stocklift request')
+                                                <a href="{{ route('deliveries.requests.show', ['order_request' => $delivery_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">View</a>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach
@@ -55,6 +67,6 @@
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
     {{-- <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script> --}}
     <script>
-        $('#orders').DataTable().order([4, 'desc']).draw();
+        $('#delivery_requests').DataTable().order([4, 'desc']).draw()
     </script>
 @endpush
