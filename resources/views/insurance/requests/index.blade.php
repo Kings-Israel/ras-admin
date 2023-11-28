@@ -33,18 +33,18 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($insurance_requests as $insurance_request)
+                                @foreach ($orders as $insurance_request)
                                     <tr>
                                         <td>{{ $insurance_request->orderItem->order->order_id }}</td>
                                         <td>{{ Str::title($insurance_request->status) }}</td>
                                         <td>{{ $insurance_request->orderItem->order->user->first_name }} {{ $insurance_request->orderItem->order->user->last_name }}</td>
                                         @role('admin')
-                                            <td>{{ $insurance_request->insuranceCompany->name }}</td>
+                                            <td>{{ $insurance_request->requesteable->name }}</td>
                                         @endrole
                                         <td>{{ $insurance_request->created_at->format('d M Y') }}</td>
                                         <td>
                                             @can('view insurance report')
-                                                <a href="{{ route('insurance.requests.show', ['insurance_request' => $insurance_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">View</a>
+                                                <a href="{{ route('insurance.requests.show', ['order_request' => $insurance_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">View</a>
                                             @endcan
                                         </td>
                                     </tr>

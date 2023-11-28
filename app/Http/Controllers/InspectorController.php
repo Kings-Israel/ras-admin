@@ -6,9 +6,12 @@ use App\Helpers\Helpers;
 use App\Models\Country;
 use App\Models\InspectingInstitution;
 use App\Models\InspectorUser;
+use App\Models\OrderConversation;
+use App\Models\OrderRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
+use Chat;
 
 class InspectorController extends Controller
 {
@@ -141,5 +144,64 @@ class InspectorController extends Controller
     public function destroy(InspectingInstitution $inspector)
     {
         //
+    }
+
+    public function orders()
+    {
+        // $orders = OrderStorageRequest::with('orderItem.order.business', 'orderItem.product.media')->where('warehouse_id', $warehouse->id)->get();
+        $orders = OrderRequest::with('orderItem.order.business', 'orderItem.product.media')->where('requesteable_type', InspectingInstitution::class)->get();
+
+        if (auth()->user()->hasRole('admin')) {
+            $orders = OrderRequest::with('orderItem.product.business', 'orderItem.order')->where('requesteable_type', InspectingInstitution::class)->get();
+        } else {
+            if (auth()->user()->hasPermissionTo('view inspection report') && count(auth()->user()->inspectors) <= 0) {
+                $orders = OrderRequest::with('orderItem.product.business', 'orderItem.order')->where('requesteable_type', InspectingInstitution::class)->get();
+            } else {
+                $user_inspecting_institutions_ids = auth()->user()->inspectors->pluck('id');
+                $orders = OrderRequest::with('orderItem.product.business', 'orderItem.order')->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', InspectingInstitution::class)->get();
+            }
+        }
+
+        return view('inspectors.requests.index', [
+            'page' => 'Inspection Requests',
+            'breadcrumbs' => [
+                'Inspection Requests' => route('inspection.requests.index')
+            ],
+            'orders' => $orders
+        ]);
+    }
+
+    public function order(OrderRequest $order_request)
+    {
+        $order_request->load('orderItem.product.business', 'orderItem.product.media', 'orderItem.order.business', 'orderItem.order.user');
+
+        $inspector = $order_request->requesteable;
+        $user = $order_request->orderItem->order->user;
+
+        $conversation = Chat::conversations()->between($user, $inspector);
+
+        if (!$conversation) {
+            $participants = [$user, $inspector];
+            $conversation = Chat::createConversation($participants);
+            $conversation->update([
+                'direct_message' => true,
+            ]);
+
+        }
+
+        OrderConversation::firstOrCreate([
+            'order_id' => $order_request->orderItem->order->id,
+            'conversation_id' => $conversation->id,
+        ]);
+
+        return view('inspectors.requests.show', [
+            'page' => 'Inspection Request',
+            'breadcrumbs' => [
+                'Inspection Requests' => route('inspection.requests.index', ['warehouse' => $order_request->requesteable]),
+                'Inspection Request Details' => route('inspection.requests.show', ['order_request' => $order_request])
+            ],
+            'order_request' => $order_request,
+            'conversation_id' => $conversation->id,
+        ]);
     }
 }

@@ -29,7 +29,7 @@
                                 <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h4 class="title" id="uploadInsuranceDocumentsLabel">Add Storage Report Documents</h4>
+                                            <h4 class="title" id="uploadInsuranceDocumentsLabel">Add Delivery Report Documents</h4>
                                         </div>
                                         {{-- <form action="{{ route('inspection.requests.reports.store', ['order_request' => $order_request]) }}" method="POST" enctype="multipart/form-data">
                                             @csrf
@@ -166,12 +166,21 @@
                     <div class="body">
                         <div class="row">
                             <div class="col-12">
-                                <h6><span>Storage Request Status: </span><strong>{{ Str::title($order_request->status) }}</strong></h6>
+                                <div class="d-flex">
+                                    <span class="mr-2">Delivery Request Status: </span>
+                                    <h6><strong>{{ Str::title($order_request->status) }}</strong></h6>
+                                </div>
+                                @if ($order_request->transportation_method)
+                                    <div class="d-flex">
+                                        <span class="mr-2">Preferred Tranport Method: </span>
+                                        <h6><strong>{{ Str::title($order_request->transportation_method) }}</strong></h6>
+                                    </div>
+                                @endif
                             </div>
                             <div class="col-12 row">
                                 @if ($order_request->cost)
                                     <div class="col-12">
-                                        <span>Storage Request Cost: </span>
+                                        <span>Delivery Request Cost: </span>
                                         <h6>
                                             <strong>{{ number_format($order_request->cost) }}</strong>
                                         </h6>
@@ -179,7 +188,7 @@
                                 @endif
                                 @if ($order_request->cost_description)
                                     <div class="col-6">
-                                        <span>Storage Request Cost Description: </span><br>
+                                        <span>Delivery Request Cost Description: </span><br>
                                         <span>
                                             <strong>{{ $order_request->cost_description }}</strong>
                                         </span>
@@ -187,7 +196,7 @@
                                 @endif
                                 @if ($order_request->hasCostDescriptionFile())
                                     <div class="col-6">
-                                        <span>Storage Request Pro-forma: </span>
+                                        <span>Delivery Request Pro-forma: </span>
                                         <h6>
                                             <a href="{{ $order_request->cost_description_file }}" class="btn btn-sm btn-primary btn-round">View Pro-forma</a>
                                         </h6>
@@ -198,32 +207,31 @@
                     </div>
                 </div>
             </div>
-            @can('update warehouse')
+            @can('update insurance request')
                 <div class="col-md-5 col-sm-12">
                     <form action="{{ route('order.request.update', ['order_request' => $order_request]) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="card">
                             <div class="body">
-                                <h6>Enter/Update Storage Cost</h6>
+                                <h6>Enter/Update Delivery/Logistics Cost</h6>
                                 <div class="row">
                                     <div class="col-md-12 col-sm-12">
                                         <div class="form-group">
-                                            <label for="cost">Enter Delivery Cost</label>
-                                            <input type="number" min="0" class="form-control" placeholder="Enter Cost of Storage" name="cost" autocomplete="off" />
-                                            <x-input-error :messages="$errors->get('cost')" class="mt-1" />
+                                            <label for="cost">Enter Insurance Cost</label>
+                                            <input type="number" min="0" class="form-control" placeholder="Enter Cost of Delivery/Logistics" name="cost" autocomplete="off" />
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class="form-group">
                                             <label for="cost_description_file">Upload Pro-forma</label>
                                             <input type="file" accept=".pdf" name="cost_description_file" class="form-control" id="" />
-                                            <x-input-error :messages="$errors->get('cost_description_file')" class="mt-1" />
                                         </div>
                                     </div>
                                     <div class="col-md-12 col-sm-12">
-                                        <label for="cost_description_file">Enter Cost Description</label>
-                                        <textarea name="cost_description" id="" rows="6" class="form-control" placeholder="Enter Cost Description"></textarea>
-                                        <x-input-error :messages="$errors->get('cost_description')" class="mt-1" />
+                                        <div class="form-group">
+                                            <label for="cost_description_file">Enter Cost Description</label>
+                                            <textarea name="cost_description" id="" rows="6" class="form-control" placeholder="Enter Cost Description"></textarea>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-end">
@@ -237,9 +245,9 @@
                     <div class="card">
                         <div class="body overflowhidden" id="app">
                             <order-chat-component
-                                email={{ auth()->user()->email }}
-                                type='App\Models\Warehouse'
-                                sender={{ $order_request->requesteable_id }}
+                                email={{ $order_request->requesteable->email }}
+                                type='App\Models\LogisticsCompany'
+                                sender={{ $order_request->requesteable->id }}
                                 conversation={{ $conversation_id }}
                             ></order-chat-component>
                         </div>

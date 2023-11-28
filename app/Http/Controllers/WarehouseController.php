@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\UserWarehouse;
 use App\Models\Warehouse;
 use App\Models\WarehouseOrder;
+use App\Models\OrderRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Password;
@@ -274,7 +275,7 @@ class WarehouseController extends Controller
 
     public function orders(Warehouse $warehouse)
     {
-        $orders = OrderStorageRequest::with('orderItem.order.business', 'orderItem.product.media')->where('warehouse_id', $warehouse->id)->get();
+        $orders = OrderRequest::with('orderItem.order.business', 'orderItem.product.media')->where('requesteable_id', $warehouse->id)->where('requesteable_type', Warehouse::class)->get();
 
         return view('warehouses.orders.index', [
             'page' => 'Warehouse Order Storage Request',
@@ -286,12 +287,12 @@ class WarehouseController extends Controller
         ]);
     }
 
-    public function order(OrderStorageRequest $storage_request)
+    public function order(OrderRequest $order_request)
     {
-        $storage_request->load('orderItem.product.business', 'orderItem.product.media', 'orderItem.order.business', 'orderItem.order.user');
+        $order_request->load('orderItem.product.business', 'orderItem.product.media', 'orderItem.order.business', 'orderItem.order.user');
 
-        $warehouse = $storage_request->warehouse;
-        $user = $storage_request->orderItem->order->user;
+        $warehouse = $order_request->requesteable;
+        $user = $order_request->orderItem->order->user;
 
         $conversation = Chat::conversations()->between($user, $warehouse);
 
@@ -301,21 +302,20 @@ class WarehouseController extends Controller
             $conversation->update([
                 'direct_message' => true,
             ]);
-
         }
 
         OrderConversation::firstOrCreate([
-            'order_id' => $storage_request->orderItem->order->id,
+            'order_id' => $order_request->orderItem->order->id,
             'conversation_id' => $conversation->id,
         ]);
 
         return view('warehouses.orders.show', [
             'page' => 'Storage Request',
             'breadcrumbs' => [
-                'Storage Requests' => route('warehouses.orders.requests.index', ['warehouse' => $storage_request->warehouse]),
-                'Storage Request Details' => route('warehouses.orders.requests.details', ['storage_request' => $storage_request])
+                'Storage Requests' => route('warehouses.orders.requests.index', ['warehouse' => $order_request->requesteable]),
+                'Storage Request Details' => route('warehouses.orders.requests.details', ['order_request' => $order_request])
             ],
-            'storage_request' => $storage_request,
+            'order_request' => $order_request,
             'conversation_id' => $conversation->id,
         ]);
     }
@@ -334,23 +334,4 @@ class WarehouseController extends Controller
     //         'warehouse_storage_request' => $warehouse_order
     //     ]);
     // }
-
-    public function updateCost(Request $request, OrderStorageRequest $storage_request)
-    {
-        $request->validate([
-            'storage_cost' => ['required', 'integer'],
-            'cost_description' => ['nullable', 'string'],
-            'cost_description_file' => ['nullable', 'mimes:pdf']
-        ]);
-
-        $storage_request->update([
-            'cost' => $request->storage_cost,
-            'cost_description' => $request->cost_description,
-            'cost_description_file' => pathinfo($request->cost_description_file->store('warehousing', 'requests'), PATHINFO_BASENAME)
-        ]);
-
-        toastr()->success('', 'Storage Request updated successfully');
-
-        return back();
-    }
 }
