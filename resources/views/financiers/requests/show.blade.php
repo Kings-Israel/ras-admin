@@ -38,10 +38,22 @@
                     </div>
                     <div class="body">
                         <h5><span class="mr-2">Invoice ID:</span><strong>{{ $financing_request->invoice->invoice_id }}</strong></h5>
-                        <h6><span class="mr-2">Total Amount:</span><strong>{{ $financing_request->invoice->calculateTotalAmount() }}</strong></h6>
-                        <h6><span class="mr-2">Number of Orders:</span><strong class="text-danger">{{ $financing_request->invoice->orders->count() }}</strong></h6>
-                        <h6><span class="mr-2">Delivery Location:</span><strong class="text-danger">{{ $financing_request->invoice->delivery_location_address }}</strong></h6>
-                        <h6><span class="mr-2">Created On:</span><strong class="text-danger">{{ $financing_request->created_at->format('d M Y') }}</strong></h6>
+                        <div class="d-flex">
+                            <span class="mr-2">Total Amount:</span>
+                            <h6><strong>{{ $financing_request->invoice->calculateTotalAmount() }}</strong></h6>
+                        </div>
+                        <div class="d-flex">
+                            <span class="mr-2">Number of Orders:</span>
+                            <h6><strong>{{ $financing_request->invoice->orders->count() }}</strong></h6>
+                        </div>
+                        <div class="d-flex">
+                            <span class="mr-2">Delivery Location:</span>
+                            <h6><strong>{{ $financing_request->invoice->delivery_location_address }}</strong></h6>
+                        </div>
+                        <div class="d-flex">
+                            <span class="mr-2">Created On:</span>
+                            <h6><strong>{{ $financing_request->created_at->format('d M Y') }}</strong></h6>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -52,9 +64,18 @@
                         <a href="{{ route('users.show', ['user' => $financing_request->invoice->user]) }}" class="btn btn-primary btn-sm mb-2">View User</a>
                     </div>
                     <div class="body">
-                        <h5><span class="mr-2">Name:</span><strong>{{ $financing_request->invoice->user->first_name }} {{ $financing_request->invoice->user->last_name }}</strong></h5>
-                        <h5><span class="mr-2">Email:</span><strong>{{ $financing_request->invoice->user->email }}</strong></h5>
-                        <h5><span class="mr-2">Phone Number:</span><strong>{{ $financing_request->invoice->user->phone_number }}</strong></h5>
+                        <div class="d-flex">
+                            <span class="mr-2">Name:</span>
+                            <h6><strong>{{ $financing_request->invoice->user->first_name }} {{ $financing_request->invoice->user->last_name }}</strong></h6>
+                        </div>
+                        <div class="d-flex">
+                            <span class="mr-2">Email:</span>
+                            <h6><strong>{{ $financing_request->invoice->user->email }}</strong></h6>
+                        </div>
+                        <div class="d-flex">
+                            <span class="mr-2">Phone Number:</span>
+                            <h6><strong>{{ $financing_request->invoice->user->phone_number }}</strong></h6>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -65,6 +65,7 @@ class Invoice extends Model
             foreach($order->orderItems as $order_item) {
                 $quantity = explode(' ', $order_item->quantity)[0];
                 $total_amount += $order_item->amount * $quantity;
+                $total_amount += $order_item->orderRequests->where('status', 'accepted')->sum('cost');
             }
         }
 
