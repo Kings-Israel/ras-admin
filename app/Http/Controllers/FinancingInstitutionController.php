@@ -230,12 +230,12 @@ class FinancingInstitutionController extends Controller
         $first_approved_requests = OrderFinancing::with('invoice.orders.orderItems')->where('financing_institution_id', $financing_institution->id)->where('first_approval_on', '!=', NULL)->get();
 
         foreach ($fully_approved_requests as $approved_requests) {
-            // foreach ($approved_requests->invoice as $invoice) {
-            //     foreach ($invoice->orders as $order) {
-            //         $amount_paid_out += $order->sum(fn ($order) => $order->orderItems->sum('amount'));
-            //     }
-            // }
-            $amount_paid_out = $approved_requests->sum(fn ($request) => $request->invoice->sum(fn ($inv) => $inv->order->sum(fn ($ord) => $ord->orderItems->sum('amount'))));
+            foreach ($approved_requests->invoice->orders as $order) {
+                foreach ($order->orderItems as $order_item) {
+                    $amount_paid_out += $order_item->amount;
+                }
+            }
+            // $amount_paid_out = $approved_requests->sum(fn ($request) => $request->invoice->sum(fn ($inv) => $inv->orders->sum('amount')));
         }
 
         foreach ($financing_requests as $request) {
