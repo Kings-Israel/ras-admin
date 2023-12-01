@@ -312,7 +312,6 @@ class DashboardController extends Controller
             $financing_total_invoices = Invoice::whereIn('id', $financing_req)
                 ->where('payment_status', 'accepted')
                 ->sum('total_amount');
-            dd($financing_total_invoices);
         }
         foreach($months as $month) {
             $requests_monthly = FinancingRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->count();
