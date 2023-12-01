@@ -19,36 +19,38 @@
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
                     </div>
                     <div class="body">
-                        <table class="table table-hover dataTable js-exportable" id="inspection_reports">
+                        <table class="table table-hover dataTable js-exportable" id="inspection_requests">
                             <thead>
                                 <tr>
                                     <th>ORDER ID</th>
-                                    <th>Product</th>
+                                    {{-- <th>No. of Order Items</th> --}}
+                                    <th>Status</th>
                                     <th>Customer</th>
-                                    <th>Created On</th>
-                                    <th></th>
+                                    <th>Payment Status</th>
+                                    @role('admin')
+                                        <th>Inspector</th>
+                                    @endrole
+                                    <th>Requested On</th>
+                                    @can('create inspection report')
+                                        <th>Actions</th>
+                                    @endcan
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($inspection_reports as $inspection_report)
+                                @foreach ($order_requests as $inspection_request)
                                     <tr>
-                                        <td>{{ $inspection_report->orderItem->order->order_id }}</td>
-                                        <td>{{ $inspection_report->orderItem->product->name }}</td>
-                                        <td>{{ $inspection_report->orderItem->order->user->first_name }} {{ $inspection_report->orderItem->order->user->last_name }}</td>
-                                        <td>{{ $inspection_report->created_at->format('d M Y') }}</td>
+                                        <td>{{ $inspection_request->orderItem->order->order_id }}</td>
+                                        {{-- <td>{{ $inspection_request->order->orderItems->count() }}</td> --}}
+                                        <td>{{ Str::title($inspection_request->status) }}</td>
+                                        <td>{{ $inspection_request->orderItem->order->user->first_name }} {{ $inspection_request->orderItem->order->user->last_name }}</td>
+                                        <td>{{ Str::title($inspection_request->orderItem->order->invoice->payment_status) }}</td>
+                                        @role('admin')
+                                            <td>{{ $inspection_request->requesteable->name }}</td>
+                                        @endrole
+                                        <td>{{ $inspection_request->created_at->format('d M Y') }}</td>
                                         <td>
-                                            @can('view inspection report')
-                                                <a href="#viewInspectionReport_{{ $inspection_report->id }}" data-toggle="modal" data-target="#viewInspectionReport_{{ $inspection_report->id }}" class="btn btn-sm btn-primary btn-round waves-effect">VIEW</a>
-                                                <div class="modal fade" id="viewInspectionReport_{{ $inspection_report->id }}" tabindex="-1" role="dialog">
-                                                    <div class="modal-dialog modal-lg" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h4 class="title" id="uploadInspectionDocumentsLabel">{{ $inspection_report->orderItem->product->name }} Inspection Reprt</h4>
-                                                            </div>
-                                                            <iframe src="{{ $inspection_report->report_file }}" class="w-[100%]" style="height: 600px"></iframe>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            @can('create inspection report')
+                                                <a href="{{ route('inspection.requests.reports.create', ['order_request' => $inspection_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">Add Report</a>
                                             @endcan
                                         </td>
                                     </tr>
@@ -71,6 +73,6 @@
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
     {{-- <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script> --}}
     <script>
-        $('#inspection_reports').DataTable().order([4, 'desc']).draw()
+        $('#inspection_requests').DataTable().order([4, 'desc']).draw()
     </script>
 @endpush

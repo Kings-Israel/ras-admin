@@ -251,9 +251,9 @@
                             <ul class="header-dropdown">
                                 <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
                                     <ul class="dropdown-menu slideUp">
-                                        <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('accpeted-inspection-requests')">Pending</a></li>
-                                        <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('pending-inspection-requests')">Approved</a></li>
-                                        <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('rejected-inspection-request')">Rejected</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('accpeted-inspection-requests')">Accepted</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('pending-inspection-requests')">Pending</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('rejected-inspection-requests')">Rejected</a></li>
                                         <li><a href="javascript:void(0);" onclick="changeInspectionRequestsView('completed-inspection-requests')">Completed</a></li>
                                     </ul>
                                 </li>
@@ -278,6 +278,30 @@
                     </div>
                 </div>
             @endcan
+            @can('view inspection report')
+            <div class="col-lg-4 col-md-6">
+                <div class="card text-center">
+                    <div class="header">
+                        <ul class="header-dropdown">
+                            <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
+                                <ul class="dropdown-menu slideUp">
+                                    <li><a href="javascript:void(0);" onclick="changeInspectionReportsView('completed-inspection-reports')">Completed</a></li>
+                                    <li><a href="javascript:void(0);" onclick="changeInspectionReportsView('pending-inspection-reports')">Pending</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="body" id="completed-inspection-reports" style="display: block">
+                        <span class="font-bold">Completed Inspection Reports</span>
+                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $completed_inspection_reports_count }}" data-speed="100" data-fresh-interval="200">{{ $completed_inspection_reports_count }}</h3>
+                    </div>
+                    <div class="body" id="pending-inspection-reports" style="display: none">
+                        <span class="font-bold">Pending Inspection Reports</span>
+                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_inspection_reports_count }}" data-speed="100" data-fresh-interval="200">{{ $pending_inspection_reports_count }}</h3>
+                    </div>
+                </div>
+            </div>
+        @endcan
         </div>
         @can('view financing request')
             <div class="row clearfix">
@@ -971,7 +995,7 @@
                         labels: months,
                         datasets: [{
                             label: "Completed Reports",
-                            data: completed_reports_rate,
+                            data: inspection_reports_graph_data,
                             borderColor: 'rgba(241,95,121, 0.2)',
                             backgroundColor: 'rgba(241,95,121, 0.5)',
                             pointBorderColor: 'rgba(241,95,121, 0.3)',
@@ -1020,7 +1044,7 @@
         function changeInspectionRequestsView(view) {
             const accepted_inspection_requests = document.getElementById('accpeted-inspection-requests');
             const pending_inspection_requests = document.getElementById('pending-inspection-requests');
-            const rejected_inspection_requests = document.getElementById('rejected-inspection-request');
+            const rejected_inspection_requests = document.getElementById('rejected-inspection-requests');
             const completed_inspection_requests = document.getElementById('completed-inspection-requests');
 
             if (view == 'accpeted-inspection-requests') {
@@ -1028,7 +1052,7 @@
                 pending_inspection_requests.style.display = 'none';
                 rejected_inspection_requests.style.display = 'none';
                 completed_inspection_requests.style.display = 'none';
-            } else if (view == 'rejected-inspection-request') {
+            } else if (view == 'rejected-inspection-requests') {
                 accepted_inspection_requests.style.display = 'none';
                 pending_inspection_requests.style.display = 'none';
                 rejected_inspection_requests.style.display = 'block';
@@ -1043,6 +1067,19 @@
                 pending_inspection_requests.style.display = 'none';
                 rejected_inspection_requests.style.display = 'none';
                 completed_inspection_requests.style.display = 'block';
+            }
+        }
+
+        function changeInspectionReportsView(view) {
+            const accepted_inspection_reports = document.getElementById('completed-inspection-reports');
+            const pending_inspection_reports = document.getElementById('pending-inspection-reports');
+
+            if (view == 'completed-inspection-reports') {
+                pending_inspection_reports.style.display = 'none';
+                completed_inspection_reports.style.display = 'block';
+            } else if (view == 'pending-inspection-reports') {
+                pending_inspection_reports.style.display = 'block';
+                completed_inspection_reports.style.display = 'none';
             }
         }
 

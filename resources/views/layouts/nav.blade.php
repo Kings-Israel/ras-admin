@@ -70,13 +70,18 @@
                                 </li>
                             @endcan
                             @can('view inspection report')
-                                <li class="nav-item @if(Route::is('inspection.requests.*')) active open @endif">
+                                <li class="nav-item @if(Route::is('inspection.requests.index') || Route::is('inspection.requests.show')) active open @endif">
                                     <a href="{{ route('inspection.requests.index') }}">Inspection Requests</a>
                                 </li>
                             @endcan
+                            @can('create inspection report')
+                                <li class="nav-item @if(Route::is('inspection.requests.reports.pending') || Route::is('inspection.requests.reports.create')) active open @endif">
+                                    <a href="{{ route('inspection.requests.reports.pending') }}">Pending Inspection Reports</a>
+                                </li>
+                            @endcan
                             @can('view inspection report')
-                                <li class="nav-item @if(Route::is('inspection.reports.*')) active open @endif">
-                                    <a href="{{ route('inspection.reports.index') }}">Inspection Reports</a>
+                                <li class="nav-item @if(Route::is('inspection.requests.reports.completed')) active open @endif">
+                                    <a href="{{ route('inspection.requests.reports.completed') }}">Completed Inspection Reports</a>
                                 </li>
                             @endcan
                         </ul>

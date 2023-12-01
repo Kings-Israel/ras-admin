@@ -24,25 +24,15 @@
                     <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
                         <a href="#uploadInspectionDocuments" data-toggle="modal" data-target="#uploadInspectionDocuments" class="btn btn-primary btn-sm btn-round">Upload Reports</a>
-                        {{-- @can('create inspection report')
+                        @can('create inspection report')
                             <div class="modal fade" id="uploadInspectionDocuments" tabindex="-1" role="dialog">
                                 <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h4 class="title" id="uploadInspectionDocumentsLabel">Add Inspection Report Documents for each product</h4>
+                                            <h4 class="title" id="uploadInspectionDocumentsLabel">Add Inspection Report</h4>
                                         </div>
                                         <form action="{{ route('inspection.requests.reports.store', ['order_request' => $order_request]) }}" method="POST" enctype="multipart/form-data">
                                             @csrf
-                                            <div class="modal-body">
-                                                <div class="row clearfix">
-                                                    <div class="col-sm-6">
-                                                        <label for="role_name">Inspection Cost</label>
-                                                        <div class="form-group">
-                                                            <input type="number" min="0" class="form-control" placeholder="Enter Cost of Inspection" name="inspection_code" autocomplete="off" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
                                             <div class="modal-footer">
                                                 <button type="submit" class="btn btn-primary btn-round waves-effect">UPLOAD</button>
                                                 <button type="button" class="btn btn-danger btn-simple btn-round waves-effect" data-dismiss="modal">CLOSE</button>
@@ -51,7 +41,7 @@
                                     </div>
                                 </div>
                             </div>
-                        @endcan --}}
+                        @endcan
                     </div>
                 </div>
             </div>

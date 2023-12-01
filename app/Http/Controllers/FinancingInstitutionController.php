@@ -114,6 +114,7 @@ class FinancingInstitutionController extends Controller
                     'phone_number' => $request->maker_phone_number,
                     'first_name' => $request->maker_first_name,
                     'last_name' => $request->maker_last_name,
+                ], [
                     'password' => Helpers::generatePassword()
                 ]);
             }
@@ -138,11 +139,12 @@ class FinancingInstitutionController extends Controller
         } else {
             $checker = User::where('email', $request->checker_email)->orWhere('phone_number', $request->checker_phone_number)->first();
             if (!$checker) {
-                $checker = User::create([
+                $checker = User::firstOrCreate([
                     'email' => $request->checker_email,
                     'phone_number' => $request->checker_phone_number,
                     'first_name' => $request->checker_first_name,
                     'last_name' => $request->checker_last_name,
+                ], [
                     'password' => Helpers::generatePassword()
                 ]);
             }

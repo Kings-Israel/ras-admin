@@ -1,6 +1,6 @@
 @props(['page' => '', 'items' => []])
 <div class="block-header">
-    <div class="row clearfix">
+    <div class="row">
         <div class="col-lg-5 col-md-5 col-sm-12">
             <h2>{{ $page ? $page : 'Dashboard' }}</h2>
             <ul class="breadcrumb padding-0">

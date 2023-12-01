@@ -84,7 +84,7 @@
                                                 <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }} ({{ $user->email }})</option>
                                             @endforeach
                                         </select>
-                                        <x-input-error :messages="$errors->get('maker_user_id')" class="mt-2 list-unstyled"></x-input-error>
+                                        <x-input-error :messages="$errors->get('maker_user')" class="mt-2 list-unstyled"></x-input-error>
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -132,7 +132,7 @@
                                                 <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }} ({{ $user->email }})</option>
                                             @endforeach
                                         </select>
-                                        <x-input-error :messages="$errors->get('checker_user_id')" class="mt-2 list-unstyled"></x-input-error>
+                                        <x-input-error :messages="$errors->get('checker_user')" class="mt-2 list-unstyled"></x-input-error>
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -170,7 +170,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary btn-round waves-effect">SUBMIT</button>
+                                <button type="submit" class="btn btn-primary btn-round waves-effect">Submit</button>
                             </div>
                         </form>
                     </div>
