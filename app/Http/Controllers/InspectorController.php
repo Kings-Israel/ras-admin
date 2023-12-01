@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Helpers;
 use App\Models\Country;
 use App\Models\InspectingInstitution;
+use App\Models\InspectionReport;
 use App\Models\InspectorUser;
 use App\Models\OrderConversation;
 use App\Models\OrderRequest;
@@ -21,6 +22,7 @@ class InspectorController extends Controller
         $this->middleware('can:create inspector', ['only' => ['create', 'store']]);
         $this->middleware('can:update inspector', ['only' => ['edit', 'update']]);
         $this->middleware('can:delete inspector', ['only' => ['destroy']]);
+        $this->middleware('can:create inspection report', ['only' => ['createReport', 'updateReport']]);
     }
 
 
@@ -203,5 +205,86 @@ class InspectorController extends Controller
             'order_request' => $order_request,
             'conversation_id' => $conversation->id,
         ]);
+    }
+
+    public function pendingReports()
+    {
+        $user_inspecting_institutions_ids = auth()->user()->inspectors->pluck('id');
+        $order_requests = OrderRequest::with('orderItem.order.invoice', 'orderItem.product')
+                                        ->where('status', 'accepted')
+                                        ->whereHas('orderItem', function ($query) {
+                                            $query->whereDoesntHave('inspectionReport');
+                                        })
+                                        ->whereIn('requesteable_id', $user_inspecting_institutions_ids)
+                                        ->where('requesteable_type', InspectingInstitution::class)
+                                        ->get();
+
+        return view('inspectors.reports.pending', [
+            'page' => 'Pending Inspection Reports',
+            'breadcrumbs' => [
+                'Pending Inspection Reports' => route('inspection.requests.reports.pending')
+            ],
+            'order_requests' => $order_requests
+        ]);
+    }
+
+    public function completedReports()
+    {
+        if (auth()->user()->hasRole('admin')) {
+            $order_requests = OrderRequest::with('orderItem.order.invoice', 'orderItem.product', 'orderItem.inspectionReport')
+                                        ->where('status', 'accepted')
+                                        ->whereHas('orderItem', function ($query) {
+                                            $query->whereHas('inspectionReport');
+                                        })
+                                        ->where('requesteable_type', InspectingInstitution::class)
+                                        ->get();
+        } else {
+            $user_inspecting_institutions_ids = auth()->user()->inspectors->pluck('id');
+            $order_requests = OrderRequest::with('orderItem.order.invoice', 'orderItem.product', 'orderItem.inspectionReport')
+                                            ->where('status', 'accepted')
+                                            ->whereHas('orderItem', function ($query) {
+                                                $query->whereHas('inspectionReport');
+                                            })
+                                            ->whereIn('requesteable_id', $user_inspecting_institutions_ids)
+                                            ->where('requesteable_type', InspectingInstitution::class)
+                                            ->get();
+        }
+
+        return view('inspectors.reports.completed', [
+            'page' => 'Complete Inspection Reports',
+            'breadcrumbs' => [
+                'Completed Inspection Reports' => route('inspection.requests.reports.completed')
+            ],
+            'order_requests' => $order_requests
+        ]);
+    }
+
+    public function createReport(OrderRequest $order_request)
+    {
+        return view('inspectors.reports.create', [
+            'page' => 'Add Inspection Report',
+            'breadcrumbs' => [
+                'Pending Inspection Reports' => route('inspection.requests.reports.pending'),
+                'Add Inspection Reports' => route('inspection.requests.reports.create', ['order_request' => $order_request]),
+            ],
+            'order_request' => $order_request->load('orderItem.product', 'requesteable')
+        ]);
+    }
+
+    public function storeReport(Request $request, OrderRequest $order_request)
+    {
+        $request->merge([
+            'order_item_id' => $order_request->orderItem->id,
+            'inspector_id' => $order_request->requesteable_id,
+            'user_id' => auth()->id(),
+            'applicant_signature' => $request->hasFile('applicant_sign') ? pathinfo($request->applicant_sign->store('signature', 'reports'), PATHINFO_BASENAME) : NULL,
+            'report_file' => pathinfo($request->report->store('inspections', 'reports'), PATHINFO_BASENAME),
+        ]);
+
+        InspectionReport::create(collect($request->all())->except('applicant_sign', 'report')->toArray());
+
+        toastr()->success('', 'Report added successfully');
+
+        return redirect()->route('inspection.requests.reports.pending');
     }
 }
