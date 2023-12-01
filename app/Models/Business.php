@@ -38,6 +38,19 @@ class Business extends Model
         }
     }
 
+    /**
+     * Get the business profile
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getBusinessProfileAttribute($value)
+    {
+        if ($value) {
+            return config('app.frontend_url').'/storage/vendor/profile/'.$value;
+        }
+    }
+
     public function verified():bool
     {
         if ($this->verified_on) {

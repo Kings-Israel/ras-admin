@@ -107,8 +107,11 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::resource('/inspectors', InspectorController::class);
     Route::group(['prefix' => 'inspection/requests'], function () {
         Route::get('/', [InspectorController::class, 'orders'])->name('inspection.requests.index');
-        Route::get('{order_request}/details', [InspectorController::class, 'order'])->name('inspection.requests.show');
-        Route::post('{inspection_request}/reports/store', [InspectionRequestController::class, 'store'])->name('inspection.requests.reports.store');
+        Route::get('/{order_request}/details', [InspectorController::class, 'order'])->name('inspection.requests.show');
+        Route::get('/reports/pending', [InspectorController::class, 'pendingReports'])->name('inspection.requests.reports.pending');
+        Route::get('/reports/completed', [InspectorController::class, 'completedReports'])->name('inspection.requests.reports.completed');
+        Route::get('/{order_request}/reports/create', [InspectorController::class, 'createReport'])->name('inspection.requests.reports.create');
+        Route::post('{order_request}/reports/store', [InspectorController::class, 'storeReport'])->name('inspection.requests.reports.store');
     });
 
     // Inspection Reports

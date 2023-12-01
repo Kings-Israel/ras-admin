@@ -8,10 +8,14 @@ use App\Models\Country;
 use App\Models\FinancingRequest;
 use App\Models\InspectionReport;
 use App\Models\InspectionRequest;
+use App\Models\OrderRequest;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\UserWarehouse;
 use App\Models\Warehouse;
+use App\Models\InspectingInstitution;
+use App\Models\LogisticsCompany;
+use App\Models\InsuranceCompany;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use VisitLog;
@@ -98,6 +102,7 @@ class DashboardController extends Controller
         $accepted_inspection_requests_count = 0;
         $rejected_inspection_requests_count = 0;
         $completed_inspection_reports_count = 0;
+        $pending_inspection_reports_count = 0;
         $pending_inspection_requests_graph_data = [];
         $accepted_inspection_requests_graph_data = [];
         $rejected_inspection_requests_graph_data = [];
@@ -287,28 +292,43 @@ class DashboardController extends Controller
 
         // Inspection Reports
         if (auth()->user()->hasRole('admin')) {
-            $pending_inspection_requests_count = InspectionRequest::where('status', 'pending')->count();
-            $accepted_inspection_requests_count = InspectionRequest::where('status', 'accepted')->count();
-            $rejected_inspection_requests_count = InspectionRequest::where('status', 'rejected')->count();
+            $pending_inspection_requests_count = OrderRequest::where('status', 'pending')->where('requesteable_type', InspectingInstitution::class)->count();
+            $accepted_inspection_requests_count = OrderRequest::with('orderItem')
+                                                            ->whereHas('orderItem', function ($query) {
+                                                                $query->whereDoesntHave('inspectionReport');
+                                                            })
+                                                            ->where('status', 'accepted')
+                                                            ->where('requesteable_type', InspectingInstitution::class)
+                                                            ->count();
+            $rejected_inspection_requests_count = OrderRequest::where('status', 'rejected')->where('requesteable_type', InspectingInstitution::class)->count();
             $completed_inspection_reports_count = InspectionReport::count();
+            $pending_inspection_reports_count = OrderRequest::where('status', 'accepted')->where('requesteable_type', InspectingInstitution::class)->count();
 
             foreach ($months as $month) {
-                array_push($pending_inspection_requests_graph_data, InspectionRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'pending')->count());
-                array_push($accepted_inspection_requests_graph_data, InspectionRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'accepted')->count());
-                array_push($rejected_inspection_requests_graph_data, InspectionRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'rejected')->count());
+                array_push($pending_inspection_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'pending')->where('requesteable_type', InspectingInstitution::class)->count());
+                array_push($accepted_inspection_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'accepted')->where('requesteable_type', InspectingInstitution::class)->count());
+                array_push($rejected_inspection_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'rejected')->where('requesteable_type', InspectingInstitution::class)->count());
                 array_push($inspection_reports_graph_data, InspectionReport::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->count());
             }
         } else {
             $user_inspecting_institutions_ids = auth()->user()->inspectors->pluck('id');
-            $pending_inspection_requests_count = InspectionRequest::where('status', 'pending')->whereIn('inspector_id', $user_inspecting_institutions_ids)->count();
-            $accepted_inspection_requests_count = InspectionRequest::where('status', 'accepted')->whereIn('inspector_id', $user_inspecting_institutions_ids)->count();
-            $rejected_inspection_requests_count = InspectionRequest::where('status', 'rejected')->whereIn('inspector_id', $user_inspecting_institutions_ids)->count();
+            $pending_inspection_requests_count = OrderRequest::where('status', 'pending')->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', InspectingInstitution::class)->count();
+            $accepted_inspection_requests_count = OrderRequest::with('orderItem')
+                                                                ->whereHas('orderItem', function ($query) {
+                                                                    $query->whereDoesntHave('inspectionReport');
+                                                                })
+                                                                ->where('status', 'accepted')
+                                                                ->whereIn('requesteable_id', $user_inspecting_institutions_ids)
+                                                                ->where('requesteable_type', InspectingInstitution::class)
+                                                                ->count();
+            $rejected_inspection_requests_count = OrderRequest::where('status', 'rejected')->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', InspectingInstitution::class)->count();
             $completed_inspection_reports_count = InspectionReport::whereIn('inspector_id', $user_inspecting_institutions_ids)->count();
+            $pending_inspection_reports_count = OrderRequest::where('status', 'accepted')->whereIn('requesteable_id', $user_inspecting_institutions_ids)->count();
 
             foreach ($months as $month) {
-                array_push($pending_inspection_requests_graph_data, InspectionRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('inspector_id', $user_inspecting_institutions_ids)->where('status', 'pending')->count());
-                array_push($accepted_inspection_requests_graph_data, InspectionRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('inspector_id', $user_inspecting_institutions_ids)->where('status', 'accepted')->count());
-                array_push($rejected_inspection_requests_graph_data, InspectionRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('inspector_id', $user_inspecting_institutions_ids)->where('status', 'rejected')->count());
+                array_push($pending_inspection_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', InspectingInstitution::class)->where('status', 'pending')->count());
+                array_push($accepted_inspection_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', InspectingInstitution::class)->where('status', 'accepted')->count());
+                array_push($rejected_inspection_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', InspectingInstitution::class)->where('status', 'rejected')->count());
                 array_push($inspection_reports_graph_data, InspectionReport::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('inspector_id', $user_inspecting_institutions_ids)->count());
             }
         }
@@ -344,6 +364,7 @@ class DashboardController extends Controller
             'accepted_inspection_requests_count' => $accepted_inspection_requests_count,
             'rejected_inspection_requests_count' => $rejected_inspection_requests_count,
             'completed_inspection_reports_count' => $completed_inspection_reports_count,
+            'pending_inspection_reports_count' => $pending_inspection_reports_count,
             'pending_inspection_requests_graph_data' => $pending_inspection_requests_graph_data,
             'accepted_inspection_requests_graph_data' => $accepted_inspection_requests_graph_data,
             'rejected_inspection_requests_graph_data' => $rejected_inspection_requests_graph_data,

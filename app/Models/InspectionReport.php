@@ -29,6 +29,17 @@ class InspectionReport extends Model
     }
 
     /**
+     * Get the applicant signature
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getApplicantSignatureAttribute($value)
+    {
+        return config('app.url').'/storage/reports/signature/'.$value;
+    }
+
+    /**
      * Get the user that owns the InspectionReport
      */
     public function user(): BelongsTo

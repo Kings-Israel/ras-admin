@@ -1,0 +1,225 @@
+@extends('layouts.app')
+@section('css')
+    <link rel="stylesheet" href="{{ asset('assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css') }}">
+@endsection
+@section('content')
+<section class="content">
+    <div class="container-fluid">
+        <x-breadcrumbs :page="$page" :items="$breadcrumbs"></x-breadcrumbs>
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="header d-flex justify-content-between">
+                        <h2><strong>{{ Str::title($page) }}</strong></h2>
+                    </div>
+                    <div class="body">
+                        <table class="table table-hover dataTable js-exportable" id="inspection_requests">
+                            <thead>
+                                <tr>
+                                    <th>ORDER ID</th>
+                                    {{-- <th>No. of Order Items</th> --}}
+                                    <th>Status</th>
+                                    <th>Customer</th>
+                                    <th>Payment Status</th>
+                                    @role('admin')
+                                        <th>Inspector</th>
+                                    @endrole
+                                    <th>Requested On</th>
+                                    @can('view inspection report')
+                                        <th>Actions</th>
+                                    @endcan
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($order_requests as $order_request)
+                                    <tr>
+                                        <td>{{ $order_request->orderItem->order->order_id }}</td>
+                                        {{-- <td>{{ $order_request->order->orderItems->count() }}</td> --}}
+                                        <td>{{ Str::title($order_request->status) }}</td>
+                                        <td>{{ $order_request->orderItem->order->user->first_name }} {{ $order_request->orderItem->order->user->last_name }}</td>
+                                        <td>{{ Str::title($order_request->orderItem->order->invoice->payment_status) }}</td>
+                                        @role('admin')
+                                            <td>{{ $order_request->requesteable->name }}</td>
+                                        @endrole
+                                        <td>{{ $order_request->created_at->format('d M Y') }}</td>
+                                        <td>
+                                            @can('view inspection report')
+                                                <a href="#defaultModal-{{ $order_request->id }}" data-toggle="modal" data-target="#defaultModal-{{ $order_request->id }}" class="btn btn-sm btn-primary btn-round waves-effect">View Report</a>
+                                                <div class="modal fade" id="defaultModal-{{ $order_request->id }}" tabindex="-1" role="dialog">
+                                                    <div class="modal-dialog modal-xl" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h4 class="title" id="defaultModalLabel">Inspection Report</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="row clearfix">
+                                                                    <div class="col-12">
+                                                                        <h5>Applicant</h5>
+                                                                    </div>
+                                                                    {{-- Applicant --}}
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="name">Applicant Company Name</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->applicant_company_name }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="name">Applicant Company Address</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->applicant_company_address }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="Max Capacity">Applicant Company Email</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->applicant_company_email }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="Max Capacity">Applicant Company Phone Number</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->applicant_company_phone_number }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="name">Applicant Company Contact Person</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->applicant_company_contact_person }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="name">Applicant Company Contact Person Email</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->applicant_company_contact_person_email }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="Max Capacity">Applicant Company Contact Person Phone Number</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->applicant_company_contact_person_phone_number }}</h5>
+                                                                    </div>
+                                                                    {{-- End Applicant --}}
+                                                                    <hr>
+                                                                    {{-- License Holder --}}
+                                                                    <div class="col-12">
+                                                                        <h5>License Holder</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="name">License Company Name</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->license_holder_company_name }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="name">License Company Address</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->license_holder_company_address }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="Max Capacity">License Company Email</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->license_holder_company_email }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="Max Capacity">License Company Phone Number</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->license_holder_company_phone_number }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="name">Licenst Company Contact Person</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->license_holder_company_contact_person }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="name">License Company Contact Person Email</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->license_holder_company_contact_person_email }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="Max Capacity">License Company Contact Person Phone Number</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->license_holder_company_contact_person_phone_number }}</h5>
+                                                                    </div>
+                                                                    {{-- End License Holder --}}
+                                                                    <hr>
+                                                                    {{-- Place of Manufacture --}}
+                                                                    <div class="col-12">
+                                                                        <h5>Place of Manufacture</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="name">Place of Manufacture Company Name</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_company_name }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="name">Place of Manufacture Company Address</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_company_address }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="Max Capacity">Place of Manufacture Company Email</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_company_email }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="Max Capacity">Place of Manufacture Company Phone Number</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_company_phone_number }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="name">Place of Manufacture Company Contact Person</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_company_contact_person }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="name">Place of Manufacture Company Contact Person Email</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_company_contact_person_email }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="Max Capacity">Place of Manufacture Company Contact Person Phone Number</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_company_contact_person_phone_number }}</h5>
+                                                                    </div>
+                                                                    {{-- End place of Manufacture --}}
+                                                                    <hr>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="Max Capacity">Place of Manufacture Inspection Done By</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_factory_inspection_done_by }}</h5>
+                                                                    </div>
+                                                                    <hr>
+                                                                    {{-- Product --}}
+                                                                    <div class="col-12">
+                                                                        <h5>Product</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="name">Product</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->product }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="name">Product Type Ref</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->product_type_ref }}</h5>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-12">
+                                                                        <label for="Max Capacity">Product Trademark</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->product_trade_mark }}</h5>
+                                                                    </div>
+                                                                    {{-- End Product --}}
+                                                                    <hr>
+                                                                    <div class="col-12">
+                                                                        <label for="Max Capacity">Product Ratings and Principle Characteristics</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->product_ratings_and_principle_characteristics }}</h5>
+                                                                    </div>
+                                                                    <div class="col-12">
+                                                                        <label for="Max Capacity">Differences From Previously Certified Product</label>
+                                                                        <h5>{{ $order_request->orderItem->inspectionReport->differences_from_previously_certified_product }}</h5>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <a href="{{ $order_request->orderItem->inspectionReport->report_file }}" target="_blank" class="btn btn-primary btn-round waves-effect">View Report File</a>
+                                                                @if ($order_request->orderItem->inspectionReport->applicant_signature && $order_request->orderItem->inspectionReport->applicant_signature != config('app.url').'/storage/reports/inspection/')
+                                                                    <a href="{{ $order_request->orderItem->inspectionReport->applicant_signature }}" target="_blank" class="btn btn-signature btn-round waves-effect">View Signature</a>
+                                                                @endif
+                                                                <button type="button" class="btn btn-danger btn-simple btn-round waves-effect" data-dismiss="modal">CLOSE</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endcan
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endsection
+@push('scripts')
+    <script src="{{ asset('assets/bundles/datatablescripts.bundle.js') }}"></script>
+    <script src="{{ asset('assets/plugins/jquery-datatable/buttons/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.colVis.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script> --}}
+    <script>
+        $('#inspection_requests').DataTable().order([4, 'desc']).draw()
+    </script>
+@endpush
