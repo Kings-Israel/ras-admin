@@ -64,6 +64,7 @@ class FinancingInstitutionController extends Controller
 
     public function store(Request $request)
     {
+//        dd($request->all());
         $request->validate([
             'institution_name' => ['required'],
             'institution_phone_number' => ['required', new PhoneNumber],
@@ -92,7 +93,7 @@ class FinancingInstitutionController extends Controller
             'maker_email.required_without' => 'Enter maker\'s email',
             'maker_phone_number.required_without' => 'Enter maker\'s phone number',
         ]);
-
+//        dd($request->has('maker_user'));
         $financing_institution = FinancingInstitution::create([
             'name' => $request->institution_name,
             'phone_number' => $request->institution_phone_number,
@@ -101,9 +102,9 @@ class FinancingInstitutionController extends Controller
             'city_id' => $request->has('city_id') ? $request->city_id : NULL,
             'credit_limit' => $request->credit_limit
         ]);
-
         // Create Maker User
-        if ($request->has('maker_user')) {
+
+        if ($request->has('maker_user') && $request->maker_user!=null) {
             $maker = User::find($request->maker_user);
         } else {
             $maker = User::where('email', $request->maker_email)->orWhere('phone_number', $request->maker_phone_number)->first();
@@ -132,7 +133,7 @@ class FinancingInstitutionController extends Controller
         $maker->notify(new RoleUpdate('Maker Checker Role added to your account'));
 
         // Create Maker User
-        if ($request->has('checker_user')) {
+        if ($request->has('checker_user') && $request->maker_user!=null) {
             $checker = User::find($request->checker_user);
         } else {
             $checker = User::where('email', $request->checker_email)->orWhere('phone_number', $request->checker_phone_number)->first();

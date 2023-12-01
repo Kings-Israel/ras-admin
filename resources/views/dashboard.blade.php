@@ -3,6 +3,18 @@
 <section class="content home">
     <div class="container-fluid">
         <x-breadcrumbs :items="$breadcrumbs"></x-breadcrumbs>
+        <div class="d-flex justify-content-end mb-2 mt-0">
+            <form method="get" action="{{ route('dashboard') }}" class="form-inline" id="dateFilterForm">
+                <label class="mr-2" for="date_filter">Select Date Range:</label>
+                <select class="form-control mr-2" name="date_filter" id="date_filter">
+                    <option value="all" {{ (request('date_filter') == 'all' || old('date_filter') == 'all') ? 'selected' : '' }}>All</option>
+                    <option value="today" {{ (request('date_filter') == 'today' || old('date_filter') == 'today') ? 'selected' : '' }}>Today</option>
+                    <option value="last_week" {{ (request('date_filter') == 'last_week' || old('date_filter') == 'last_week') ? 'selected' : '' }}>Last Week</option>
+                    <option value="this_month" {{ (!request('date_filter') || request('date_filter') == 'this_month' || old('date_filter') == 'this_month') ? 'selected' : '' }}>This Month</option>
+                    <option value="last_month" {{ (request('date_filter') == 'last_month' || old('date_filter') == 'last_month') ? 'selected' : '' }}>Last Month</option>
+                </select>
+            </form>
+        </div>
         @role('admin')
             <div class="row clearfix">
                 <div class="col-lg-3 col-md-6">
@@ -170,7 +182,7 @@
                                 <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
                                     <ul class="dropdown-menu slideUp">
                                         <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('pending-financing-requests')">Pending</a></li>
-                                        <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('approved-financing-requests')">Approved</a></li>
+                                         <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('approved-financing-requests')">Approved</a></li>
                                         <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('rejected-financing-requests')">Rejected</a></li>
                                     </ul>
                                 </li>
@@ -189,8 +201,49 @@
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">0</h3>
                         </div>
                     </div>
+                        </div>
+                   @endcan
+                @role('financier')
+                <div class="col-lg-4 col-md-6">
+                    <div class="card text-center">
+                        <div class="header">
+                            <ul class="header-dropdown">
+                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
+                                    <ul class="dropdown-menu slideUp">
+                                        <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('financing-limit')">Financing Limit</a></li>
+                                       </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="body" id="financing-limit" style="display: block">
+                            <span class="font-bold">Financing Limit</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{!! number_format($financing_total_limit, 2) !!}"
+                                data-speed="100" data-fresh-interval="200">"{!! number_format($financing_total_limit, 2) !!}"
+                            </h3>
+                        </div>
                 </div>
-            @endcan
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card text-center">
+                        <div class="header">
+                            <ul class="header-dropdown">
+                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
+                                    <ul class="dropdown-menu slideUp">
+                                        <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('financing-disbursed')">Disbursed Amount</a></li>
+                                       </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body" id="financing-disbursed" style="display: block">
+                            <span class="font-bold">Disbursed Amount</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{!! number_format($financing_total_invoices, 2) !!}"
+                                data-speed="100" data-fresh-interval="200">"{!! number_format($financing_total_invoices, 2) !!}"
+                            </h3>
+                        </div>
+                </div>
+                </div>
+                @endrole
             @can('view inspection request')
                 <div class="col-lg-4 col-md-6">
                     <div class="card text-center">
@@ -1038,5 +1091,12 @@
                 rejected_financing_requests.style.display = 'none';
             }
         }
+        $(document).ready(function() {
+            // Listen for the change event on the select element
+            $('#date_filter').change(function() {
+                // Submit the form when an option is selected
+                $('#dateFilterForm').submit();
+            });
+        });
     </script>
 @endpush

@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Business;
 use App\Models\Category;
 use App\Models\Country;
+use App\Models\FinancingInstitution;
+use App\Models\FinancingInstitutionUser;
 use App\Models\FinancingRequest;
 use App\Models\InspectionReport;
 use App\Models\InspectionRequest;
+use App\Models\Invoice;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\UserWarehouse;
@@ -23,8 +26,25 @@ class DashboardController extends Controller
         $this->middleware(['auth']);
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $dateFilter = $request->input('date_filter', 'this_month');
+        $startDate = null;
+        $endDate = null;
+        if ($dateFilter == 'today') {
+            $startDate = now()->startOfDay();
+            $endDate = now()->endOfDay();
+        } elseif ($dateFilter == 'last_week') {
+            $startDate = now()->startOfWeek()->subWeek();
+            $endDate = now()->endOfWeek()->subWeek();
+        } elseif ($dateFilter == 'this_month') {
+            $startDate = now()->startOfMonth();
+            $endDate = now()->endOfMonth();
+        } elseif ($dateFilter == 'last_month') {
+            $startDate = now()->startOfMonth()->subMonth();
+            $endDate = now()->endOfMonth()->subMonth();
+        }
+
         // Get past 12 months
         $months = [];
 
@@ -89,6 +109,8 @@ class DashboardController extends Controller
         // Financing Requests
         $financing_requests_count = 0;
         $financing_requests_graph_data = [];
+        $financier_total_invoices=0;
+        $financing_total_limit=0;
 
         // Site visits log
         $site_visits_series = [];
@@ -280,6 +302,18 @@ class DashboardController extends Controller
                             });
 
         $financing_requests_count = FinancingRequest::count();
+//        dd(auth()->user()->hasRole);
+        if (auth()->user()->hasRole('financier')) {
+            $financier = FinancingInstitutionUser::where('user_id', auth()->user()->id)->first();
+            $financing_total_limit = FinancingInstitution::where('id', $financier->financing_institution_id)
+                ->value('credit_limit');
+            $financing_req = FinancingRequest::where('financing_institution_id', $financier->financing_institution_id)
+                ->pluck('invoice_id');
+            $financing_total_invoices = Invoice::whereIn('id', $financing_req)
+                ->where('payment_status', 'accepted')
+                ->sum('total_amount');
+            dd($financing_total_invoices);
+        }
         foreach($months as $month) {
             $requests_monthly = FinancingRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->count();
             array_push($financing_requests_graph_data, $requests_monthly);
@@ -348,6 +382,9 @@ class DashboardController extends Controller
             'accepted_inspection_requests_graph_data' => $accepted_inspection_requests_graph_data,
             'rejected_inspection_requests_graph_data' => $rejected_inspection_requests_graph_data,
             'inspection_reports_graph_data' => $inspection_reports_graph_data,
+            'selectedDateFilter' => $dateFilter,
+            'financing_total_limit'=>$financing_total_limit,
+            'financing_total_invoices'=>$financing_total_invoices,
         ]);
     }
 }
