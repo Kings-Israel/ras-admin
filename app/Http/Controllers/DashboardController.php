@@ -382,7 +382,7 @@ class DashboardController extends Controller
         if (auth()->user()->hasRole('financier')) {
             $financier = FinancingInstitutionUser::where('user_id', auth()->user()->id)->first();
             $financing_total_limit = FinancingInstitution::where('id', $financier->financing_institution_id)
-                ->pluck('credit_limit');
+                ->value('credit_limit');
             $financing_req = FinancingRequest::where('financing_institution_id', $financier->financing_institution_id)
                 ->pluck('invoice_id');
             $financing_total_invoices = Invoice::whereIn('id', $financing_req)
