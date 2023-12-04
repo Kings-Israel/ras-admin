@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
+use App\Models\CompanyDocument;
 use App\Models\Country;
 use App\Models\InsuranceCompany;
 use App\Models\InsuranceRequest;
@@ -10,10 +11,12 @@ use App\Models\InsuranceCompanyUser;
 use App\Models\InsuranceReport;
 use App\Models\OrderConversation;
 use App\Models\OrderRequest;
+use App\Models\ServiceCharge;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Chat;
+use Illuminate\Http\UploadedFile;
 
 class InsuranceController extends Controller
 {
@@ -67,7 +70,8 @@ class InsuranceController extends Controller
                 'Add Insurer' => route('insurance.companies.create')
             ],
             'countries' => $countries,
-            'users' => $users
+            'users' => $users,
+            'documents_count' => 1
         ]);
     }
 
@@ -99,6 +103,28 @@ class InsuranceController extends Controller
                     'country_id' => $request->has('country_id') ? $request->country_id : NULL,
                 ]
             );
+
+        if ($request->has('document_name')) {
+            foreach ($request->document_name as $key => $doc) {
+                if ($request->document_file[$key] instanceof UploadedFile) {
+                    CompanyDocument::create([
+                        'document_name' => $doc,
+                        'file_url' => pathinfo($request->document_file[$key]->store('documents', 'company'), PATHINFO_BASENAME),
+                        'documenteable_id' => $insurer->id,
+                        'documenteable_type' => InsuranceCompany::class,
+                    ]);
+                }
+            }
+        }
+
+        if ($request->has('service_charge')) {
+            ServiceCharge::create([
+                'value' => $request->service_charge_rate,
+                'type' => $request->service_charge_type,
+                'chargeable_id' => $insurer->id,
+                'chargeable_type' => InsuranceCompany::class,
+            ]);
+        }
 
         if ($request->has('users') && $request->users != NULL) {
             foreach ($request->users as $user) {

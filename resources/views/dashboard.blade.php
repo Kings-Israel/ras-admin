@@ -22,7 +22,7 @@
                         <div class="body">
                             <p class="m-b-20"><i class="zmdi zmdi-balance zmdi-hc-3x col-amber"></i></p>
                             <span class="font-bold">Total Revenue</span>
-                            <h3 class="m-b-10">$<span class="number count-to" data-from="0" data-to="0" data-speed="2000" data-fresh-interval="700">0</span></h3>
+                            <h3 class="m-b-10"><span class="number count-to" data-from="0" data-to="0" data-speed="2000" data-fresh-interval="700">0</span></h3>
                             <small class="text-muted">0% lower growth</small>
                         </div>
                     </div>
@@ -32,8 +32,8 @@
                         <div class="body">
                             <p class="m-b-20"><i class="zmdi zmdi-assignment zmdi-hc-3x col-blue"></i></p>
                             <span class="font-bold">Total Orders</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="2000" data-fresh-interval="700">0</h3>
-                            <small class="text-muted">0% lower growth</small>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_orders }}" data-speed="2000" data-fresh-interval="700">{{ $total_orders }}</h3>
+                            <small class="text-muted">{{ $total_orders_rate }}% {{ $total_orders_direction }} growth</small>
                         </div>
                     </div>
                 </div>
@@ -42,8 +42,8 @@
                         <div class="body">
                             <p class="m-b-20"><i class="zmdi zmdi-shopping-basket zmdi-hc-3x"></i></p>
                             <span class="font-bold">Total Sales</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="2000" data-fresh-interval="700">0</h3>
-                            <small class="text-muted">0% lower growth</small>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_paid_orders }}" data-speed="2000" data-fresh-interval="700">{{ $total_paid_orders }}</h3>
+                            <small class="text-muted">{{ $total_paid_orders_rate }}% {{ $total_paid_orders_direction }} growth</small>
                         </div>
                     </div>
                 </div>
@@ -55,6 +55,16 @@
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $total_users_count }}" data-speed="300" data-fresh-interval="100">{{ $total_users_count }}</h3>
                             <small class="text-muted">{{ $user_registration_rate }}% {{ $user_registration_direction }} growth</small>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="header">
+                        <h2><strong>Orders</strong> & Sales</h2>
+                    </div>
+                    <div class="body">
+                        <canvas id="bar_chart" height="100"></canvas>
                     </div>
                 </div>
             </div>
@@ -732,15 +742,17 @@
 @endsection
 @push('scripts')
     <script src="{{ asset('assets/plugins/chartjs/Chart.bundle.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/charts/chartjs.js') }}"></script>
     @role('admin')
     <script>
         $(function () {
             let user_registration_graph_data = {!! json_encode($user_registration_rate_graph_data) !!}
             let vendor_registration_graph_data = {!! json_encode($vendor_registration_rate_graph_data) !!}
+            let total_orders_graph_rate = {!! json_encode($total_orders_graph_rate) !!}
             let months = {!! json_encode($months) !!}
             let warehouses = {!! json_encode($warehouses) !!}
             let countries = {!! json_encode($countries) !!}
-            // console.log(financing_requests_graph_data)
+            console.log(total_orders_graph_rate)
 
             new Chart(document.getElementById("user_registration_rate").getContext("2d"),
             config = {
@@ -772,6 +784,8 @@
                     }
                 }
             );
+
+            new Chart(document.getElementById("bar_chart").getContext("2d"), getChartJs('bar'));
 
             "use strict";
 
@@ -909,6 +923,124 @@
                 }
             });
         });
+
+        function getChartJs(type) {
+            let total_orders_graph_rate = {!! json_encode($total_orders_graph_rate) !!}
+            var config = null;
+
+            if (type === 'line') {
+                config = {
+                    type: 'line',
+                    data: {
+                        labels: ["January", "February", "March", "April", "May", "June", "July"],
+                        datasets: [{
+                            label: "My First dataset",
+                            data: [28, 58, 39, 45, 30, 55, 68],
+                            borderColor: 'rgba(241,95,121, 0.2)',
+                            backgroundColor: 'rgba(241,95,121, 0.5)',
+                            pointBorderColor: 'rgba(241,95,121, 0.3)',
+                            pointBackgroundColor: 'rgba(241,95,121, 0.2)',
+                            pointBorderWidth: 1
+                        }, {
+                            label: "My Second dataset",
+                            data: [40, 28, 50, 48, 63, 39, 41],
+                            borderColor: 'rgba(140,147,154, 0.2)',
+                            backgroundColor: 'rgba(140,147,154, 0.2)',
+                            pointBorderColor: 'rgba(140,147,154, 0)',
+                            pointBackgroundColor: 'rgba(140,147,154, 0.9)',
+                            pointBorderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: false,
+
+                    }
+                }
+            }
+            else if (type === 'bar') {
+                config = {
+                    type: 'bar',
+                    data: {
+                        labels: total_orders_graph_rate.Period,
+                        datasets: [{
+                            label: "Orders",
+                            data: total_orders_graph_rate.Orders,
+                            backgroundColor: '#26c6da',
+                            strokeColor: "rgba(255,118,118,0.1)",
+                        },
+                        {
+                            label: "Sales",
+                            data: total_orders_graph_rate.Sales,
+                            backgroundColor: '#8a8a8b',
+                            strokeColor: "rgba(255,118,118,0.1)",
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: false
+                    }
+                }
+            }
+            else if (type === 'radar') {
+                config = {
+                    type: 'radar',
+                    data: {
+                        labels: ["January", "February", "March", "April", "May", "June", "July"],
+                        datasets: [{
+                            label: "My First dataset",
+                            data: [65, 25, 90, 81, 56, 55, 40],
+                            borderColor: 'rgba(241,95,121, 0.8)',
+                            backgroundColor: 'rgba(241,95,121, 0.5)',
+                            pointBorderColor: 'rgba(241,95,121, 0)',
+                            pointBackgroundColor: 'rgba(241,95,121, 0.8)',
+                            pointBorderWidth: 1
+                        }, {
+                                label: "My Second dataset",
+                                data: [72, 48, 40, 19, 96, 27, 100],
+                                borderColor: 'rgba(140,147,154, 0.8)',
+                                backgroundColor: 'rgba(140,147,154, 0.5)',
+                                pointBorderColor: 'rgba(140,147,154, 0)',
+                                pointBackgroundColor: 'rgba(140,147,154, 0.8)',
+                                pointBorderWidth: 1
+                            }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: false
+                    }
+                }
+            }
+            else if (type === 'pie') {
+                config = {
+                    type: 'pie',
+                    data: {
+                        datasets: [{
+                            data: [150, 53, 121, 87, 45],
+                            backgroundColor: [
+                                "#2a8ceb",
+                                "#58a3eb",
+                                "#6fa6db",
+                                "#86b8e8",
+                                "#9dc7f0"
+                            ],
+                        }],
+                        labels: [
+                            "Pia A",
+                            "Pia B",
+                            "Pia C",
+                            "Pia D",
+                            "Pia E"
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: false
+                    }
+                }
+            }
+            return config;
+        }
     </script>
     @endrole
     @can('view financing request')

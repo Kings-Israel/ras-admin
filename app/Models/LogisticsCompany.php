@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Notifications\Notifiable;
 use Musonza\Chat\Traits\Messageable;
 
@@ -66,5 +67,15 @@ class LogisticsCompany extends Model
     public function orderRequests(): MorphMany
     {
         return $this->morphMany(OrderRequest::class, 'requesteable');
+    }
+
+    public function serviceCharge(): MorphOne
+    {
+        return $this->morphOne(ServiceCharge::class, 'chargeable');
+    }
+
+    public function documents(): MorphMany
+    {
+        return $this->morphMany(CompanyDocument::class, 'documenteable');
     }
 }

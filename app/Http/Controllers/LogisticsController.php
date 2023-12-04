@@ -10,11 +10,14 @@ use App\Models\LogisticsCompanyUser;
 use App\Models\OrderConversation;
 use App\Models\OrderRequest;
 use App\Models\User;
+use App\Models\CompanyDocument;
+use App\Models\ServiceCharge;
 use App\Notifications\RoleUpdate;
 use App\Rules\PhoneNumber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Chat;
+use Illuminate\Http\UploadedFile;
 
 class LogisticsController extends Controller
 {
@@ -54,6 +57,7 @@ class LogisticsController extends Controller
             'countries' => $countries,
             'users' => $users,
             'transportation_methods' => $transportation_methods,
+            'documents_count' => 1
         ]);
     }
 
@@ -79,6 +83,28 @@ class LogisticsController extends Controller
             'city_id' => $request->has('city_id') ? $request->city_id : NULL,
             'transportation_methods' => $request->has('transportation_methods') ? json_encode($request->transportation_methods) : NULL,
         ]);
+
+        if ($request->has('document_name')) {
+            foreach ($request->document_name as $key => $doc) {
+                if ($request->document_file[$key] instanceof UploadedFile) {
+                    CompanyDocument::create([
+                        'document_name' => $doc,
+                        'file_url' => pathinfo($request->document_file[$key]->store('documents', 'company'), PATHINFO_BASENAME),
+                        'documenteable_id' => $logistics_company->id,
+                        'documenteable_type' => LogisticCompany::class,
+                    ]);
+                }
+            }
+        }
+
+        if ($request->has('service_charge')) {
+            ServiceCharge::create([
+                'value' => $request->service_charge_rate,
+                'type' => $request->service_charge_type,
+                'chargeable_id' => $logistics_company->id,
+                'chargeable_type' => LogisticCompany::class,
+            ]);
+        }
 
         if ($request->has('users') && $request->users != NULL) {
             foreach ($request->users as $user) {

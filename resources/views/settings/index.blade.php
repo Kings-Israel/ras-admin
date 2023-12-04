@@ -19,7 +19,7 @@
                     <div class="d-flex justify-content-between">
                         <h2 class="my-auto"><strong>Vendor Documents</strong></h2>
                         @can('update settings')
-                            <a class="btn btn-secondary btn-sm" href="#defaultModal" data-toggle="modal" data-target="#defaultModal">Add Document</a>
+                            <a class="btn btn-secondary btn-sm btn-round" href="#defaultModal" data-toggle="modal" data-target="#defaultModal">Add Document</a>
                         @endcan
                     </div>
                 </div>
@@ -32,11 +32,62 @@
                     <div class="d-flex justify-content-between">
                         <h2 class="my-auto"><strong>Countries</strong></h2>
                         @can('update settings')
-                            <a class="btn btn-secondary btn-sm" href="#defaultModal" data-toggle="modal" data-target="#defaultModal">Add Country</a>
+                            <a class="btn btn-secondary btn-sm btn-round" href="#defaultModal" data-toggle="modal" data-target="#defaultModal">Add Country</a>
                         @endcan
                     </div>
                 </div>
                 <livewire:admin.settings.countries />
+            </div>
+        </div>
+        <div class="clearfix">
+            <div class="card">
+                <div class="header">
+                    <h2>Other Settings</h2>
+                </div>
+                <div class="body">
+                    <table class="table table-hover dataTable js-exportable" id="logistics_companies">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($settings as $setting)
+                                <tr>
+                                    <td>{{ $setting->name }}</td>
+                                    <td>{{ $setting->description }}</td>
+                                    <td>{{ $setting->value }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-5">
+                <div class="card">
+                    <div class="header">Add/Update Service Charge Rate</div>
+                    <div class="body">
+                        <form action="{{ route('settings.rate.update') }}" method="post">
+                            @csrf
+                            <div class="form-group">
+                                <label for="">Select Type</label>
+                                <select name="description" id="" class="form-control">
+                                    <option value="percentage">Percentage</option>
+                                    <option value="amount">Amount</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Value</label>
+                                <input type="number" name="value" class="form-control" id="">
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-round btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

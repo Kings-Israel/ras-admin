@@ -9,6 +9,7 @@ use App\Models\Country;
 use App\Models\Document;
 use App\Models\MeasurementUnit;
 use App\Models\RequiredDocumentPerCountry;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -17,6 +18,7 @@ class SettingsController extends Controller
     public function index()
     {
         $countries = Country::orderBy('name', 'ASC')->get();
+        $settings = Setting::get();
 
         return view('settings.index', [
             'page' => 'Settings',
@@ -24,6 +26,7 @@ class SettingsController extends Controller
                 'Settings' => route('settings.index')
             ],
             'countries' => $countries,
+            'settings' => $settings
         ]);
     }
 
@@ -281,5 +284,22 @@ class SettingsController extends Controller
         toastr()->success('', 'Unit deleted Successfully');
 
         return redirect()->route('settings.index');
+    }
+
+    public function updateServiceChargeRate(Request $request)
+    {
+        Setting::firstOrCreate(
+            [
+                'name' => 'Service Charge Rate',
+            ],
+            [
+                'description' => $request->description,
+                'value' => $request->value
+            ]
+        );
+
+        toastr()->success('', 'Service Charge Rate updated successfully');
+
+        return back();
     }
 }

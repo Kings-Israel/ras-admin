@@ -12,7 +12,7 @@
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
                     </div>
                     <div class="body">
-                        <form action="{{ route('inspectors.store') }}" method="POST">
+                        <form action="{{ route('inspectors.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="row clearfix">
                                 <div class="col-5">
@@ -105,6 +105,51 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row clearfix">
+                                <div class="col-4">
+                                    <h6>Enter Service Charge Rate</h6>
+                                    <input type="number" name="service_charge_rate" id="" class="form-control" min="1">
+                                </div>
+                                <div class="col-4">
+                                    <h6>Select Charge Type</h6>
+                                    <div class="d-flex">
+                                        <div class="form-group mr-1">
+                                            <input type="radio" name="service_charge_type" value="amount" class="form-group" id="">
+                                            <label for="">Amount</label>
+                                        </div>
+                                        <div>
+                                            <input type="radio" name="service_charge_type" value="percentage" class="form-group" id="">
+                                            <label for="">Percentage</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="d-flex">
+                                <h6>Add KYC Documents</h6>
+                                <button type="button" id="add_document" class="btn btn-sm btn-round btn-secondary waves-effect ml-2">Add Document</button>
+                            </div>
+                            <div class="documents">
+                                @for ($i = 1; $i <= $documents_count; $i++)
+                                    <div class="row clearfix">
+                                        <div class="col-6">
+                                            <label for="document_name">Document Name</label>
+                                            <div class="form-group">
+                                                <input type="text" name="document_name[{{ $i }}]" id="" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="document">Document</label>
+                                            <div class="form-group">
+                                                <input type="file" accept=".pdf" name="document_file[{{ $i }}]" id="" class="form-control">
+                                            </div>
+                                        </div>
+                                        {{-- <div class="col-2">
+                                            <button type="button" class="btn btn-round btn-danger btn-sm">Remove</button>
+                                        </div> --}}
+                                    </div>
+                                @endfor
+                            </div>
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-primary btn-round waves-effect">SUBMIT</button>
                             </div>
@@ -115,6 +160,32 @@
         </div>
     </div>
 </section>
-@push('scripts')
-@endpush
 @endsection
+@push('scripts')
+<script>
+    let documents = $('.documents')
+    let documents_count = {!! $documents_count !!}
+    $(document.body).on('click', '#add_document', function() {
+        documents_count += 1
+        let new_document = '<div class="row clearfix">'
+            new_document += '<div class="col-6">'
+            new_document += '<label for="document_name">Document Name</label>'
+            new_document += '<div class="form-group">'
+            new_document += '<input type="text" name="document_name['+documents_count+']" class="form-control">'
+            new_document += '</div>'
+            new_document += '</div>'
+            new_document += '<div class="col-6">'
+            new_document += '<label for="document">Document</label>'
+            new_document += '<div class="form-group">'
+            new_document += '<input type="file" accept=".pdf" name="document_file['+documents_count+']" class="form-control" />'
+            new_document += '</div>'
+            new_document += '</div>'
+            // new_document += '<div class="col-2">'
+            // new_document += '<button type="button" class="btn btn-round btn-danger btn-sm">Remove</button>'
+            // new_document += '</div>'
+            new_document += '</div>'
+
+        $(new_document).appendTo(documents)
+    })
+</script>
+@endpush
