@@ -482,8 +482,8 @@ class DashboardController extends Controller
             'rejected_inspection_requests_graph_data' => $rejected_inspection_requests_graph_data,
             'inspection_reports_graph_data' => $inspection_reports_graph_data,
             'selectedDateFilter' => $dateFilter,
-            'financing_total_limit'=>$financing_total_limit,
-            'financing_total_invoices'=>$financing_total_invoices,
+            'financing_total_limit'=>$financing_total_limit ?? 0.00,
+            'financing_total_invoices'=>$financing_total_invoices ?? 0.00,
         ]);
     }
 }
