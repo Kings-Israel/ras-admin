@@ -139,8 +139,15 @@
                     <ul class="ml-menu">
                         @can('view financing request', 'view financiers')
                             <li class="nav-item @if(Route::is('financing.institutions.*')) active open @endif">
-                                <a href="{{ route('financing.institutions.index') }}">Financiers</a>
-                            </li>
+                            <li class="nav-item @if(Route::is('financing.institutions.*')) active open @endif">
+                                <a href="{{ route('financing.institutions.index') }}">
+                                    @role('admin')
+                                    Financiers
+                                    @else
+                                        Your Institution
+                                        @endrole
+                                </a>
+                </li>
                         @endcan
                         @can('view financing request')
                             <li class="nav-item @if(Route::is('financing.institutions.customers') || Route::is('financing.institutions.customer')) active open @endif">
