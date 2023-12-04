@@ -378,7 +378,7 @@ class DashboardController extends Controller
                             });
 
         $financing_requests_count = FinancingRequest::count();
-        dd(auth()->user()->role);
+//        dd(auth()->user()->role);
         if (auth()->user()->hasRole('financier')) {
             $financier = FinancingInstitutionUser::where('user_id', auth()->user()->id)->first();
             $financing_total_limit = FinancingInstitution::where('id', $financier->financing_institution_id)
