@@ -386,7 +386,7 @@ class DashboardController extends Controller
             $financing_req = FinancingRequest::where('financing_institution_id', $financier->financing_institution_id)
                 ->pluck('invoice_id');
             $financing_total_invoices = Invoice::whereIn('id', $financing_req)
-                ->where('payment_status', 'accepted')
+                ->where('payment_status', 'paid')
                 ->sum('total_amount');
         }
         foreach($months as $month) {
