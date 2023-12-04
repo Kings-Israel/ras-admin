@@ -227,9 +227,9 @@
                         </div>
 
                         <div class="body" id="financing-limit" style="display: block">
-                            <span class="font-bold">Financing Limit</span> {{$financing_total_limit ?? 0.00}}
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{!! number_format($financing_total_limit, 2) !!}"
-                                data-speed="100" data-fresh-interval="200">"{!! number_format($financing_total_limit, 2) !!}"
+                            <span class="font-bold">Financing Limit</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ number_format(floatval($financing_total_limit), 2) }}"
+                                data-speed="100" data-fresh-interval="200">"{{ number_format(floatval($financing_total_limit), 2) }}"
                             </h3>
                         </div>
                 </div>
@@ -247,8 +247,8 @@
                         </div>
                         <div class="body" id="financing-disbursed" style="display: block">
                             <span class="font-bold">Disbursed Amount</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{!! number_format($financing_total_invoices, 2) !!}"
-                                data-speed="100" data-fresh-interval="200">"{!! number_format($financing_total_invoices, 2) !!}"
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ number_format(floatval($financing_total_invoices), 2) }}"
+                                data-speed="100" data-fresh-interval="200">"{{ number_format(floatval($financing_total_invoices), 2) }}"
                             </h3>
                         </div>
                 </div>
