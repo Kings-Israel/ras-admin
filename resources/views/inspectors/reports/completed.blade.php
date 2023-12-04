@@ -55,144 +55,144 @@
                                                                         <h5>Applicant</h5>
                                                                     </div>
                                                                     {{-- Applicant --}}
-                                                                    {{-- <div class="col-md-4 col-sm-12">
+                                                                    <div class="col-md-4 col-sm-12">
                                                                         <label for="name">Applicant Company Name</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->applicant_company_name }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->applicant_company_name }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="name">Applicant Company Address</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->applicant_company_address }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->applicant_company_address }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="Max Capacity">Applicant Company Email</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->applicant_company_email }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->applicant_company_email }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="Max Capacity">Applicant Company Phone Number</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->applicant_company_phone_number }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->applicant_company_phone_number }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="name">Applicant Company Contact Person</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->applicant_company_contact_person }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->applicant_company_contact_person }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="name">Applicant Company Contact Person Email</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->applicant_company_contact_person_email }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->applicant_company_contact_person_email }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="Max Capacity">Applicant Company Contact Person Phone Number</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->applicant_company_contact_person_phone_number }}</h5>
-                                                                    </div> --}}
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->applicant_company_contact_person_phone_number }}</h5>
+                                                                    </div>
                                                                     {{-- End Applicant --}}
                                                                     <hr>
                                                                     {{-- License Holder --}}
-                                                                    {{-- <div class="col-12">
+                                                                    <div class="col-12">
                                                                         <h5>License Holder</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="name">License Company Name</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->license_holder_company_name }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->license_holder_company_name }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="name">License Company Address</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->license_holder_company_address }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->license_holder_company_address }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="Max Capacity">License Company Email</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->license_holder_company_email }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->license_holder_company_email }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="Max Capacity">License Company Phone Number</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->license_holder_company_phone_number }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->license_holder_company_phone_number }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="name">Licenst Company Contact Person</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->license_holder_company_contact_person }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->license_holder_company_contact_person }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="name">License Company Contact Person Email</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->license_holder_company_contact_person_email }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->license_holder_company_contact_person_email }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="Max Capacity">License Company Contact Person Phone Number</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->license_holder_company_contact_person_phone_number }}</h5>
-                                                                    </div> --}}
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->license_holder_company_contact_person_phone_number }}</h5>
+                                                                    </div>
                                                                     {{-- End License Holder --}}
                                                                     <hr>
                                                                     {{-- Place of Manufacture --}}
-                                                                    {{-- <div class="col-12">
+                                                                    <div class="col-12">
                                                                         <h5>Place of Manufacture</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="name">Place of Manufacture Company Name</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_company_name }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->place_of_manufacture_company_name }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="name">Place of Manufacture Company Address</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_company_address }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->place_of_manufacture_company_address }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="Max Capacity">Place of Manufacture Company Email</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_company_email }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->place_of_manufacture_company_email }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="Max Capacity">Place of Manufacture Company Phone Number</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_company_phone_number }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->place_of_manufacture_company_phone_number }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="name">Place of Manufacture Company Contact Person</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_company_contact_person }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->place_of_manufacture_company_contact_person }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="name">Place of Manufacture Company Contact Person Email</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_company_contact_person_email }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->place_of_manufacture_company_contact_person_email }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="Max Capacity">Place of Manufacture Company Contact Person Phone Number</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_company_contact_person_phone_number }}</h5>
-                                                                    </div> --}}
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->place_of_manufacture_company_contact_person_phone_number }}</h5>
+                                                                    </div>
                                                                     {{-- End place of Manufacture --}}
                                                                     <hr>
-                                                                    {{-- <div class="col-md-4 col-sm-12">
+                                                                    <div class="col-md-4 col-sm-12">
                                                                         <label for="Max Capacity">Place of Manufacture Inspection Done By</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_factory_inspection_done_by }}</h5>
-                                                                    </div> --}}
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->place_of_manufacture_factory_inspection_done_by }}</h5>
+                                                                    </div>
                                                                     <hr>
                                                                     {{-- Product --}}
-                                                                    {{-- <div class="col-12">
+                                                                    <div class="col-12">
                                                                         <h5>Product</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="name">Product</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->product }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->product }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="name">Product Type Ref</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->product_type_ref }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->product_type_ref }}</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="Max Capacity">Product Trademark</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->product_trade_mark }}</h5>
-                                                                    </div> --}}
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->product_trade_mark }}</h5>
+                                                                    </div>
                                                                     {{-- End Product --}}
                                                                     <hr>
-                                                                    {{-- <div class="col-12">
+                                                                    <div class="col-12">
                                                                         <label for="Max Capacity">Product Ratings and Principle Characteristics</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->product_ratings_and_principle_characteristics }}</h5>
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->product_ratings_and_principle_characteristics }}</h5>
                                                                     </div>
                                                                     <div class="col-12">
                                                                         <label for="Max Capacity">Differences From Previously Certified Product</label>
-                                                                        <h5>{{ $order_request->orderItem->inspectionReport->differences_from_previously_certified_product }}</h5>
-                                                                    </div> --}}
+                                                                        <h5>{{ $inspection_report->orderItem->inspectionReport->differences_from_previously_certified_product }}</h5>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            {{-- <div class="modal-footer">
-                                                                <a href="{{ $order_request->orderItem->inspectionReport->report_file }}" target="_blank" class="btn btn-primary btn-round waves-effect">View Report File</a>
-                                                                @if ($order_request->orderItem->inspectionReport->applicant_signature && $order_request->orderItem->inspectionReport->applicant_signature != config('app.url').'/storage/reports/inspection/')
-                                                                    <a href="{{ $order_request->orderItem->inspectionReport->applicant_signature }}" target="_blank" class="btn btn-signature btn-round waves-effect">View Signature</a>
+                                                            <div class="modal-footer">
+                                                                <a href="{{ $inspection_report->report_file }}" target="_blank" class="btn btn-primary btn-round waves-effect">View Report File</a>
+                                                                @if ($inspection_report->applicant_signature && $inspection_report->applicant_signature != config('app.url').'/storage/reports/inspection/')
+                                                                    <a href="{{ $inspection_report->applicant_signature }}" target="_blank" class="btn btn-signature btn-round waves-effect">View Signature</a>
                                                                 @endif
                                                                 <button type="button" class="btn btn-danger btn-simple btn-round waves-effect" data-dismiss="modal">CLOSE</button>
-                                                            </div> --}}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
