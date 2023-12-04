@@ -383,7 +383,7 @@ class DashboardController extends Controller
             $financier = FinancingInstitutionUser::where('user_id', auth()->user()->id)->first();
             $financing_total_limit = FinancingInstitution::where('id', $financier->financing_institution_id)
                 ->value('credit_limit');
-            info($financing_total_limit);
+            info(['financing_total_limit' => $financing_total_limit]);
             $financing_req = FinancingRequest::where('financing_institution_id', $financier->financing_institution_id)
                 ->pluck('invoice_id');
             $financing_total_invoices = Invoice::whereIn('id', $financing_req)
