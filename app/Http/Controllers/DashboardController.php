@@ -381,13 +381,14 @@ class DashboardController extends Controller
 //        dd(auth()->user()->role);
         if (auth()->user()->hasRole('financier')) {
             $financier = FinancingInstitutionUser::where('user_id', auth()->user()->id)->first();
-            $financing_total_limit = FinancingInstitution::where('id', $financier->financing_institution_id)
-                ->value('credit_limit');
+            $financing_total_limit = number_format(FinancingInstitution::where('id', $financier->financing_institution_id)
+                ->value('credit_limit'), 2);
             $financing_req = FinancingRequest::where('financing_institution_id', $financier->financing_institution_id)
+                ->where('status', 'accepted')
                 ->pluck('invoice_id');
-            $financing_total_invoices = Invoice::whereIn('id', $financing_req)
+            $financing_total_invoices = number_format(Invoice::whereIn('id', $financing_req)
                 ->where('payment_status', 'paid')
-                ->sum('total_amount');
+                ->sum('total_amount'), 2);
         }
         foreach($months as $month) {
             $requests_monthly = FinancingRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->count();
