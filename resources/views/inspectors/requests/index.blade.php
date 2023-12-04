@@ -22,8 +22,7 @@
                         <table class="table table-hover dataTable js-exportable" id="inspection_requests">
                             <thead>
                                 <tr>
-                                    <th>ORDER ID</th>
-                                    {{-- <th>No. of Order Items</th> --}}
+                                    <th>Order Id</th>
                                     <th>Status</th>
                                     <th>Customer</th>
                                     @role('admin')
@@ -34,22 +33,23 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($orders as $inspection_request)
-                                    <tr>
-                                        <td>{{ $inspection_request->orderItem->order->order_id }}</td>
-                                        {{-- <td>{{ $inspection_request->order->orderItems->count() }}</td> --}}
-                                        <td>{{ Str::title($inspection_request->status) }}</td>
-                                        <td>{{ $inspection_request->orderItem->order->user->first_name }} {{ $inspection_request->orderItem->order->user->last_name }}</td>
-                                        @role('admin')
-                                            <td>{{ $inspection_request->requesteable->name }}</td>
-                                        @endrole
-                                        <td>{{ $inspection_request->created_at->format('d M Y') }}</td>
-                                        <td>
-                                            @can('view inspection report')
-                                                <a href="{{ route('inspection.requests.show', ['order_request' => $inspection_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">View</a>
-                                            @endcan
-                                        </td>
-                                    </tr>
+                                @foreach ($orders as $orderRequest)
+                                    @can('view', $orderRequest)
+                                        <tr>
+                                            <td>{{ $orderRequest->orderItem->order->order_id }}</td>
+                                            <td>{{ Str::title($orderRequest->status) }}</td>
+                                            <td>{{ $orderRequest->orderItem->order->user->first_name }} {{ $orderRequest->orderItem->order->user->last_name }}</td>
+                                            @role('admin')
+                                                <td>{{ $orderRequest->requesteable->name }}</td>
+                                            @endrole
+                                            <td>{{ $orderRequest->created_at->format('d M Y') }}</td>
+                                            <td>
+                                                @can('update', $orderRequest)
+                                                    <a href="{{ route('inspection.requests.show', ['order_request' => $orderRequest]) }}" class="btn btn-sm btn-primary btn-round waves-effect">View</a>
+                                                @endcan
+                                            </td>
+                                        </tr>
+                                    @endcan
                                 @endforeach
                             </tbody>
                         </table>

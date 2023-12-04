@@ -17,33 +17,33 @@
                             <thead>
                                 <tr>
                                     <th>Order Id</th>
-                                    <th>Status</th>
                                     <th>Customer</th>
                                     <th>Payment Status</th>
                                     @role('admin')
                                         <th>Inspector</th>
                                     @endrole
                                     <th>Requested On</th>
+                                    <th>Completed On</th>
                                     @can('view inspection report')
                                         <th>Actions</th>
                                     @endcan
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($order_requests as $order_request)
+                                @foreach ($inspection_reports as $inspection_report)
                                     <tr>
-                                        <td>{{ $order_request->orderItem->order->order_id }}</td>
-                                        <td>{{ Str::title($order_request->status) }}</td>
-                                        <td>{{ $order_request->orderItem->order->user->first_name }} {{ $order_request->orderItem->order->user->last_name }}</td>
-                                        <td>{{ Str::title($order_request->orderItem->order->invoice->payment_status) }}</td>
+                                        <td>{{ $inspection_report->orderItem->order->order_id }}</td>
+                                        <td>{{ $inspection_report->orderItem->order->user->first_name }} {{ $inspection_report->orderItem->order->user->last_name }}</td>
+                                        <td>{{ Str::title($inspection_report->orderItem->order->invoice->payment_status) }}</td>
                                         @role('admin')
-                                            <td>{{ $order_request->requesteable->name }}</td>
+                                            <td>{{ $inspection_report->inspectingInstitution->name }}</td>
                                         @endrole
-                                        <td>{{ $order_request->created_at->format('d M Y') }}</td>
+                                        <td>{{ $inspection_report->orderItem->created_at->format('d M Y') }}</td>
+                                        <td>{{ $inspection_report->created_at->format('d M Y') }}</td>
                                         <td>
-                                            @can('view inspection report')
-                                                <a href="#defaultModal-{{ $order_request->id }}" data-toggle="modal" data-target="#defaultModal-{{ $order_request->id }}" class="btn btn-sm btn-primary btn-round waves-effect">View Report</a>
-                                                <div class="modal fade" id="defaultModal-{{ $order_request->id }}" tabindex="-1" role="dialog">
+                                            @can('view', $inspection_report)
+                                                <a href="#defaultModal-{{ $inspection_report->id }}" data-toggle="modal" data-target="#defaultModal-{{ $inspection_report->id }}" class="btn btn-sm btn-primary btn-round waves-effect">View Report</a>
+                                                <div class="modal fade" id="defaultModal-{{ $inspection_report->id }}" tabindex="-1" role="dialog">
                                                     <div class="modal-dialog modal-xl" role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -55,7 +55,7 @@
                                                                         <h5>Applicant</h5>
                                                                     </div>
                                                                     {{-- Applicant --}}
-                                                                    <div class="col-md-4 col-sm-12">
+                                                                    {{-- <div class="col-md-4 col-sm-12">
                                                                         <label for="name">Applicant Company Name</label>
                                                                         <h5>{{ $order_request->orderItem->inspectionReport->applicant_company_name }}</h5>
                                                                     </div>
@@ -82,11 +82,11 @@
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="Max Capacity">Applicant Company Contact Person Phone Number</label>
                                                                         <h5>{{ $order_request->orderItem->inspectionReport->applicant_company_contact_person_phone_number }}</h5>
-                                                                    </div>
+                                                                    </div> --}}
                                                                     {{-- End Applicant --}}
                                                                     <hr>
                                                                     {{-- License Holder --}}
-                                                                    <div class="col-12">
+                                                                    {{-- <div class="col-12">
                                                                         <h5>License Holder</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
@@ -116,11 +116,11 @@
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="Max Capacity">License Company Contact Person Phone Number</label>
                                                                         <h5>{{ $order_request->orderItem->inspectionReport->license_holder_company_contact_person_phone_number }}</h5>
-                                                                    </div>
+                                                                    </div> --}}
                                                                     {{-- End License Holder --}}
                                                                     <hr>
                                                                     {{-- Place of Manufacture --}}
-                                                                    <div class="col-12">
+                                                                    {{-- <div class="col-12">
                                                                         <h5>Place of Manufacture</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
@@ -150,16 +150,16 @@
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="Max Capacity">Place of Manufacture Company Contact Person Phone Number</label>
                                                                         <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_company_contact_person_phone_number }}</h5>
-                                                                    </div>
+                                                                    </div> --}}
                                                                     {{-- End place of Manufacture --}}
                                                                     <hr>
-                                                                    <div class="col-md-4 col-sm-12">
+                                                                    {{-- <div class="col-md-4 col-sm-12">
                                                                         <label for="Max Capacity">Place of Manufacture Inspection Done By</label>
                                                                         <h5>{{ $order_request->orderItem->inspectionReport->place_of_manufacture_factory_inspection_done_by }}</h5>
-                                                                    </div>
+                                                                    </div> --}}
                                                                     <hr>
                                                                     {{-- Product --}}
-                                                                    <div class="col-12">
+                                                                    {{-- <div class="col-12">
                                                                         <h5>Product</h5>
                                                                     </div>
                                                                     <div class="col-md-4 col-sm-12">
@@ -173,26 +173,26 @@
                                                                     <div class="col-md-4 col-sm-12">
                                                                         <label for="Max Capacity">Product Trademark</label>
                                                                         <h5>{{ $order_request->orderItem->inspectionReport->product_trade_mark }}</h5>
-                                                                    </div>
+                                                                    </div> --}}
                                                                     {{-- End Product --}}
                                                                     <hr>
-                                                                    <div class="col-12">
+                                                                    {{-- <div class="col-12">
                                                                         <label for="Max Capacity">Product Ratings and Principle Characteristics</label>
                                                                         <h5>{{ $order_request->orderItem->inspectionReport->product_ratings_and_principle_characteristics }}</h5>
                                                                     </div>
                                                                     <div class="col-12">
                                                                         <label for="Max Capacity">Differences From Previously Certified Product</label>
                                                                         <h5>{{ $order_request->orderItem->inspectionReport->differences_from_previously_certified_product }}</h5>
-                                                                    </div>
+                                                                    </div> --}}
                                                                 </div>
                                                             </div>
-                                                            <div class="modal-footer">
+                                                            {{-- <div class="modal-footer">
                                                                 <a href="{{ $order_request->orderItem->inspectionReport->report_file }}" target="_blank" class="btn btn-primary btn-round waves-effect">View Report File</a>
                                                                 @if ($order_request->orderItem->inspectionReport->applicant_signature && $order_request->orderItem->inspectionReport->applicant_signature != config('app.url').'/storage/reports/inspection/')
                                                                     <a href="{{ $order_request->orderItem->inspectionReport->applicant_signature }}" target="_blank" class="btn btn-signature btn-round waves-effect">View Signature</a>
                                                                 @endif
                                                                 <button type="button" class="btn btn-danger btn-simple btn-round waves-effect" data-dismiss="modal">CLOSE</button>
-                                                            </div>
+                                                            </div> --}}
                                                         </div>
                                                     </div>
                                                 </div>
