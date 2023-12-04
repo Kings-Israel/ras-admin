@@ -227,7 +227,7 @@
                         </div>
 
                         <div class="body" id="financing-limit" style="display: block">
-                            <span class="font-bold">Financing Limit</span>
+                            <span class="font-bold">Financing Limit</span> {{$financing_total_limit ?? 0.00}}
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="{!! number_format($financing_total_limit, 2) !!}"
                                 data-speed="100" data-fresh-interval="200">"{!! number_format($financing_total_limit, 2) !!}"
                             </h3>
