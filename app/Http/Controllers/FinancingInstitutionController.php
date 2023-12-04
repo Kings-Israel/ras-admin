@@ -4,16 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Models\City;
+use App\Models\CompanyDocument;
 use App\Models\Country;
 use App\Models\FinancingInstitution;
 use App\Models\FinancingInstitutionUser;
 use App\Models\FinancingRequest;
 use App\Models\OrderFinancing;
+use App\Models\ServiceCharge;
 use App\Models\User;
 use App\Notifications\RoleUpdate;
 use App\Rules\PhoneNumber;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Password;
 
 class FinancingInstitutionController extends Controller
@@ -58,7 +61,8 @@ class FinancingInstitutionController extends Controller
                 'Add Financing Institutions' => route('financing.institutions.create')
             ],
             'countries' => $countries,
-            'users' => $users
+            'users' => $users,
+            'documents_count' => 1
         ]);
     }
 
@@ -101,6 +105,28 @@ class FinancingInstitutionController extends Controller
             'city_id' => $request->has('city_id') ? $request->city_id : NULL,
             'credit_limit' => $request->credit_limit
         ]);
+
+        if ($request->has('document_name')) {
+            foreach ($request->document_name as $key => $doc) {
+                if ($request->document_file[$key] instanceof UploadedFile) {
+                    CompanyDocument::create([
+                        'document_name' => $doc,
+                        'file_url' => pathinfo($request->document_file[$key]->store('documents', 'company'), PATHINFO_BASENAME),
+                        'documenteable_id' => $financing_institution->id,
+                        'documenteable_type' => FinancingInstitution::class,
+                    ]);
+                }
+            }
+        }
+
+        if ($request->has('service_charge')) {
+            ServiceCharge::create([
+                'value' => $request->service_charge_rate,
+                'type' => $request->service_charge_type,
+                'chargeable_id' => $financing_institution->id,
+                'chargeable_type' => FinancingInstitution::class,
+            ]);
+        }
 
         // Create Maker User
         if ($request->has('maker_user')) {

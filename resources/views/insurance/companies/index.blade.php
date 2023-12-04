@@ -36,7 +36,7 @@
                                     <th>Location</th>
                                     <th>Admin(s)</th>
                                     <th>No. of Pending Reports</th>
-                                    <th>No. of Processed Reports</th>
+                                    <th>No. of Completed Reports</th>
                                     <th>Added on</th>
                                     <th>Actions</th>
                                 </tr>

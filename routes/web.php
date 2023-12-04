@@ -191,6 +191,8 @@ Route::middleware(['auth', 'web'])->group(function () {
         // Measurement Units
         Route::post('/units/{unit}/update', [SettingsController::class, 'updateUnit'])->name('unit.update');
         Route::get('/units/{unit}/delete', [SettingsController::class, 'deleteUnit'])->name('unit.delete');
+        // Service Charges Rate
+        Route::post('/services/rate/update', [SettingsController::class, 'updateServiceChargeRate'])->name('rate.update');
     });
 
     Route::get('/customers', [UsersController::class, 'buyers'])->name('users.buyers');

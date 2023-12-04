@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
+use App\Models\CompanyDocument;
 use App\Models\Country;
 use App\Models\InspectingInstitution;
 use App\Models\InspectionReport;
 use App\Models\InspectorUser;
 use App\Models\OrderConversation;
 use App\Models\OrderRequest;
+use App\Models\ServiceCharge;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Chat;
+use Illuminate\Http\UploadedFile;
 
 class InspectorController extends Controller
 {
@@ -28,7 +31,7 @@ class InspectorController extends Controller
 
     public function index()
     {
-        $inspectors = InspectingInstitution::withCount('users')->get();
+        $inspectors = InspectingInstitution::withCount('users', 'orderRequests')->get();
 
         return view('inspectors.index', [
             'page' => 'Inspectors',
@@ -50,7 +53,8 @@ class InspectorController extends Controller
                 'Add Inspector' => route('inspectors.create')
             ],
             'countries' => $countries,
-            'users' => $users
+            'users' => $users,
+            'documents_count' => 1
         ]);
     }
 
@@ -78,6 +82,28 @@ class InspectorController extends Controller
             'phone_number' => $request->inspector_phone_number,
             'country_id' => $request->has('country_id') ? $request->country_id : NULL,
         ]);
+
+        if ($request->has('document_name') && count($request->document_name) > 0) {
+            foreach ($request->document_name as $key => $doc) {
+                if ($request->document_file[$key] instanceof UploadedFile) {
+                    CompanyDocument::create([
+                        'document_name' => $doc,
+                        'file_url' => pathinfo($request->document_file[$key]->store('documents', 'company'), PATHINFO_BASENAME),
+                        'documenteable_id' => $inspector->id,
+                        'documenteable_type' => InspectingInstitution::class,
+                    ]);
+                }
+            }
+        }
+
+        if ($request->has('service_charge_rate')) {
+            ServiceCharge::create([
+                'value' => $request->service_charge_rate,
+                'type' => $request->service_charge_type,
+                'chargeable_id' => $inspector->id,
+                'chargeable_type' => InspectingInstitution::class,
+            ]);
+        }
 
         if ($request->has('users') && $request->users != NULL) {
             foreach ($request->users as $user) {
