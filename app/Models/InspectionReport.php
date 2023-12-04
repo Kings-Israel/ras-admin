@@ -52,7 +52,7 @@ class InspectionReport extends Model
      */
     public function inspectingInstitution(): BelongsTo
     {
-        return $this->belongsTo(InspectingInstitution::class);
+        return $this->belongsTo(InspectingInstitution::class, 'inspector_id', 'id');
     }
 
     /**

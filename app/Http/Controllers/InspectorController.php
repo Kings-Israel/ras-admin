@@ -179,16 +179,16 @@ class InspectorController extends Controller
         // $orders = OrderStorageRequest::with('orderItem.order.business', 'orderItem.product.media')->where('warehouse_id', $warehouse->id)->get();
         $orders = OrderRequest::with('orderItem.order.business', 'orderItem.product.media')->where('requesteable_type', InspectingInstitution::class)->get();
 
-        if (auth()->user()->hasRole('admin')) {
-            $orders = OrderRequest::with('orderItem.product.business', 'orderItem.order')->where('requesteable_type', InspectingInstitution::class)->get();
-        } else {
-            if (auth()->user()->hasPermissionTo('view inspection report') && count(auth()->user()->inspectors) <= 0) {
-                $orders = OrderRequest::with('orderItem.product.business', 'orderItem.order')->where('requesteable_type', InspectingInstitution::class)->get();
-            } else {
-                $user_inspecting_institutions_ids = auth()->user()->inspectors->pluck('id');
-                $orders = OrderRequest::with('orderItem.product.business', 'orderItem.order')->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', InspectingInstitution::class)->get();
-            }
-        }
+        $orders = OrderRequest::with('orderItem.product.business', 'orderItem.order')->where('requesteable_type', InspectingInstitution::class)->get();
+        // if (auth()->user()->hasRole('admin')) {
+        // } else {
+        //     if (auth()->user()->hasPermissionTo('view inspection report') && count(auth()->user()->inspectors) <= 0) {
+        //         $orders = OrderRequest::with('orderItem.product.business', 'orderItem.order')->where('requesteable_type', InspectingInstitution::class)->get();
+        //     } else {
+        //         $user_inspecting_institutions_ids = auth()->user()->inspectors->pluck('id');
+        //         $orders = OrderRequest::with('orderItem.product.business', 'orderItem.order')->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', InspectingInstitution::class)->get();
+        //     }
+        // }
 
         return view('inspectors.requests.index', [
             'page' => 'Inspection Requests',
@@ -214,7 +214,6 @@ class InspectorController extends Controller
             $conversation->update([
                 'direct_message' => true,
             ]);
-
         }
 
         OrderConversation::firstOrCreate([
@@ -276,12 +275,16 @@ class InspectorController extends Controller
                                             ->get();
         }
 
+        $inspection_reports = InspectionReport::with('orderItem.order', 'orderItem.product', 'user', 'inspectingInstitution')
+                                                ->get();
+
         return view('inspectors.reports.completed', [
             'page' => 'Complete Inspection Reports',
             'breadcrumbs' => [
                 'Completed Inspection Reports' => route('inspection.requests.reports.completed')
             ],
-            'order_requests' => $order_requests
+            // 'order_requests' => $order_requests,
+            'inspection_reports' => $inspection_reports,
         ]);
     }
 
