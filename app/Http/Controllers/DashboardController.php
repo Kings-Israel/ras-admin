@@ -381,14 +381,16 @@ class DashboardController extends Controller
 //        dd(auth()->user()->role);
         if (auth()->user()->hasRole('financier')) {
             $financier = FinancingInstitutionUser::where('user_id', auth()->user()->id)->first();
-            $financing_total_limit = number_format(FinancingInstitution::where('id', $financier->financing_institution_id)
-                ->value('credit_limit'), 2);
+            $financing_total_limit = FinancingInstitution::where('id', $financier->financing_institution_id)
+                ->value('credit_limit');
+            $formatted_limit = number_format($financing_total_limit, 2);
             $financing_req = FinancingRequest::where('financing_institution_id', $financier->financing_institution_id)
                 ->where('status', 'accepted')
                 ->pluck('invoice_id');
-            $financing_total_invoices = number_format(Invoice::whereIn('id', $financing_req)
+            $financing_total_invoices = Invoice::whereIn('id', $financing_req)
                 ->where('payment_status', 'paid')
-                ->sum('total_amount'), 2);
+                ->sum('total_amount');
+            $formatted_total_invoice = number_format($financing_total_invoices, 2);
         }
         foreach($months as $month) {
             $requests_monthly = FinancingRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->count();
@@ -483,8 +485,8 @@ class DashboardController extends Controller
             'rejected_inspection_requests_graph_data' => $rejected_inspection_requests_graph_data,
             'inspection_reports_graph_data' => $inspection_reports_graph_data,
             'selectedDateFilter' => $dateFilter,
-            'financing_total_limit'=>$financing_total_limit ?? 0.00,
-            'financing_total_invoices'=>$financing_total_invoices ?? 0.00,
+            'financing_total_limit'=>$formatted_limit ?? 0.00,
+            'financing_total_invoices'=>$formatted_total_invoice ?? 0.00,
         ]);
     }
 }
