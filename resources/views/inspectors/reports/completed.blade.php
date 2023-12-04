@@ -16,8 +16,7 @@
                         <table class="table table-hover dataTable js-exportable" id="inspection_requests">
                             <thead>
                                 <tr>
-                                    <th>ORDER ID</th>
-                                    {{-- <th>No. of Order Items</th> --}}
+                                    <th>Order Id</th>
                                     <th>Status</th>
                                     <th>Customer</th>
                                     <th>Payment Status</th>
@@ -34,7 +33,6 @@
                                 @foreach ($order_requests as $order_request)
                                     <tr>
                                         <td>{{ $order_request->orderItem->order->order_id }}</td>
-                                        {{-- <td>{{ $order_request->order->orderItems->count() }}</td> --}}
                                         <td>{{ Str::title($order_request->status) }}</td>
                                         <td>{{ $order_request->orderItem->order->user->first_name }} {{ $order_request->orderItem->order->user->last_name }}</td>
                                         <td>{{ Str::title($order_request->orderItem->order->invoice->payment_status) }}</td>

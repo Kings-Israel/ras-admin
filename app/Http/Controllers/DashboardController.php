@@ -16,6 +16,7 @@ use App\Models\Warehouse;
 use App\Models\InspectingInstitution;
 use App\Models\LogisticsCompany;
 use App\Models\InsuranceCompany;
+use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use VisitLog;
@@ -32,7 +33,7 @@ class DashboardController extends Controller
         // Get past 12 months
         $months = [];
 
-        for ($i = 12; $i >= 0; $i--) {
+        for ($i = 11; $i >= 0; $i--) {
             $month = Carbon::today()->startOfMonth()->subMonth($i);
             $year = Carbon::today()->startOfMonth()->subMonth($i)->format('Y');
             array_push($months, $month);
@@ -68,6 +69,19 @@ class DashboardController extends Controller
         $vendor_registration_rate_graph_data = [];
         // Countries
         $countries = [];
+        // Orders
+        $total_orders = 0;
+        $total_orders_direction = '';
+        $total_orders_rate = 0;
+        $total_paid_orders = 0;
+        $total_paid_orders_direction = '';
+        $total_paid_orders_rate = 0;
+        $total_orders_graph_rate = [
+            'Period' => [],
+            'Orders' => [],
+            'Sales' => [],
+        ];
+        $total_paid_orders_graph_rate = [];
 
         // Top Businesses
         $top_businesses = [];
@@ -108,7 +122,6 @@ class DashboardController extends Controller
         $rejected_inspection_requests_graph_data = [];
         $inspection_reports_graph_data = [];
 
-
         $users_registered_in_current_month = User::whereHas('roles', function ($query) {$query->where('name', 'buyer')->orWhere('name', 'vendor');})->whereMonth('created_at', now())->count();
         $users_registered_in_previous_month = User::whereHas('roles', function ($query) {$query->where('name', 'buyer')->orWhere('name', 'vendor');})->whereMonth('created_at', now()->subMonth())->count();
         $users_registration_diiference = $users_registered_in_previous_month - $users_registered_in_current_month;
@@ -125,19 +138,19 @@ class DashboardController extends Controller
         }
 
         $total_users_count = User::whereHas('roles', function ($query) {
-                            $query->where('name', '!=', 'admin');
-                        })
-                        ->count();
+                                    $query->where('name', '!=', 'admin');
+                                })
+                                ->count();
 
         $total_buyers_count = User::whereHas('roles', function ($query) {
-                            $query->where('name', '=', 'buyer');
-                        })
-                        ->count();
+                                    $query->where('name', '=', 'buyer');
+                                })
+                                ->count();
 
         $total_vendors_count = User::whereHas('roles', function ($query) {
-                            $query->where('name', '=', 'vendor');
-                        })
-                        ->count();
+                                    $query->where('name', '=', 'vendor');
+                                })
+                                ->count();
 
         $total_businesses_count = Business::count();
 
@@ -155,6 +168,63 @@ class DashboardController extends Controller
             array_push($vendor_registration_rate_graph_data, $vendors_monthly);
         }
 
+        $total_orders = Order::count();
+        $orders_in_current_month = Order::whereMonth('created_at', now())->count();
+        $orders_in_previous_month = Order::whereMonth('created_at', now()->subMonth())->count();
+        $orders_diiference = $orders_in_previous_month - $orders_in_current_month;
+        if ($orders_diiference <= 0) {
+            $total_orders_rate = 0;
+        } else {
+            $total_orders_rate = ceil($orders_diiference / ($orders_in_previous_month + $orders_in_current_month) * 100);
+        }
+
+        foreach ($months as $key => $month) {
+            $orders_monthly = Order::whereMonth('created_at', $month)->count();
+            $paid_orders_monthly = Order::whereHas('invoice', function ($query) {
+                                            $query->where('payment_status', 'paid');
+                                        })
+                                        ->whereMonth('created_at', $month)
+                                        ->count();
+
+            array_push($total_orders_graph_rate['Period'], Carbon::parse($month)->format('M'));
+            array_push($total_orders_graph_rate['Orders'], $orders_monthly);
+            array_push($total_orders_graph_rate['Sales'], $paid_orders_monthly);
+        }
+
+        if ($orders_in_previous_month < $orders_in_current_month) {
+            $total_orders_direction = 'higher';
+        } else if ($orders_in_previous_month > $orders_in_current_month) {
+            $total_orders_direction = 'lower';
+        }
+
+        $total_paid_orders = Order::whereHas('invoice', function ($query) {
+                                    $query->where('payment_status', 'paid');
+                                })
+                                ->count();
+        $paid_orders_in_current_month = Order::whereHas('invoice', function ($query) {
+                                                $query->where('payment_status', 'paid');
+                                            })
+                                            ->where('created_at', now())
+                                            ->count();
+        $paid_orders_in_previous_month = Order::whereHas('invoice', function ($query) {
+                                                $query->where('payment_status', 'paid');
+                                            })
+                                            ->where('created_at', now()->subMonth())
+                                            ->count();
+
+        $paid_orders_diiference = $paid_orders_in_previous_month - $paid_orders_in_current_month;
+        if ($paid_orders_diiference <= 0) {
+            $total_paid_orders_rate = 0;
+        } else {
+            $total_paid_orders_rate = ceil($paid_orders_diiference / ($paid_orders_in_previous_month + $paid_orders_in_current_month) * 100);
+        }
+
+        if ($paid_orders_in_previous_month < $paid_orders_in_current_month) {
+            $total_paid_orders_direction = 'higher';
+        } else if ($paid_orders_in_previous_month > $paid_orders_in_current_month) {
+            $total_paid_orders_direction = 'lower';
+        }
+
         $all_visits_log = VisitLog::all();
 
         $visit_log = [];
@@ -165,6 +235,7 @@ class DashboardController extends Controller
             $visits_bandwidth += $monthly_visits;
         }
 
+        // Monthly Visits
         $current_month_site_visits = $all_visits_log->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
         $prev_month_site_visits = $all_visits_log->whereBetween('created_at', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()])->count();
         $site_visit_difference = $current_month_site_visits - $prev_month_site_visits;
@@ -290,8 +361,8 @@ class DashboardController extends Controller
             array_push($financing_requests_graph_data, $requests_monthly);
         }
 
-        // Inspection Reports
         if (auth()->user()->hasRole('admin')) {
+            // Inspection Reports
             $pending_inspection_requests_count = OrderRequest::where('status', 'pending')->where('requesteable_type', InspectingInstitution::class)->count();
             $accepted_inspection_requests_count = OrderRequest::with('orderItem')
                                                             ->whereHas('orderItem', function ($query) {
@@ -310,6 +381,7 @@ class DashboardController extends Controller
                 array_push($rejected_inspection_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'rejected')->where('requesteable_type', InspectingInstitution::class)->count());
                 array_push($inspection_reports_graph_data, InspectionReport::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->count());
             }
+            // End Inspection Reports
         } else {
             $user_inspecting_institutions_ids = auth()->user()->inspectors->pluck('id');
             $pending_inspection_requests_count = OrderRequest::where('status', 'pending')->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', InspectingInstitution::class)->count();
@@ -353,6 +425,13 @@ class DashboardController extends Controller
             'warehouses_count' => $warehouses_count,
             'products_count' => $products_count,
             'countries' => $countries,
+            'total_orders' => $total_orders,
+            'total_orders_rate' => $total_orders_rate,
+            'total_orders_direction' => $total_orders_direction,
+            'total_paid_orders' => $total_paid_orders,
+            'total_paid_orders_rate' => $total_paid_orders_rate,
+            'total_orders_graph_rate' => $total_orders_graph_rate,
+            'total_paid_orders_direction' => $total_paid_orders_direction,
             'pending_storage_requests' => $pending_storage_requests,
             'approved_storage_requests' => $approved_storage_requests,
             'total_stocklift_requests' => $total_stocklift_requests,
