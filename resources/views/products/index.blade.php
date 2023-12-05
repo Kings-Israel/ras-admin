@@ -45,7 +45,7 @@
                                         <td>{{ $product->warehouse ?? '' }}</td>
 {{--                                        <td>{{ $product->created_at->format('d M Y') }}</td>--}}
                                         <td>
-                                            <a href="#" class="btn btn-sm btn-primary btn-round waves-effect"  data-bs-toggle="modal" data-bs-target="#productModal" onclick="showProductDetails(productId)">DETAILS</a>
+                                            <a href="#" class="btn btn-sm btn-primary btn-round waves-effect"  data-bs-toggle="modal" data-bs-target="#productModal" onclick="showProductDetails({{$product->id}})">DETAILS</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -97,16 +97,14 @@
 <script>
     function showProductDetails(productId) {
         const apiUrl = `/api/products/${productId}`;
-
         fetch(apiUrl)
             .then(response => response.json())
-            .then(product => {
-                // Populate the modal with product details
+            .then(data => {
+                const product = data[0];
                 document.getElementById('productName').textContent = product.name;
                 document.getElementById('productDescription').textContent = product.description;
                 document.getElementById('productMaterial').textContent = product.material;
                 document.getElementById('productPrice').textContent = product.price;
-                // Add more lines for other details as needed
             })
             .catch(error => console.error('Error fetching product details', error));
     }

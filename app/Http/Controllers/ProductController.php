@@ -28,10 +28,12 @@ class ProductController extends Controller
     }
     public function details($id)
     {
-            $products = Product::where('id',$id)->with('category','business.user', 'warehouse.country',)->get();
-
-        return view('products.index', [
-            'products' => $products
+            $product = Product::where('id',$id)->with('category','business.user', 'warehouse.country',)->get();
+            info($product);
+        return response()->json([
+            "success" => true,
+            "status" => 200,
+            "product"=>$product
         ]);
     }
 }
