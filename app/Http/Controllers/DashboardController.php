@@ -144,6 +144,8 @@ class DashboardController extends Controller
         $rejected_inspection_requests_graph_data = [];
         $inspection_reports_graph_data = [];
 
+        $financing_total_invoices = 0;
+
         $users_registered_in_current_month = User::whereHas('roles', function ($query) {$query->where('name', 'buyer')->orWhere('name', 'vendor');})->whereMonth('created_at', now())->count();
         $users_registered_in_previous_month = User::whereHas('roles', function ($query) {$query->where('name', 'buyer')->orWhere('name', 'vendor');})->whereMonth('created_at', now()->subMonth())->count();
         $users_registration_diiference = $users_registered_in_previous_month - $users_registered_in_current_month;
@@ -378,7 +380,6 @@ class DashboardController extends Controller
                             });
 
         $financing_requests_count = FinancingRequest::count();
-//        dd(auth()->user()->role);
         if (auth()->user()->hasRole('financier')) {
             $financier = FinancingInstitutionUser::where('user_id', auth()->user()->id)->first();
             $financing_total_limit = (double)FinancingInstitution::where('id', $financier->financing_institution_id)
