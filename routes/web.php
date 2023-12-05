@@ -66,6 +66,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::resource('packaging', PackagingController::class);
     Route::get('/packaging', [PackagingController::class, 'index'])->name('packaging');
 
+    Route::get('/api/products/{id}', [ProductController::class, 'details'])->name('product');
     Route::get('/products', [ProductController::class, 'index'])->name('products');
 
     // Financiers
