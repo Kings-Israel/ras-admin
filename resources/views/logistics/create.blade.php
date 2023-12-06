@@ -1,12 +1,16 @@
 @extends('layouts.app')
 @section('css')
 <style>
-    #gmap_markers {
-        height: 380px;
+    .form-control {
+        border: 1px solid #9c9c9c !important;
     }
-    #super{
-        vertical-align:super;
-        font-size: smaller;
+
+    .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+        width: 100% !important;
+    }
+
+    .bootstrap-select .btn {
+        border: 1px solid #9c9c9c !important;
     }
 </style>
 @endsection
@@ -47,7 +51,7 @@
                                 </div>
                                 <div class="col-6">
                                     <label for="country">Transportation Methods</label>
-                                    <select name="transportation_methods[]" class="form-control show-tick" id="transportation_method" multiple>
+                                    <select name="transportation_methods[]" class="show-tick" id="transportation_method" multiple>
                                         @foreach ($transportation_methods as $method)
                                             <option value="{{ $method }}" @if(old('transportation_methods') && in_array($method, old('transportation_methods'))) selected @endif>{{ $method }}</option>
                                         @endforeach
@@ -56,7 +60,7 @@
                                 </div>
                                 <div class="col-6">
                                     <label for="country">Country</label>
-                                    <select name="country_id" class="form-control show-tick" id="country">
+                                    <select name="country_id" class="show-tick" id="country">
                                         <option value="">Select Country</option>
                                         @foreach ($countries as $country)
                                             <option value="{{ $country->id }}" @if(old('country_id') == $country->id) selected @endif data-cities="{{ $country->cities }}">{{ $country->name }}</option>
@@ -67,7 +71,7 @@
                                 {{-- <div class="col-6">
                                     <label for="city">City</label>
                                     <div class="form-group">
-                                        <select name="city_id" id="city_id" class="form-control show-tick">
+                                        <select name="city_id" id="city_id" class="show-tick">
                                             <option value="">Select City</option>
                                         </select>
                                         <x-input-error :messages="$errors->get('city_id')" class="mt-2 list-unstyled"></x-input-error>
@@ -80,7 +84,7 @@
                                 <div class="col-6">
                                     <label for="manager">Select User</label>
                                     <div class="form-group">
-                                        <select name="users_ids[]" id="user" class="form-control" multiple>
+                                        <select name="users_ids[]" id="user" class="" multiple>
                                             <option value="">Select Manager</option>
                                             @foreach ($users as $user)
                                                 <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }} ({{ $user->email }})</option>
@@ -140,6 +144,16 @@
                                             <label for="">Percentage</label>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="d-flex">
+                                <h6>Add Wallet Information</h6>
+                            </div>
+                            <div class="wallet row">
+                                <div class="form-group col-md-4 col-sm-12">
+                                    <label for="">Wallet Account Number</label>
+                                    <input type="number" name="wallet_account_number" class="form-control" id="" placeholder="Enter Wallet Account Number">
                                 </div>
                             </div>
                             <br>

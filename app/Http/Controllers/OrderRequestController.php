@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\OrderRequest;
+use App\Notifications\UpdatedOrder;
 use Illuminate\Http\Request;
 
 class OrderRequestController extends Controller
@@ -25,6 +26,8 @@ class OrderRequestController extends Controller
                 'cost_description_file' => pathinfo($request->cost_description_file->store('', 'requests'), PATHINFO_BASENAME)
             ]);
         }
+
+        $order_request->orderItem->order->user->notify(new UpdatedOrder($order_request->orderItem->order));
 
         toastr()->success('', 'Request updated successfully');
 
