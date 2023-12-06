@@ -184,36 +184,7 @@
                     </div>
                 </div>
             @endcan
-            @can('view financing request')
-                <div class="col-lg-4 col-md-6">
-                    <div class="card text-center">
-                        <div class="header">
-                            <ul class="header-dropdown">
-                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
-                                    <ul class="dropdown-menu slideUp">
-                                        <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('pending-financing-requests')">Pending</a></li>
-                                         <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('approved-financing-requests')">Approved</a></li>
-                                        <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('rejected-financing-requests')">Rejected</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="body" id="pending-financing-requests" style="display: block">
-                            <span class="font-bold">Pending Financing Requests</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $financing_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $financing_requests_count }}</h3>
-                        </div>
-                        <div class="body" id="approved-financing-requests" style="display: none">
-                            <span class="font-bold">Approved Financing Requests</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">0</h3>
-                        </div>
-                        <div class="body" id="rejected-financing-requests" style="display: none">
-                            <span class="font-bold">Rejected Financing Requests</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">0</h3>
-                        </div>
-                    </div>
-                        </div>
-                   @endcan
-                @role('financier')
+            @role('financier')
                 <div class="col-lg-4 col-md-6">
                     <div class="card text-center">
                         <div class="header">
@@ -232,7 +203,7 @@
                                 data-speed="100" data-fresh-interval="200">"{!! number_format($financing_total_limit, 2) !!}"
                             </h3>
                         </div>
-                </div>
+                    </div>
                 </div>
                 <div class="col-lg-4 col-md-6">
                     <div class="card text-center">
@@ -251,9 +222,9 @@
                                 data-speed="100" data-fresh-interval="200">"{!! number_format($financing_total_invoices, 2) !!}"
                             </h3>
                         </div>
+                    </div>
                 </div>
-                </div>
-                @endrole
+            @endrole
             @can('view inspection request')
                 <div class="col-lg-4 col-md-6">
                     <div class="card text-center">
@@ -315,7 +286,23 @@
         </div>
         @can('view financing request')
             <div class="row clearfix">
-                <div class="col-lg-12 col-md-12">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card text-center">
+                        <div class="body mb-3" id="pending-financing-requests">
+                            <span class="font-bold">Pending Financing Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $financing_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $financing_requests_count }}</h3>
+                        </div>
+                        <div class="body mb-3" id="approved-financing-requests">
+                            <span class="font-bold">Approved Financing Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">0</h3>
+                        </div>
+                        <div class="body mb-3" id="rejected-financing-requests">
+                            <span class="font-bold">Rejected Financing Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">0</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-6">
                     <div class="card visitors-map">
                         <div class="header">
                             <h2><strong>Financing</strong> Requests</h2>

@@ -12,6 +12,7 @@ use App\Models\FinancingRequest;
 use App\Models\OrderFinancing;
 use App\Models\ServiceCharge;
 use App\Models\User;
+use App\Models\Wallet;
 use App\Notifications\RoleUpdate;
 use App\Rules\PhoneNumber;
 use Carbon\Carbon;
@@ -97,7 +98,7 @@ class FinancingInstitutionController extends Controller
             'maker_email.required_without' => 'Enter maker\'s email',
             'maker_phone_number.required_without' => 'Enter maker\'s phone number',
         ]);
-//        dd($request->has('maker_user'));
+
         $financing_institution = FinancingInstitution::create([
             'name' => $request->institution_name,
             'phone_number' => $request->institution_phone_number,
@@ -127,8 +128,17 @@ class FinancingInstitutionController extends Controller
                 'chargeable_type' => FinancingInstitution::class,
             ]);
         }
-        // Create Maker User
 
+        // Create Wallet
+        if ($request->has('wallet_account_number')) {
+            Wallet::create([
+                'account_number' => $request->wallet_account_number,
+                'walleteable_id' => $financing_institution->id,
+                'walleteable_type' => FinancingInstitution::class,
+            ]);
+        }
+
+        // Create Maker User
         if ($request->has('maker_user') && $request->maker_user!=null) {
             $maker = User::find($request->maker_user);
         } else {

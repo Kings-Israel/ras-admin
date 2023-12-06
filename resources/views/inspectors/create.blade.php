@@ -1,5 +1,18 @@
 @extends('layouts.app')
 @section('css')
+<style>
+    .form-control {
+        border: 1px solid #9c9c9c !important;
+    }
+
+    .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+        width: 100% !important;
+    }
+
+    .bootstrap-select .btn {
+        border: 1px solid #9c9c9c !important;
+    }
+</style>
 @endsection
 @section('content')
 <section class="content home">
@@ -38,7 +51,7 @@
                                 </div>
                                 <div class="col-6">
                                     <label for="country">Country</label>
-                                    <select name="country_id" class="form-control show-tick" id="country">
+                                    <select name="country_id" class="show-tick" id="country">
                                         <option value="">Select Country</option>
                                         @foreach ($countries as $country)
                                             <option value="{{ $country->id }}" @if(old('country_id') == $country->id) selected @endif data-cities="{{ $country->cities }}">{{ $country->name }}</option>
@@ -62,7 +75,7 @@
                                 <div class="col-6">
                                     <label for="manager">Select User</label>
                                     <div class="form-group">
-                                        <select name="users[]" id="user" class="form-control" multiple>
+                                        <select name="users[]" id="user" class="form-select" multiple>
                                             <option value="">Select User</option>
                                             @foreach ($users as $user)
                                                 <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }} ({{ $user->email }})</option>
@@ -126,6 +139,19 @@
                             </div>
                             <br>
                             <div class="d-flex">
+                                <h6>Add Wallet Information</h6>
+                            </div>
+                            <div class="wallet row">
+                                <div class="form-group col-md-4 col-sm-12">
+                                    <label for="">Wallet Account Number</label>
+                                    <input type="number" name="wallet_account_number" class="form-control" id="" placeholder="Enter Wallet Account Number">
+                                </div>
+                                <div class="form-group col-md-4 col-sm-12">
+                                    <label for="">Currencies (separated by commas ',')</label>
+                                    <input type="text" name="wallet_currencies" class="form-control" id="" placeholder="Enter Currencies used in the wallet">
+                                </div>
+                            </div>
+                            <div class="d-flex">
                                 <h6>Add KYC Documents</h6>
                                 <button type="button" id="add_document" class="btn btn-sm btn-round btn-secondary waves-effect ml-2">Add Document</button>
                             </div>
@@ -144,15 +170,13 @@
                                                 <input type="file" accept=".pdf" name="document_file[{{ $i }}]" id="" class="form-control">
                                             </div>
                                         </div>
-                                        {{-- <div class="col-2">
-                                            <button type="button" class="btn btn-round btn-danger btn-sm">Remove</button>
-                                        </div> --}}
                                     </div>
                                 @endfor
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary btn-round waves-effect">SUBMIT</button>
+                                <button type="submit" class="btn btn-primary btn-round waves-effect">Submit</button>
                             </div>
+                            <br>
                         </form>
                     </div>
                 </div>
