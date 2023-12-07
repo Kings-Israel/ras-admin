@@ -32,7 +32,7 @@ class FinancingRequestController extends Controller
 
     public function show(FinancingRequest $financing_request)
     {
-        $financing_request->load('invoice.orders.orderItems.product.business', 'invoice.user');
+        $financing_request->load('invoice.orders.orderItems.product.business', 'invoice.user', 'anchorHistory', 'bankDebts', 'operatingDebts', 'bankers', 'capitalStructure', 'companyManagers', 'shareholders', 'company', 'documents');
 
         return view('financiers.requests.show', [
             'page' => 'Financing Request',
@@ -83,6 +83,14 @@ class FinancingRequestController extends Controller
             $financing_request->update([
                 'status' => 'accepted'
             ]);
+
+            // TODO: Implement transfer of funds from financier wallet to vendors and service providers.
+
+            $financing_request->invoice->update([
+                'payment_status' => 'paid'
+            ]);
+
+            $financing_request->invoice->orders->each(fn ($order) => $order->update(['status' => 'in progress']));
 
             // Send notification to user
             $financing_request->invoice->user->notify(new FinancingRequestUpdated($financing_request->load('invoice'), 'accepted'));

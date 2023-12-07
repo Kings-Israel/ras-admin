@@ -39,7 +39,7 @@
                                         <td>{{ $financing_request->invoice->user->first_name }} {{ $financing_request->invoice->user->last_name }}</td>
                                         <td>{{ $financing_request->created_at->format('d M Y') }}</td>
                                         <td>
-                                            @can('view financing request')
+                                            @can('view', $financing_request)
                                                 <a href="{{ route('financing.requests.show', ['financing_request' => $financing_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">View</a>
                                             @endcan
                                         </td>
@@ -63,6 +63,13 @@
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
     {{-- <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script> --}}
     <script>
-        $('#financing_requests').DataTable().order([4, 'desc']).draw()
+        $('#financing_requests').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        })
+        .order([4, 'asc'])
+        .draw()
     </script>
 @endpush
