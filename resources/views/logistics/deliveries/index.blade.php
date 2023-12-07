@@ -10,7 +10,7 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="body">
-                            <table class="table table-hover dataTable js-exportable">
+                            <table class="table table-hover dataTable js-exportable" id="logistics-reports">
                                 <thead>
                                 <tr>
                                     <th>Order ID</th>
@@ -54,5 +54,15 @@
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.colVis.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script> --}}
+    <script>
+        $('#logistics-reports').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        })
+        .order([4, 'asc'])
+        .draw()
+    </script>
 @endpush

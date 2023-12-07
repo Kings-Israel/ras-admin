@@ -15,6 +15,9 @@
             margin-top: 15px;
             margin-left: -20px;
         }
+        .form-control .form-control-sm {
+            border: none !important;
+        }
     </style>
 @endsection
 @section('content')
@@ -107,8 +110,12 @@
     {{-- <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script> --}}
     <script>
         $('#insurers').DataTable({
-            paging: true,
-            ordering: true,
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
         })
+        .order([5, 'desc'])
+        .draw();
     </script>
 @endpush

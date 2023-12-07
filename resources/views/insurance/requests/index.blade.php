@@ -67,6 +67,6 @@
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
     {{-- <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script> --}}
     <script>
-        $('#insurance_requests').DataTable().order([4, 'desc']).draw()
+        $('#insurance_requests').DataTable().order([4, 'asc']).draw()
     </script>
 @endpush

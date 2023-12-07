@@ -67,6 +67,13 @@
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
     {{-- <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script> --}}
     <script>
-        $('#delivery_requests').DataTable().order([4, 'desc']).draw()
+        $('#delivery_requests').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        })
+        .order([4, 'asc'])
+        .draw()
     </script>
 @endpush

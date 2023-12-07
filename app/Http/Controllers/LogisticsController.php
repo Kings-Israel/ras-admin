@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
+use App\Helpers\Jambopay;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\LogisticsCompany;
@@ -10,6 +11,7 @@ use App\Models\LogisticsCompanyUser;
 use App\Models\OrderConversation;
 use App\Models\OrderRequest;
 use App\Models\User;
+use App\Models\Wallet;
 use App\Models\CompanyDocument;
 use App\Models\ServiceCharge;
 use App\Notifications\RoleUpdate;
@@ -57,7 +59,7 @@ class LogisticsController extends Controller
             'countries' => $countries,
             'users' => $users,
             'transportation_methods' => $transportation_methods,
-            'documents_count' => 1
+            'documents_count' => 1,
         ]);
     }
 
@@ -103,6 +105,14 @@ class LogisticsController extends Controller
                 'type' => $request->service_charge_type,
                 'chargeable_id' => $logistics_company->id,
                 'chargeable_type' => LogisticCompany::class,
+            ]);
+        }
+
+        if ($request->has('wallet_account_number')) {
+            Wallet::create([
+                'account_number' => $request->wallet_account_number,
+                'walleteable_id' => $logistics_company->id,
+                'walleteable_type' => LogisticsCompany::class,
             ]);
         }
 

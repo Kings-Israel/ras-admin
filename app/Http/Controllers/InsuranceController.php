@@ -13,6 +13,7 @@ use App\Models\OrderConversation;
 use App\Models\OrderRequest;
 use App\Models\ServiceCharge;
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Chat;
@@ -123,6 +124,14 @@ class InsuranceController extends Controller
                 'type' => $request->service_charge_type,
                 'chargeable_id' => $insurer->id,
                 'chargeable_type' => InsuranceCompany::class,
+            ]);
+        }
+
+        if ($request->has('wallet_account_number')) {
+            Wallet::create([
+                'account_number' => $request->wallet_account_number,
+                'walleteable_id' => $insurer->id,
+                'walleteable_type' => InsuranceCompany::class,
             ]);
         }
 

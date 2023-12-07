@@ -64,6 +64,13 @@
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
     {{-- <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script> --}}
     <script>
-        $('#logistics_companies').DataTable().order([3, 'desc']).draw()
+        $('#logistics_companies').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        })
+        .order([3, 'asc'])
+        .draw()
     </script>
 @endpush
