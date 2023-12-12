@@ -392,15 +392,15 @@ class DashboardController extends Controller
                             });
 
         $financing_requests_count = FinancingRequest::count();
-
         if (auth()->user()->hasRole('financier')) {
             $financier = FinancingInstitutionUser::where('user_id', auth()->user()->id)->first();
-            $financing_total_limit = FinancingInstitution::where('id', $financier->financing_institution_id)
+            $financing_total_limit = (double)FinancingInstitution::where('id', $financier->financing_institution_id)
                 ->value('credit_limit');
             $financing_req = FinancingRequest::where('financing_institution_id', $financier->financing_institution_id)
+                ->where('status', 'accepted')
                 ->pluck('invoice_id');
-            $financing_total_invoices = Invoice::whereIn('id', $financing_req)
-                ->where('payment_status', 'accepted')
+            $financing_total_invoices = (double)Invoice::whereIn('id', $financing_req)
+                ->where('payment_status', 'paid')
                 ->sum('total_amount');
         }
         foreach($months as $month) {
@@ -554,8 +554,8 @@ class DashboardController extends Controller
             'insurance_reports_graph_data' => $insurance_reports_graph_data,
 
             'selectedDateFilter' => $dateFilter,
-            'financing_total_limit'=>$financing_total_limit,
-            'financing_total_invoices'=>$financing_total_invoices,
+            'financing_total_limit'=>$financing_total_limit ?? 0.00,
+            'financing_total_invoices'=>$financing_total_invoices ?? 0.00,
         ]);
     }
 }
