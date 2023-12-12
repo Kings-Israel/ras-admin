@@ -12,7 +12,7 @@
                     <div class="header">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
                     </div>
-                    {{-- <div class="body">
+                    <div class="body">
                         <table class="table table-bordered table-striped table-hover dataTable js-exportable" id="logs">
                             <thead>
                                 <tr>
@@ -33,8 +33,8 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    </div> --}}
-                    <livewire:admin.logs.logs-list />
+                    </div>
+                    {{-- <livewire:admin.logs.logs-list /> --}}
                 </div>
             </div>
         </div>

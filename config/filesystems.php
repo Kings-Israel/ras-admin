@@ -56,6 +56,53 @@ return [
             'throw' => false,
         ],
 
+        'reports' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/reports'),
+            'url' => env('APP_URL').'/storage/reports',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'requests' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/requests'),
+            'url' => env('APP_URL').'/storage/requests',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'chat' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/chat'),
+            'url' => env('APP_URL').'/storage/chat',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'marketing' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/marketing'),
+            'url' => env('APP_URL').'/storage/marketing',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'company' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/company'),
+            'url' => env('APP_URL').'/storage/company',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'user' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/user'),
+            'url' => env('APP_URL').'/storage/user',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
     ],
 
     /*

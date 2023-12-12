@@ -1,5 +1,18 @@
 @extends('layouts.app')
 @section('css')
+<style>
+    .form-control {
+        border: 1px solid #9c9c9c !important;
+    }
+
+    .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+        width: 100% !important;
+    }
+
+    .bootstrap-select .btn {
+        border: 1px solid #9c9c9c !important;
+    }
+</style>
 @endsection
 @section('content')
 <section class="content home">
@@ -12,7 +25,7 @@
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
                     </div>
                     <div class="body">
-                        <form action="{{ route('inspectors.store') }}" method="POST">
+                        <form action="{{ route('inspectors.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="row clearfix">
                                 <div class="col-5">
@@ -38,7 +51,7 @@
                                 </div>
                                 <div class="col-6">
                                     <label for="country">Country</label>
-                                    <select name="country_id" class="form-control show-tick" id="country">
+                                    <select name="country_id" class="show-tick" id="country">
                                         <option value="">Select Country</option>
                                         @foreach ($countries as $country)
                                             <option value="{{ $country->id }}" @if(old('country_id') == $country->id) selected @endif data-cities="{{ $country->cities }}">{{ $country->name }}</option>
@@ -62,7 +75,7 @@
                                 <div class="col-6">
                                     <label for="manager">Select User</label>
                                     <div class="form-group">
-                                        <select name="users[]" id="user" class="form-control" multiple>
+                                        <select name="users[]" id="user" class="form-select" multiple>
                                             <option value="">Select User</option>
                                             @foreach ($users as $user)
                                                 <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }} ({{ $user->email }})</option>
@@ -105,9 +118,65 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary btn-round waves-effect">SUBMIT</button>
+                            <div class="row clearfix">
+                                <div class="col-4">
+                                    <h6>Enter Service Charge Rate</h6>
+                                    <input type="number" name="service_charge_rate" id="" class="form-control" min="1">
+                                </div>
+                                <div class="col-4">
+                                    <h6>Select Charge Type</h6>
+                                    <div class="d-flex">
+                                        <div class="form-group mr-1">
+                                            <input type="radio" name="service_charge_type" value="amount" class="form-group" id="">
+                                            <label for="">Amount</label>
+                                        </div>
+                                        <div>
+                                            <input type="radio" name="service_charge_type" value="percentage" class="form-group" id="">
+                                            <label for="">Percentage</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            <br>
+                            <div class="d-flex">
+                                <h6>Add Wallet Information</h6>
+                            </div>
+                            <div class="wallet row">
+                                <div class="form-group col-md-4 col-sm-12">
+                                    <label for="">Wallet Account Number</label>
+                                    <input type="number" name="wallet_account_number" class="form-control" id="" placeholder="Enter Wallet Account Number">
+                                </div>
+                                <div class="form-group col-md-4 col-sm-12">
+                                    <label for="">Currencies (separated by commas ',')</label>
+                                    <input type="text" name="wallet_currencies" class="form-control" id="" placeholder="Enter Currencies used in the wallet">
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <h6>Add KYC Documents</h6>
+                                <button type="button" id="add_document" class="btn btn-sm btn-round btn-secondary waves-effect ml-2">Add Document</button>
+                            </div>
+                            <div class="documents">
+                                @for ($i = 1; $i <= $documents_count; $i++)
+                                    <div class="row clearfix">
+                                        <div class="col-6">
+                                            <label for="document_name">Document Name</label>
+                                            <div class="form-group">
+                                                <input type="text" name="document_name[{{ $i }}]" id="" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="document">Document</label>
+                                            <div class="form-group">
+                                                <input type="file" accept=".pdf" name="document_file[{{ $i }}]" id="" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endfor
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary btn-round waves-effect">Submit</button>
+                            </div>
+                            <br>
                         </form>
                     </div>
                 </div>
@@ -115,6 +184,32 @@
         </div>
     </div>
 </section>
-@push('scripts')
-@endpush
 @endsection
+@push('scripts')
+<script>
+    let documents = $('.documents')
+    let documents_count = {!! $documents_count !!}
+    $(document.body).on('click', '#add_document', function() {
+        documents_count += 1
+        let new_document = '<div class="row clearfix">'
+            new_document += '<div class="col-6">'
+            new_document += '<label for="document_name">Document Name</label>'
+            new_document += '<div class="form-group">'
+            new_document += '<input type="text" name="document_name['+documents_count+']" class="form-control">'
+            new_document += '</div>'
+            new_document += '</div>'
+            new_document += '<div class="col-6">'
+            new_document += '<label for="document">Document</label>'
+            new_document += '<div class="form-group">'
+            new_document += '<input type="file" accept=".pdf" name="document_file['+documents_count+']" class="form-control" />'
+            new_document += '</div>'
+            new_document += '</div>'
+            // new_document += '<div class="col-2">'
+            // new_document += '<button type="button" class="btn btn-round btn-danger btn-sm">Remove</button>'
+            // new_document += '</div>'
+            new_document += '</div>'
+
+        $(new_document).appendTo(documents)
+    })
+</script>
+@endpush

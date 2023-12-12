@@ -6,6 +6,15 @@
             vertical-align:super;
             font-size: smaller;
         }
+        .search-results {
+            position: absolute;
+            z-index: 99;
+            background: #c2c2c2;
+            border-radius: 10px;
+            width: 180px;
+            margin-top: 15px;
+            margin-left: -20px;
+        }
     </style>
 @endsection
 @section('content')
@@ -18,11 +27,11 @@
                     <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
                         @can('create financier')
-                            <a class="btn btn-secondary btn-sm" href="{{ route('financing-institutions.create') }}">Add Financing Institution</a>
+                            <a class="btn btn-secondary btn-sm" href="{{ route('financing.institutions.create') }}">Add Financing Institution</a>
                         @endcan
                     </div>
                     <div class="body">
-                        <table class="table table-hover dataTable js-exportable">
+                        <table class="table table-hover dataTable js-exportable" id="financiers">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -31,7 +40,7 @@
                                     <th>No. of Pending Requests</th>
                                     <th>No. of Processed Requests</th>
                                     <th>Added on</th>
-                                    <th></th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -40,13 +49,41 @@
                                         <td>{{ $institution->name }}</td>
                                         <td>{{ $institution->city ? $institution->city->name.', ' : '' }}{{ $institution->country->name }}</td>
                                         <td>{{ $institution->users_count }}</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td>{{ $institution->financingRequests()->where('status', 'pending')->count() }}</td>
+                                        <td>{{ $institution->financingRequests()->where('status', 'accepted')->count() }}</td>
                                         <td>{{ $institution->created_at->format('d M Y') }}</td>
                                         <td>
-                                            @can('update financier')
-                                                <a href="{{ route('financing-institutions.edit', ['financing_institution' => $institution]) }}" class="btn btn-sm btn-primary btn-round waves-effect">EDIT</a>
-                                            @endcan
+                                            <div class="btn-group" x-data="{ open: false }">
+                                                <button class="mr-2 btn btn-primary btn-sm btn-round waves-effect dropdown-toggle" type="button"
+                                                    x-on:click="open = ! open">
+                                                    <i data-feather="eye"></i>
+                                                    Actions
+                                                </button>
+                                                <div
+                                                    x-cloak
+                                                    x-show="open"
+                                                    x-transition
+                                                    @click.away="open = false"
+                                                    @keydown.escape.window = "open = false"
+                                                    class="search-results"
+                                                >
+                                                    @can('update financier')
+                                                        <a class="dropdown-item" href="{{ route('financing.institutions.edit', ['financing_institution' => $institution]) }}" >
+                                                            <span>Edit Details</span>
+                                                        </a>
+                                                    @endcan
+                                                    @can('view financier')
+                                                        <a class="dropdown-item" href="{{ route('financing.institutions.show', ['financing_institution' => $institution]) }}">
+                                                            <span>View Details</span>
+                                                        </a>
+                                                    @endcan
+                                                    @can('view financing requests')
+                                                        <a class="dropdown-item" href="#">
+                                                            <span>Financing Requests</span></a>
+                                                        </a>
+                                                    @endcan
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -66,5 +103,10 @@
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.colVis.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script>
+    <script>
+        $('#financiers').DataTable({
+            paging: true,
+            ordering: true,
+        })
+    </script>
 @endpush

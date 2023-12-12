@@ -4,13 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Models\Country;
+use App\Models\OrderConversation;
+use App\Models\OrderStorageRequest;
+use App\Models\StorageRequest;
 use App\Models\StoreRequest;
 use App\Models\User;
 use App\Models\UserWarehouse;
 use App\Models\Warehouse;
+use App\Models\WarehouseOrder;
+use App\Models\OrderRequest;
+use App\Models\VendorStorageRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Password;
+use Chat;
 
 class WarehouseController extends Controller
 {
@@ -24,19 +31,19 @@ class WarehouseController extends Controller
 
     public function index()
     {
-        if (auth()->user()->hasRole('warehouse manager')) {
-            $user_warehouses = UserWarehouse::where('user_id', auth()->id())->get()->pluck('warehouse_id');
-            $warehouses = Warehouse::withCount('products')->whereIn('id', $user_warehouses)->get();
-        }
+        // if (auth()->user()->hasRole('warehouse manager')) {
+        //     $user_warehouses = UserWarehouse::where('user_id', auth()->id())->get()->pluck('warehouse_id');
+        //     $warehouses = Warehouse::withCount('products')->whereIn('id', $user_warehouses)->get();
+        // }
 
-        if (auth()->user()->hasRole('admin')) {
-            $warehouses = Warehouse::withCount('users', 'products')->with('country', 'city')->get();
-        }
+        // if (auth()->user()->hasRole('admin')) {
+        // }
+        $warehouses = Warehouse::withCount('users', 'products')->with('country', 'city')->get();
 
         return view('warehouses.index', [
             'page' => 'Warehouses',
             'breadcrumbs' => [
-                'Warehouses' => route('warehouses')
+                'Warehouses' => route('warehouses.index')
             ],
             'warehouses' => $warehouses
         ]);
@@ -51,7 +58,7 @@ class WarehouseController extends Controller
         return view('warehouses.create', [
             'page' => 'Add Warehouse',
             'breadcrumbs' => [
-                'Warehouses' => route('warehouses'),
+                'Warehouses' => route('warehouses.index'),
                 'Add Warehouse' => route('warehouses.create'),
             ],
             'countries' => $countries,
@@ -147,35 +154,20 @@ class WarehouseController extends Controller
 
         toastr()->success('', 'Warehouse added successfully');
 
-        return redirect()->route('warehouses');
+        return redirect()->route('warehouses.index');
     }
 
     public function edit(Warehouse $warehouse)
     {
-        $users = User::whereHas('roles', fn ($query) => $query->where('name', 'warehouse manager'))->get();
+        $users = User::where('email', '!=', 'admin@ras.com')->get();
         return view('warehouses.edit', [
             'page' => 'Edit Warehouse',
             'breadcrumbs' => [
-                'Warehouses' => route('warehouses'),
+                'Warehouses' => route('warehouses.index'),
                 'Edit '.$warehouse->name => route('warehouses.edit', ['warehouse' => $warehouse])
             ],
             'warehouse' => $warehouse->load('users'),
             'users' => $users
-        ]);
-    }
-    public function storageRequests(Warehouse $warehouse)
-    {
-        $users = User::whereHas('roles', fn ($query) => $query->where('name', 'warehouse manager'))->get();
-        $requests=StoreRequest::with('Customer')->where('warehouse_id', $warehouse)->get();
-        return view('warehouses.storerequests', [
-            'page' => 'Requests Warehouse',
-            'breadcrumbs' => [
-                'Warehouses' => route('warehouses'),
-                'Storage_Requests '.$warehouse->name => route('warehouses.storerequests', ['warehouse' => $warehouse])
-            ],
-            'warehouse' => $warehouse->load('users'),
-            'users' => $users,
-            ''
         ]);
     }
 
@@ -184,7 +176,7 @@ class WarehouseController extends Controller
         return view('warehouses.show', [
             'page' => 'View Warehouse',
             'breadcrumbs' => [
-                'Warehouses' => route('warehouses'),
+                'Warehouses' => route('warehouses.index'),
                 'View '.$warehouse->name => route('warehouses.show', ['warehouse' => $warehouse])
             ],
             'warehouse' => $warehouse->load('users'),
@@ -279,6 +271,120 @@ class WarehouseController extends Controller
 
         toastr()->success('', 'Warehouse updated successfully');
 
-        return redirect()->route('warehouses');
+        return redirect()->route('warehouses.index');
     }
+
+    public function buyerOrders(Warehouse $warehouse = NULL)
+    {
+        if ($warehouse) {
+            $orders = OrderRequest::with('orderItem.order.business', 'orderItem.product.media')->where('requesteable_id', $warehouse->id)->where('requesteable_type', Warehouse::class)->get();
+        } else {
+            if (auth()->user()->hasRole('admin')) {
+                $orders = OrderRequest::with('orderItem.order.business', 'orderItem.product.media')->where('requesteable_type', Warehouse::class)->get();
+            } else {
+                $user_warehouses = auth()->user()->warehouses->pluck('id');
+                $orders = OrderRequest::with('orderItem.order.business', 'orderItem.product.media')->whereIn('requesteable_id', $user_warehouses)->where('requesteable_type', Warehouse::class)->get();
+            }
+        }
+
+        if ($warehouse) {
+            return view('warehouses.orders.index', [
+                'page' => 'Warehouse Order Storage Request',
+                'breadcrumbs' => [
+                    'Warehouses' => route('warehouses.index'),
+                    'Warehouse Orders from Buyers' => route('warehouses.orders.requests.buyers.index', ['warehouse' => $warehouse])
+                ],
+                'orders' => $orders
+            ]);
+        } else {
+            return view('warehouses.orders.index', [
+                'page' => 'Warehouse Order Storage Request',
+                'breadcrumbs' => [
+                    'Warehouses' => route('warehouses.index'),
+                ],
+                'orders' => $orders
+            ]);
+        }
+    }
+
+    public function vendorOrders(Warehouse $warehouse = NULL)
+    {
+        if ($warehouse) {
+            $requests = VendorStorageRequest::with('business')->where('warehouse_id', $warehouse->id)->get();
+        } else {
+            if (auth()->user()->hasRole('admin')) {
+                $requests = VendorStorageRequest::with('business', 'warehouse')->get();
+            } else {
+                $user_warehouses = auth()->user()->warehouses->pluck('id');
+                $requests = VendorStorageRequest::with('business', 'warehouse')->whereIn('warehouse_id', $user_warehouses)->get();
+            }
+        }
+
+        if ($warehouse) {
+            return view('warehouses.requests.vendor.index', [
+                'page' => 'Warehouse Storage Request',
+                'breadcrumbs' => [
+                    'Warehouses' => route('warehouses.index'),
+                    'Warehouse Orders from Vendors' => route('warehouses.orders.requests.vendors.index', ['warehouse' => $warehouse])
+                ],
+                'requests' => $requests
+            ]);
+        } else {
+            return view('warehouses.requests.vendor.index', [
+                'page' => 'Warehouse Storage Request',
+                'breadcrumbs' => [
+                    'Warehouses' => route('warehouses.index'),
+                ],
+                'requests' => $requests
+            ]);
+        }
+    }
+
+    public function order(OrderRequest $order_request)
+    {
+        $order_request->load('orderItem.product.business', 'orderItem.product.media', 'orderItem.order.business', 'orderItem.order.user');
+
+        $warehouse = $order_request->requesteable;
+        $user = $order_request->orderItem->order->user;
+
+        $conversation = Chat::conversations()->between($user, $warehouse);
+
+        if (!$conversation) {
+            $participants = [$user, $warehouse];
+            $conversation = Chat::createConversation($participants);
+            $conversation->update([
+                'direct_message' => true,
+            ]);
+        }
+
+        OrderConversation::firstOrCreate([
+            'order_id' => $order_request->orderItem->order->id,
+            'conversation_id' => $conversation->id,
+        ]);
+
+        return view('warehouses.orders.show', [
+            'page' => 'Storage Request',
+            'breadcrumbs' => [
+                // 'Storage Requests' => route('warehouses.orders.requests.index', ['warehouse' => $order_request->requesteable]),
+                // 'Storage Request Details' => route('warehouses.orders.requests.details', ['order_request' => $order_request])
+            ],
+            'order_request' => $order_request,
+            'conversation_id' => $conversation->id,
+        ]);
+    }
+
+    // public function storageRequest(WarehouseOrder $warehouse_order)
+    // {
+    //     $warehouse_order->load('orderItem.product.media');
+
+    //     return view('warehouses.orders.show', [
+    //         'page' => 'Order Storage Request',
+    //         'breadcrumbs' => [
+    //             'Warehouses' => route('warehouses.index'),
+    //             'Order Storage Requests' => route('warehouses.orders.index', ['warehouse' => $warehouse_order->warehouse]),
+    //             'Storage Request' => route('warehouses.orders.request.details', ['warehouse_order' => $warehouse_order])
+    //         ],
+    //         'warehouse_storage_request' => $warehouse_order
+    //     ]);
+    // }
 }

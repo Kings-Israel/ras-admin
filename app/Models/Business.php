@@ -5,33 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
 
 class Business extends Model
 {
-    use HasSlug;
-
     /**
-     * Get the options for generating the slug.
-     */
-    public function getSlugOptions() : SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug');
-    }
-
-    /**
-     * Get the route key for the model.
+     * The attributes that are mass assignable.
      *
-     * @return string
+     * @var array
      */
-    public function getRouteKeyName()
-    {
-        return 'slug';
-    }
-
+    protected $fillable = ['verified_on', 'approval_status', 'rejected_approval_reason'];
     /**
      * Get the primary image
      *
@@ -54,6 +36,28 @@ class Business extends Model
         if ($value) {
             return config('app.frontend_url').'/storage/vendor/cover_image/'.$value;
         }
+    }
+
+    /**
+     * Get the business profile
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getBusinessProfileAttribute($value)
+    {
+        if ($value) {
+            return config('app.frontend_url').'/storage/vendor/profile/'.$value;
+        }
+    }
+
+    public function verified():bool
+    {
+        if ($this->verified_on) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -94,5 +98,31 @@ class Business extends Model
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
+    }
+
+    /**
+     * Get all of the orders for the Business
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function resolveApprovalStatus(): string
+    {
+        switch ($this->approval_status) {
+            case 'pending':
+                return 'bg-grey p-2 rounded-lg';
+                break;
+            case 'approved':
+                return 'bg-green p-2 rounded-lg';
+                break;
+            case 'rejected':
+                return 'bg-red p-2 rounded-lg';
+                break;
+            default:
+                return 'bg-grey p-2 rounded-lg';
+                break;
+        }
     }
 }

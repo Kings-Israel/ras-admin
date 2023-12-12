@@ -5,10 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\Business;
 use App\Models\Category;
 use App\Models\Country;
+use App\Models\FinancingInstitution;
+use App\Models\FinancingInstitutionUser;
+use App\Models\FinancingRequest;
+use App\Models\InspectionReport;
+use App\Models\InspectionRequest;
+use App\Models\Invoice;
+use App\Models\OrderRequest;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\UserWarehouse;
 use App\Models\Warehouse;
+use App\Models\InspectingInstitution;
+use App\Models\LogisticsCompany;
+use App\Models\InsuranceCompany;
+use App\Models\InsuranceReport;
+use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use VisitLog;
@@ -20,12 +32,29 @@ class DashboardController extends Controller
         $this->middleware(['auth']);
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $dateFilter = $request->input('date_filter', 'this_month');
+        $startDate = null;
+        $endDate = null;
+        if ($dateFilter == 'today') {
+            $startDate = now()->startOfDay();
+            $endDate = now()->endOfDay();
+        } elseif ($dateFilter == 'last_week') {
+            $startDate = now()->startOfWeek()->subWeek();
+            $endDate = now()->endOfWeek()->subWeek();
+        } elseif ($dateFilter == 'this_month') {
+            $startDate = now()->startOfMonth();
+            $endDate = now()->endOfMonth();
+        } elseif ($dateFilter == 'last_month') {
+            $startDate = now()->startOfMonth()->subMonth();
+            $endDate = now()->endOfMonth()->subMonth();
+        }
+
         // Get past 12 months
         $months = [];
 
-        for ($i = 12; $i >= 0; $i--) {
+        for ($i = 11; $i >= 0; $i--) {
             $month = Carbon::today()->startOfMonth()->subMonth($i);
             $year = Carbon::today()->startOfMonth()->subMonth($i)->format('Y');
             array_push($months, $month);
@@ -45,6 +74,9 @@ class DashboardController extends Controller
         $total_buyers_count = 0;
         $total_vendors_count = 0;
         $total_businesses_count = 0;
+        $approved_businesses_count = 0;
+        $pending_businesses_count = 0;
+        $rejected_businesses_count = 0;
         $drivers_count = 0;
         $total_users_count = 0;
         $users_registered_in_current_month = 0;
@@ -58,6 +90,19 @@ class DashboardController extends Controller
         $vendor_registration_rate_graph_data = [];
         // Countries
         $countries = [];
+        // Orders
+        $total_orders = 0;
+        $total_orders_direction = '';
+        $total_orders_rate = 0;
+        $total_paid_orders = 0;
+        $total_paid_orders_direction = '';
+        $total_paid_orders_rate = 0;
+        $total_orders_graph_rate = [
+            'Period' => [],
+            'Orders' => [],
+            'Sales' => [],
+        ];
+        $total_paid_orders_graph_rate = [];
 
         // Top Businesses
         $top_businesses = [];
@@ -80,8 +125,38 @@ class DashboardController extends Controller
 
         $total_stocklift_requests = 0;
 
+        // Financing Requests
+        $financing_requests_count = 0;
+        $financing_requests_graph_data = [];
+        $financier_total_invoices=0;
+        $financing_total_limit=0;
+
         // Site visits log
         $site_visits_series = [];
+
+        // Inspection Reports
+        $pending_inspection_requests_count = 0;
+        $accepted_inspection_requests_count = 0;
+        $rejected_inspection_requests_count = 0;
+        $completed_inspection_reports_count = 0;
+        $pending_inspection_reports_count = 0;
+        $pending_inspection_requests_graph_data = [];
+        $accepted_inspection_requests_graph_data = [];
+        $rejected_inspection_requests_graph_data = [];
+        $inspection_reports_graph_data = [];
+
+        // Insurance Reports
+        $pending_insurance_requests_count = 0;
+        $accepted_insurance_requests_count = 0;
+        $rejected_insurance_requests_count = 0;
+        $completed_insurance_reports_count = 0;
+        $pending_insurance_reports_count = 0;
+        $pending_insurance_requests_graph_data = [];
+        $accepted_insurance_requests_graph_data = [];
+        $rejected_insurance_requests_graph_data = [];
+        $insurance_reports_graph_data = [];
+
+        $financing_total_invoices = 0;
 
         $users_registered_in_current_month = User::whereHas('roles', function ($query) {$query->where('name', 'buyer')->orWhere('name', 'vendor');})->whereMonth('created_at', now())->count();
         $users_registered_in_previous_month = User::whereHas('roles', function ($query) {$query->where('name', 'buyer')->orWhere('name', 'vendor');})->whereMonth('created_at', now()->subMonth())->count();
@@ -99,21 +174,25 @@ class DashboardController extends Controller
         }
 
         $total_users_count = User::whereHas('roles', function ($query) {
-                            $query->where('name', '!=', 'admin');
-                        })
-                        ->count();
+                                    $query->where('name', '!=', 'admin');
+                                })
+                                ->count();
 
         $total_buyers_count = User::whereHas('roles', function ($query) {
-                            $query->where('name', '=', 'buyer');
-                        })
-                        ->count();
+                                    $query->where('name', '=', 'buyer');
+                                })
+                                ->count();
 
         $total_vendors_count = User::whereHas('roles', function ($query) {
-                            $query->where('name', '=', 'vendor');
-                        })
-                        ->count();
+                                    $query->where('name', '=', 'vendor');
+                                })
+                                ->count();
 
         $total_businesses_count = Business::count();
+
+        $pending_businesses_count = Business::where('approval_status', 'pending')->count();
+        $approved_businesses_count = Business::where('approval_status', 'approved')->count();
+        $rejected_businesses_count = Business::where('approval_status', 'rejected')->count();
 
         foreach ($months as $month) {
             $users_monthly = User::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereHas('roles', function($query) { $query->where('name', 'buyer'); })->count();
@@ -123,6 +202,63 @@ class DashboardController extends Controller
         foreach ($months as $month) {
             $vendors_monthly = User::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereHas('roles', function($query) { $query->where('name', 'vendor'); })->count();
             array_push($vendor_registration_rate_graph_data, $vendors_monthly);
+        }
+
+        $total_orders = Order::count();
+        $orders_in_current_month = Order::whereMonth('created_at', now())->count();
+        $orders_in_previous_month = Order::whereMonth('created_at', now()->subMonth())->count();
+        $orders_diiference = $orders_in_previous_month - $orders_in_current_month;
+        if ($orders_diiference <= 0) {
+            $total_orders_rate = 0;
+        } else {
+            $total_orders_rate = ceil($orders_diiference / ($orders_in_previous_month + $orders_in_current_month) * 100);
+        }
+
+        foreach ($months as $key => $month) {
+            $orders_monthly = Order::whereMonth('created_at', $month)->count();
+            $paid_orders_monthly = Order::whereHas('invoice', function ($query) {
+                                            $query->where('payment_status', 'paid');
+                                        })
+                                        ->whereMonth('created_at', $month)
+                                        ->count();
+
+            array_push($total_orders_graph_rate['Period'], Carbon::parse($month)->format('M'));
+            array_push($total_orders_graph_rate['Orders'], $orders_monthly);
+            array_push($total_orders_graph_rate['Sales'], $paid_orders_monthly);
+        }
+
+        if ($orders_in_previous_month < $orders_in_current_month) {
+            $total_orders_direction = 'higher';
+        } else if ($orders_in_previous_month > $orders_in_current_month) {
+            $total_orders_direction = 'lower';
+        }
+
+        $total_paid_orders = Order::whereHas('invoice', function ($query) {
+                                    $query->where('payment_status', 'paid');
+                                })
+                                ->count();
+        $paid_orders_in_current_month = Order::whereHas('invoice', function ($query) {
+                                                $query->where('payment_status', 'paid');
+                                            })
+                                            ->where('created_at', now())
+                                            ->count();
+        $paid_orders_in_previous_month = Order::whereHas('invoice', function ($query) {
+                                                $query->where('payment_status', 'paid');
+                                            })
+                                            ->where('created_at', now()->subMonth())
+                                            ->count();
+
+        $paid_orders_diiference = $paid_orders_in_previous_month - $paid_orders_in_current_month;
+        if ($paid_orders_diiference <= 0) {
+            $total_paid_orders_rate = 0;
+        } else {
+            $total_paid_orders_rate = ceil($paid_orders_diiference / ($paid_orders_in_previous_month + $paid_orders_in_current_month) * 100);
+        }
+
+        if ($paid_orders_in_previous_month < $paid_orders_in_current_month) {
+            $total_paid_orders_direction = 'higher';
+        } else if ($paid_orders_in_previous_month > $paid_orders_in_current_month) {
+            $total_paid_orders_direction = 'lower';
         }
 
         $all_visits_log = VisitLog::all();
@@ -135,6 +271,7 @@ class DashboardController extends Controller
             $visits_bandwidth += $monthly_visits;
         }
 
+        // Monthly Visits
         $current_month_site_visits = $all_visits_log->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
         $prev_month_site_visits = $all_visits_log->whereBetween('created_at', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()])->count();
         $site_visit_difference = $current_month_site_visits - $prev_month_site_visits;
@@ -157,7 +294,6 @@ class DashboardController extends Controller
             'site_visits_direction' => $site_visits_direction,
             'current_month_site_visits' => $current_month_site_visits
         ];
-
 
         $warehouses = Warehouse::with('users', 'products', 'country', 'city')->get();
         $warehouses_count = $warehouses->count();
@@ -255,6 +391,113 @@ class DashboardController extends Controller
                                 $country->color = $country_colors[$key];
                             });
 
+        $financing_requests_count = FinancingRequest::count();
+
+        if (auth()->user()->hasRole('financier')) {
+            $financier = FinancingInstitutionUser::where('user_id', auth()->user()->id)->first();
+            $financing_total_limit = FinancingInstitution::where('id', $financier->financing_institution_id)
+                ->value('credit_limit');
+            $financing_req = FinancingRequest::where('financing_institution_id', $financier->financing_institution_id)
+                ->pluck('invoice_id');
+            $financing_total_invoices = Invoice::whereIn('id', $financing_req)
+                ->where('payment_status', 'accepted')
+                ->sum('total_amount');
+        }
+        foreach($months as $month) {
+            $requests_monthly = FinancingRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->count();
+            array_push($financing_requests_graph_data, $requests_monthly);
+        }
+
+        if (auth()->user()->hasRole('admin')) {
+            // Inspection Reports
+            $pending_inspection_requests_count = OrderRequest::where('status', 'pending')->where('requesteable_type', InspectingInstitution::class)->count();
+            $accepted_inspection_requests_count = OrderRequest::with('orderItem')
+                                                            ->whereHas('orderItem', function ($query) {
+                                                                $query->whereDoesntHave('inspectionReport');
+                                                            })
+                                                            ->where('status', 'accepted')
+                                                            ->where('requesteable_type', InspectingInstitution::class)
+                                                            ->count();
+            $rejected_inspection_requests_count = OrderRequest::where('status', 'rejected')->where('requesteable_type', InspectingInstitution::class)->count();
+            $completed_inspection_reports_count = InspectionReport::count();
+            $pending_inspection_reports_count = OrderRequest::where('status', 'accepted')->where('requesteable_type', InspectingInstitution::class)->count();
+
+            foreach ($months as $month) {
+                array_push($pending_inspection_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'pending')->where('requesteable_type', InspectingInstitution::class)->count());
+                array_push($accepted_inspection_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'accepted')->where('requesteable_type', InspectingInstitution::class)->count());
+                array_push($rejected_inspection_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'rejected')->where('requesteable_type', InspectingInstitution::class)->count());
+                array_push($inspection_reports_graph_data, InspectionReport::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->count());
+            }
+            // End Inspection Reports
+
+            // Insurance Reports
+            $pending_insurance_requests_count = OrderRequest::where('status', 'pending')->where('requesteable_type', InsuranceCompany::class)->count();
+            $accepted_insurance_requests_count = OrderRequest::with('orderItem')
+                                                            ->whereHas('orderItem', function ($query) {
+                                                                $query->whereDoesntHave('inspectionReport');
+                                                            })
+                                                            ->where('status', 'accepted')
+                                                            ->where('requesteable_type', InsuranceCompany::class)
+                                                            ->count();
+            $rejected_insurance_requests_count = OrderRequest::where('status', 'rejected')->where('requesteable_type', InsuranceCompany::class)->count();
+            $completed_insurance_reports_count = InspectionReport::count();
+            $pending_insurance_reports_count = OrderRequest::where('status', 'accepted')->where('requesteable_type', InsuranceCompany::class)->count();
+
+            foreach ($months as $month) {
+                array_push($pending_insurance_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'pending')->where('requesteable_type', InspectingInstitution::class)->count());
+                array_push($accepted_insurance_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'accepted')->where('requesteable_type', InspectingInstitution::class)->count());
+                array_push($rejected_insurance_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'rejected')->where('requesteable_type', InspectingInstitution::class)->count());
+                array_push($insurance_reports_graph_data, InspectionReport::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->count());
+            }
+            // End Insurance Reports
+        } else {
+            // Inspection Reports
+            $user_inspecting_institutions_ids = auth()->user()->inspectors->pluck('id');
+            $pending_inspection_requests_count = OrderRequest::where('status', 'pending')->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', InspectingInstitution::class)->count();
+            $accepted_inspection_requests_count = OrderRequest::with('orderItem')
+                                                                ->whereHas('orderItem', function ($query) {
+                                                                    $query->whereDoesntHave('inspectionReport');
+                                                                })
+                                                                ->where('status', 'accepted')
+                                                                ->whereIn('requesteable_id', $user_inspecting_institutions_ids)
+                                                                ->where('requesteable_type', InspectingInstitution::class)
+                                                                ->count();
+            $rejected_inspection_requests_count = OrderRequest::where('status', 'rejected')->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', InspectingInstitution::class)->count();
+            $completed_inspection_reports_count = InspectionReport::whereIn('inspector_id', $user_inspecting_institutions_ids)->count();
+            $pending_inspection_reports_count = OrderRequest::where('status', 'accepted')->whereIn('requesteable_id', $user_inspecting_institutions_ids)->count();
+
+            foreach ($months as $month) {
+                array_push($pending_inspection_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', InspectingInstitution::class)->where('status', 'pending')->count());
+                array_push($accepted_inspection_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', InspectingInstitution::class)->where('status', 'accepted')->count());
+                array_push($rejected_inspection_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', InspectingInstitution::class)->where('status', 'rejected')->count());
+                array_push($inspection_reports_graph_data, InspectionReport::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('inspector_id', $user_inspecting_institutions_ids)->count());
+            }
+            // End Inspection Reports
+
+            // Insurance Reports
+            $user_insurance_companies_ids = auth()->user()->insuranceCompanies->pluck('id');
+            $pending_insurance_requests_count = OrderRequest::where('status', 'pending')->whereIn('requesteable_id', $user_insurance_companies_ids)->where('requesteable_type', InsuranceCompany::class)->count();
+            $accepted_insurance_requests_count = OrderRequest::with('orderItem')
+                                                                ->whereHas('orderItem', function ($query) {
+                                                                    $query->whereDoesntHave('insuranceReport');
+                                                                })
+                                                                ->where('status', 'accepted')
+                                                                ->whereIn('requesteable_id', $user_insurance_companies_ids)
+                                                                ->where('requesteable_type', InsuranceCompany::class)
+                                                                ->count();
+            $rejected_insurance_requests_count = OrderRequest::where('status', 'rejected')->whereIn('requesteable_id', $user_insurance_companies_ids)->where('requesteable_type', InsuranceCompany::class)->count();
+            $completed_insurance_reports_count = InsuranceReport::whereIn('insurance_company_id', $user_insurance_companies_ids)->count();
+            $pending_insurance_reports_count = OrderRequest::where('status', 'accepted')->whereIn('requesteable_id', $user_insurance_companies_ids)->count();
+
+            foreach ($months as $month) {
+                array_push($pending_insurance_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('requesteable_id', $user_insurance_companies_ids)->where('requesteable_type', InsuranceCompany::class)->where('status', 'pending')->count());
+                array_push($accepted_insurance_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('requesteable_id', $user_insurance_companies_ids)->where('requesteable_type', InsuranceCompany::class)->where('status', 'accepted')->count());
+                array_push($rejected_insurance_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('requesteable_id', $user_insurance_companies_ids)->where('requesteable_type', InsuranceCompany::class)->where('status', 'rejected')->count());
+                array_push($insurance_reports_graph_data, InsuranceReport::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('insurance_company_id', $user_insurance_companies_ids)->count());
+            }
+            // End Insurance Reports
+        }
+
         return view('dashboard', [
             'breadcrumbs' => [
                 'Dashboard' => route('dashboard'),
@@ -264,6 +507,9 @@ class DashboardController extends Controller
             'total_buyers_count' => $total_buyers_count,
             'total_vendors_count' => $total_vendors_count,
             'total_businesses_count' => $total_businesses_count,
+            'approved_businesses_count' => $approved_businesses_count,
+            'pending_businesses_count' => $pending_businesses_count,
+            'rejected_businesses_count' => $rejected_businesses_count,
             'user_registration_rate' => $user_registration_rate,
             'user_registration_direction' => $user_registration_direction,
             'user_registration_rate_graph_data' => $user_registration_rate_graph_data,
@@ -272,11 +518,44 @@ class DashboardController extends Controller
             'warehouses_count' => $warehouses_count,
             'products_count' => $products_count,
             'countries' => $countries,
+            'total_orders' => $total_orders,
+            'total_orders_rate' => $total_orders_rate,
+            'total_orders_direction' => $total_orders_direction,
+            'total_paid_orders' => $total_paid_orders,
+            'total_paid_orders_rate' => $total_paid_orders_rate,
+            'total_orders_graph_rate' => $total_orders_graph_rate,
+            'total_paid_orders_direction' => $total_paid_orders_direction,
             'pending_storage_requests' => $pending_storage_requests,
             'approved_storage_requests' => $approved_storage_requests,
             'total_stocklift_requests' => $total_stocklift_requests,
             'product_categories_ratio' => $product_categories_ratio,
             'site_visits_series' => $site_visits_series,
+            'financing_requests_count' => $financing_requests_count,
+            'financing_requests_graph_data' => $financing_requests_graph_data,
+            // Inspection Reports
+            'pending_inspection_requests_count' => $pending_inspection_requests_count,
+            'accepted_inspection_requests_count' => $accepted_inspection_requests_count,
+            'rejected_inspection_requests_count' => $rejected_inspection_requests_count,
+            'completed_inspection_reports_count' => $completed_inspection_reports_count,
+            'pending_inspection_reports_count' => $pending_inspection_reports_count,
+            'pending_inspection_requests_graph_data' => $pending_inspection_requests_graph_data,
+            'accepted_inspection_requests_graph_data' => $accepted_inspection_requests_graph_data,
+            'rejected_inspection_requests_graph_data' => $rejected_inspection_requests_graph_data,
+            'inspection_reports_graph_data' => $inspection_reports_graph_data,
+            // Insurance Reports
+            'pending_insurance_requests_count' => $pending_insurance_requests_count,
+            'accepted_insurance_requests_count' => $accepted_insurance_requests_count,
+            'rejected_insurance_requests_count' => $rejected_insurance_requests_count,
+            'completed_insurance_reports_count' => $completed_insurance_reports_count,
+            'pending_insurance_reports_count' => $pending_insurance_reports_count,
+            'pending_insurance_requests_graph_data' => $pending_insurance_requests_graph_data,
+            'accepted_insurance_requests_graph_data' => $accepted_insurance_requests_graph_data,
+            'rejected_insurance_requests_graph_data' => $rejected_insurance_requests_graph_data,
+            'insurance_reports_graph_data' => $insurance_reports_graph_data,
+
+            'selectedDateFilter' => $dateFilter,
+            'financing_total_limit'=>$financing_total_limit,
+            'financing_total_invoices'=>$financing_total_invoices,
         ]);
     }
 }

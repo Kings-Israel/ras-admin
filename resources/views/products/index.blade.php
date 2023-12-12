@@ -26,16 +26,18 @@
                             </thead>
                             <tbody>
                                 @foreach ($products as $product)
-                                    <tr>
-                                        <td>{{ $product->name }}</td>
-                                        <td>{{ $product->business->name }}</td>
-                                        <td>{{ $product->price ? $product->price : $product->min_price.' - '.$product->max_price }}</td>
-                                        <td>{{ $product->warehouse }}</td>
-                                        <td>{{ $product->created_at->format('d M Y') }}</td>
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
-                                        </td>
-                                    </tr>
+                                    @can('view', $product)
+                                        <tr>
+                                            <td>{{ $product->name }}</td>
+                                            <td>{{ $product->business->name }}</td>
+                                            <td>{{ $product->price ? $product->price : $product->min_price.' - '.$product->max_price }}</td>
+                                            <td>{{ $product->warehouse }}</td>
+                                            <td>{{ $product->created_at->format('d M Y') }}</td>
+                                            <td>
+                                                <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
+                                            </td>
+                                        </tr>
+                                    @endcan
                                 @endforeach
                             </tbody>
                         </table>

@@ -11,10 +11,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Musonza\Chat\Traits\Messageable;
 
 class User extends Authenticatable
 {
-    use HasFactory, HasRoles, Notifiable;
+    use HasFactory, HasRoles, Notifiable, Messageable;
 
     /**
      * The attributes that aren't mass assignable.
@@ -65,6 +66,30 @@ class User extends Authenticatable
      */
     public function inspectors(): BelongsToMany
     {
-        return $this->belongsToMany(Inspector::class, 'inspector_users', 'user_id', 'inspector_id');
+        return $this->belongsToMany(InspectingInstitution::class, 'inspector_users', 'user_id', 'inspector_id');
+    }
+
+    /**
+     * The logisticsCompanies that belong to the User
+     */
+    public function logisticsCompanies(): BelongsToMany
+    {
+        return $this->belongsToMany(LogisticsCompany::class, 'logistics_company_users', 'user_id', 'logistics_company_id');
+    }
+
+    /**
+     * The insuranceCompany that belong to the InsuranceCompanyUser
+     */
+    public function insuranceCompanies(): BelongsToMany
+    {
+        return $this->belongsToMany(InsuranceCompany::class, 'insurance_company_users', 'user_id', 'insurance_company_id');
+    }
+
+    /**
+     * Get the driverProfile associated with the User
+     */
+    public function driverProfile(): HasOne
+    {
+        return $this->hasOne(DriverProfile::class);
     }
 }

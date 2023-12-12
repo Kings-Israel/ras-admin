@@ -52,20 +52,22 @@
                             <br>
                             <h6 class="header">Select Manager or Add New Manager</h6>
                             <div class="row clearfix">
-                                <div class="col-6">
-                                    <label for="manager">Select Manager</label>
-                                    <div class="form-group">
-                                        @php($warehouse_managers = $warehouse->users->pluck('id')->toArray())
-                                        <select name="users[]" id="user" class="form-control">
-                                            <option value="">Select Manager</option>
-                                            @foreach ($users as $user)
-                                                <option value="{{ $user->id }}" @if(in_array($user->id, $warehouse_managers)) selected @endif>{{ $user->first_name }} {{ $user->last_name }} ({{ $user->email }})</option>
-                                            @endforeach
-                                            <option value="">Select None</option>
-                                        </select>
-                                        <x-input-error :messages="$errors->get('users')" class="mt-2 list-unstyled"></x-input-error>
+                                @role('admin')
+                                    <div class="col-6">
+                                        <label for="manager">Select Manager</label>
+                                        <div class="form-group">
+                                            @php($warehouse_managers = $warehouse->users->pluck('id')->toArray())
+                                            <select name="users[]" id="user" class="form-control">
+                                                <option value="">Select Manager</option>
+                                                @foreach ($users as $user)
+                                                    <option value="{{ $user->id }}" @if(in_array($user->id, $warehouse_managers)) selected @endif>{{ $user->first_name }} {{ $user->last_name }} ({{ $user->email }})</option>
+                                                @endforeach
+                                                <option value="">Select None</option>
+                                            </select>
+                                            <x-input-error :messages="$errors->get('users')" class="mt-2 list-unstyled"></x-input-error>
+                                        </div>
                                     </div>
-                                </div>
+                                @endrole
                                 <div class="col-6">
                                     <div class="header">Add New Manager</div>
                                     <div class="row">

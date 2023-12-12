@@ -1,3 +1,7 @@
+[x-cloak] {
+    display: none;
+}
+
 h4 {
     margin: 0;
 }
@@ -17,6 +21,14 @@ h4 {
 }
 
 .modal-backdrop.show {
-    display: none !important;
-    opacity: 0 !important;
+    z-index: 3 !important;
+}
+.modal {
+    z-index: 50 !important;
+}
+.sidebar {
+    z-index: 0 !important;
+}
+section.content {
+    z-index: 4 !important;
 }

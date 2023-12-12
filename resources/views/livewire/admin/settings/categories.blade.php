@@ -27,8 +27,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary btn-round waves-effect">SAVE</button>
-                                <button type="button" class="btn btn-danger btn-simple btn-round waves-effect" data-dismiss="modal">CLOSE</button>
+                                <button type="submit" class="btn btn-primary btn-round waves-effect">Submit</button>
+                                <button type="button" class="btn btn-danger btn-simple btn-round waves-effect" data-dismiss="modal">Close</button>
                             </div>
                         </form>
                     </div>
