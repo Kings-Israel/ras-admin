@@ -365,8 +365,8 @@ class WarehouseController extends Controller
         return view('warehouses.orders.show', [
             'page' => 'Storage Request',
             'breadcrumbs' => [
-                'Storage Requests' => route('warehouses.orders.requests.index', ['warehouse' => $order_request->requesteable]),
-                'Storage Request Details' => route('warehouses.orders.requests.details', ['order_request' => $order_request])
+                // 'Storage Requests' => route('warehouses.orders.requests.index', ['warehouse' => $order_request->requesteable]),
+                // 'Storage Request Details' => route('warehouses.orders.requests.details', ['order_request' => $order_request])
             ],
             'order_request' => $order_request,
             'conversation_id' => $conversation->id,
