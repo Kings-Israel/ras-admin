@@ -13,6 +13,7 @@ use App\Models\UserWarehouse;
 use App\Models\Warehouse;
 use App\Models\WarehouseOrder;
 use App\Models\OrderRequest;
+use App\Models\VendorStorageRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Password;
@@ -30,14 +31,14 @@ class WarehouseController extends Controller
 
     public function index()
     {
-        if (auth()->user()->hasRole('warehouse manager')) {
-            $user_warehouses = UserWarehouse::where('user_id', auth()->id())->get()->pluck('warehouse_id');
-            $warehouses = Warehouse::withCount('products')->whereIn('id', $user_warehouses)->get();
-        }
+        // if (auth()->user()->hasRole('warehouse manager')) {
+        //     $user_warehouses = UserWarehouse::where('user_id', auth()->id())->get()->pluck('warehouse_id');
+        //     $warehouses = Warehouse::withCount('products')->whereIn('id', $user_warehouses)->get();
+        // }
 
-        if (auth()->user()->hasRole('admin')) {
-            $warehouses = Warehouse::withCount('users', 'products')->with('country', 'city')->get();
-        }
+        // if (auth()->user()->hasRole('admin')) {
+        // }
+        $warehouses = Warehouse::withCount('users', 'products')->with('country', 'city')->get();
 
         return view('warehouses.index', [
             'page' => 'Warehouses',
@@ -273,18 +274,70 @@ class WarehouseController extends Controller
         return redirect()->route('warehouses.index');
     }
 
-    public function orders(Warehouse $warehouse)
+    public function buyerOrders(Warehouse $warehouse = NULL)
     {
-        $orders = OrderRequest::with('orderItem.order.business', 'orderItem.product.media')->where('requesteable_id', $warehouse->id)->where('requesteable_type', Warehouse::class)->get();
+        if ($warehouse) {
+            $orders = OrderRequest::with('orderItem.order.business', 'orderItem.product.media')->where('requesteable_id', $warehouse->id)->where('requesteable_type', Warehouse::class)->get();
+        } else {
+            if (auth()->user()->hasRole('admin')) {
+                $orders = OrderRequest::with('orderItem.order.business', 'orderItem.product.media')->where('requesteable_type', Warehouse::class)->get();
+            } else {
+                $user_warehouses = auth()->user()->warehouses->pluck('id');
+                $orders = OrderRequest::with('orderItem.order.business', 'orderItem.product.media')->whereIn('requesteable_id', $user_warehouses)->where('requesteable_type', Warehouse::class)->get();
+            }
+        }
 
-        return view('warehouses.orders.index', [
-            'page' => 'Warehouse Order Storage Request',
-            'breadcrumbs' => [
-                'Warehouses' => route('warehouses.index'),
-                'Warehouse Orders' => route('warehouses.orders.requests.index', ['warehouse' => $warehouse])
-            ],
-            'orders' => $orders
-        ]);
+        if ($warehouse) {
+            return view('warehouses.orders.index', [
+                'page' => 'Warehouse Order Storage Request',
+                'breadcrumbs' => [
+                    'Warehouses' => route('warehouses.index'),
+                    'Warehouse Orders from Buyers' => route('warehouses.orders.requests.buyers.index', ['warehouse' => $warehouse])
+                ],
+                'orders' => $orders
+            ]);
+        } else {
+            return view('warehouses.orders.index', [
+                'page' => 'Warehouse Order Storage Request',
+                'breadcrumbs' => [
+                    'Warehouses' => route('warehouses.index'),
+                ],
+                'orders' => $orders
+            ]);
+        }
+    }
+
+    public function vendorOrders(Warehouse $warehouse = NULL)
+    {
+        if ($warehouse) {
+            $requests = VendorStorageRequest::with('business')->where('warehouse_id', $warehouse->id)->get();
+        } else {
+            if (auth()->user()->hasRole('admin')) {
+                $requests = VendorStorageRequest::with('business', 'warehouse')->get();
+            } else {
+                $user_warehouses = auth()->user()->warehouses->pluck('id');
+                $requests = VendorStorageRequest::with('business', 'warehouse')->whereIn('warehouse_id', $user_warehouses)->get();
+            }
+        }
+
+        if ($warehouse) {
+            return view('warehouses.requests.vendor.index', [
+                'page' => 'Warehouse Storage Request',
+                'breadcrumbs' => [
+                    'Warehouses' => route('warehouses.index'),
+                    'Warehouse Orders from Vendors' => route('warehouses.orders.requests.vendors.index', ['warehouse' => $warehouse])
+                ],
+                'requests' => $requests
+            ]);
+        } else {
+            return view('warehouses.requests.vendor.index', [
+                'page' => 'Warehouse Storage Request',
+                'breadcrumbs' => [
+                    'Warehouses' => route('warehouses.index'),
+                ],
+                'requests' => $requests
+            ]);
+        }
     }
 
     public function order(OrderRequest $order_request)
