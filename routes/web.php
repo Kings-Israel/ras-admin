@@ -56,8 +56,11 @@ Route::middleware(['auth', 'web'])->group(function () {
 
         // Orders
         Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
-            Route::get('/{warehouse}/orders', [WarehouseController::class, 'orders'])->name('requests.index');
+            Route::get('/buyers/orders/{warehouse?}', [WarehouseController::class, 'buyerOrders'])->name('requests.buyers.index');
+            Route::get('/vendors/orders/{warehouse?}', [WarehouseController::class, 'vendorOrders'])->name('requests.vendors.index');
             Route::get('/{order_request}/details', [WarehouseController::class, 'order'])->name('requests.details');
+
+            Route::post('/{release_product_request}/product/release', [OrderController::class, 'releaseProduct'])->name('product.release');
         });
     });
 
@@ -202,6 +205,8 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/inspector-users', [UsersController::class, 'inspectors'])->name('users.inspectors');
     Route::get('/warehousemanagers', [UsersController::class, 'warehouseManagers'])->name('users.warehousemanagers');
     Route::get('/drivers', [UsersController::class, 'drivers'])->name('users.drivers');
+    Route::get('/drivers/add', [UsersController::class, 'createDriver'])->name('users.drivers.create');
+    Route::post('/drivers/store', [UsersController::class, 'storeDriver'])->name('users.drivers.store');
     Route::get('/user/{user}/details', [UsersController::class, 'show'])->name('users.show');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

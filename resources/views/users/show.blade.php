@@ -149,6 +149,26 @@
                                 </div>
                             @endif
                         </div>
+                        @if ($user->driverProfile)
+                            <div class="body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="d-flex">
+                                            <span class="mr-2">Vehicle Type</span>
+                                            <h6>{{ $user->driverProfile->vehicle_type }}</h6>
+                                        </div>
+                                        <div class="d-flex">
+                                            <span class="mr-2">Vehicle Registration Number</span>
+                                            <h6>{{ $user->driverProfile->vehicle_registration_number }}</h6>
+                                        </div>
+                                        <div class="d-flex">
+                                            <span class="mr-2">Vehicle Load Capacity</span>
+                                            <h6>{{ $user->driverProfile->vehicle_load_capacity }}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     @endif
                 </div>
             </div>

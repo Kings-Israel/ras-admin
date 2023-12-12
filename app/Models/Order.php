@@ -62,6 +62,14 @@ class Order extends Model
         return $this->belongsTo(Business::class);
     }
 
+    /**
+     * Get the warehouse that owns the Order
+     */
+    public function warehouse(): BelongsTo
+    {
+        return $this->belongsTo(WarehouseOrder::class, 'id', 'order_id');
+    }
+
     public function resolveOrderBadgeStatus(): string
     {
         switch ($this->status) {

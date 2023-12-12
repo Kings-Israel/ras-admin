@@ -84,4 +84,12 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(InsuranceCompany::class, 'insurance_company_users', 'user_id', 'insurance_company_id');
     }
+
+    /**
+     * Get the driverProfile associated with the User
+     */
+    public function driverProfile(): HasOne
+    {
+        return $this->hasOne(DriverProfile::class);
+    }
 }

@@ -19,6 +19,7 @@ use App\Models\Warehouse;
 use App\Models\InspectingInstitution;
 use App\Models\LogisticsCompany;
 use App\Models\InsuranceCompany;
+use App\Models\InsuranceReport;
 use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -143,6 +144,17 @@ class DashboardController extends Controller
         $accepted_inspection_requests_graph_data = [];
         $rejected_inspection_requests_graph_data = [];
         $inspection_reports_graph_data = [];
+
+        // Insurance Reports
+        $pending_insurance_requests_count = 0;
+        $accepted_insurance_requests_count = 0;
+        $rejected_insurance_requests_count = 0;
+        $completed_insurance_reports_count = 0;
+        $pending_insurance_reports_count = 0;
+        $pending_insurance_requests_graph_data = [];
+        $accepted_insurance_requests_graph_data = [];
+        $rejected_insurance_requests_graph_data = [];
+        $insurance_reports_graph_data = [];
 
         $financing_total_invoices = 0;
 
@@ -417,7 +429,29 @@ class DashboardController extends Controller
                 array_push($inspection_reports_graph_data, InspectionReport::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->count());
             }
             // End Inspection Reports
+
+            // Insurance Reports
+            $pending_insurance_requests_count = OrderRequest::where('status', 'pending')->where('requesteable_type', InsuranceCompany::class)->count();
+            $accepted_insurance_requests_count = OrderRequest::with('orderItem')
+                                                            ->whereHas('orderItem', function ($query) {
+                                                                $query->whereDoesntHave('inspectionReport');
+                                                            })
+                                                            ->where('status', 'accepted')
+                                                            ->where('requesteable_type', InsuranceCompany::class)
+                                                            ->count();
+            $rejected_insurance_requests_count = OrderRequest::where('status', 'rejected')->where('requesteable_type', InsuranceCompany::class)->count();
+            $completed_insurance_reports_count = InspectionReport::count();
+            $pending_insurance_reports_count = OrderRequest::where('status', 'accepted')->where('requesteable_type', InsuranceCompany::class)->count();
+
+            foreach ($months as $month) {
+                array_push($pending_insurance_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'pending')->where('requesteable_type', InspectingInstitution::class)->count());
+                array_push($accepted_insurance_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'accepted')->where('requesteable_type', InspectingInstitution::class)->count());
+                array_push($rejected_insurance_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->where('status', 'rejected')->where('requesteable_type', InspectingInstitution::class)->count());
+                array_push($insurance_reports_graph_data, InspectionReport::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->count());
+            }
+            // End Insurance Reports
         } else {
+            // Inspection Reports
             $user_inspecting_institutions_ids = auth()->user()->inspectors->pluck('id');
             $pending_inspection_requests_count = OrderRequest::where('status', 'pending')->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', InspectingInstitution::class)->count();
             $accepted_inspection_requests_count = OrderRequest::with('orderItem')
@@ -438,6 +472,30 @@ class DashboardController extends Controller
                 array_push($rejected_inspection_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('requesteable_id', $user_inspecting_institutions_ids)->where('requesteable_type', InspectingInstitution::class)->where('status', 'rejected')->count());
                 array_push($inspection_reports_graph_data, InspectionReport::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('inspector_id', $user_inspecting_institutions_ids)->count());
             }
+            // End Inspection Reports
+
+            // Insurance Reports
+            $user_insurance_companies_ids = auth()->user()->insuranceCompanies->pluck('id');
+            $pending_insurance_requests_count = OrderRequest::where('status', 'pending')->whereIn('requesteable_id', $user_insurance_companies_ids)->where('requesteable_type', InsuranceCompany::class)->count();
+            $accepted_insurance_requests_count = OrderRequest::with('orderItem')
+                                                                ->whereHas('orderItem', function ($query) {
+                                                                    $query->whereDoesntHave('insuranceReport');
+                                                                })
+                                                                ->where('status', 'accepted')
+                                                                ->whereIn('requesteable_id', $user_insurance_companies_ids)
+                                                                ->where('requesteable_type', InsuranceCompany::class)
+                                                                ->count();
+            $rejected_insurance_requests_count = OrderRequest::where('status', 'rejected')->whereIn('requesteable_id', $user_insurance_companies_ids)->where('requesteable_type', InsuranceCompany::class)->count();
+            $completed_insurance_reports_count = InsuranceReport::whereIn('insurance_company_id', $user_insurance_companies_ids)->count();
+            $pending_insurance_reports_count = OrderRequest::where('status', 'accepted')->whereIn('requesteable_id', $user_insurance_companies_ids)->count();
+
+            foreach ($months as $month) {
+                array_push($pending_insurance_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('requesteable_id', $user_insurance_companies_ids)->where('requesteable_type', InsuranceCompany::class)->where('status', 'pending')->count());
+                array_push($accepted_insurance_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('requesteable_id', $user_insurance_companies_ids)->where('requesteable_type', InsuranceCompany::class)->where('status', 'accepted')->count());
+                array_push($rejected_insurance_requests_graph_data, OrderRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('requesteable_id', $user_insurance_companies_ids)->where('requesteable_type', InsuranceCompany::class)->where('status', 'rejected')->count());
+                array_push($insurance_reports_graph_data, InsuranceReport::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->whereIn('insurance_company_id', $user_insurance_companies_ids)->count());
+            }
+            // End Insurance Reports
         }
 
         return view('dashboard', [
@@ -474,6 +532,7 @@ class DashboardController extends Controller
             'site_visits_series' => $site_visits_series,
             'financing_requests_count' => $financing_requests_count,
             'financing_requests_graph_data' => $financing_requests_graph_data,
+            // Inspection Reports
             'pending_inspection_requests_count' => $pending_inspection_requests_count,
             'accepted_inspection_requests_count' => $accepted_inspection_requests_count,
             'rejected_inspection_requests_count' => $rejected_inspection_requests_count,
@@ -483,6 +542,17 @@ class DashboardController extends Controller
             'accepted_inspection_requests_graph_data' => $accepted_inspection_requests_graph_data,
             'rejected_inspection_requests_graph_data' => $rejected_inspection_requests_graph_data,
             'inspection_reports_graph_data' => $inspection_reports_graph_data,
+            // Insurance Reports
+            'pending_insurance_requests_count' => $pending_insurance_requests_count,
+            'accepted_insurance_requests_count' => $accepted_insurance_requests_count,
+            'rejected_insurance_requests_count' => $rejected_insurance_requests_count,
+            'completed_insurance_reports_count' => $completed_insurance_reports_count,
+            'pending_insurance_reports_count' => $pending_insurance_reports_count,
+            'pending_insurance_requests_graph_data' => $pending_insurance_requests_graph_data,
+            'accepted_insurance_requests_graph_data' => $accepted_insurance_requests_graph_data,
+            'rejected_insurance_requests_graph_data' => $rejected_insurance_requests_graph_data,
+            'insurance_reports_graph_data' => $insurance_reports_graph_data,
+
             'selectedDateFilter' => $dateFilter,
             'financing_total_limit'=>$financing_total_limit ?? 0.00,
             'financing_total_invoices'=>$financing_total_invoices ?? 0.00,
