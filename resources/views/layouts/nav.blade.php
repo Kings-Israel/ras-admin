@@ -45,7 +45,9 @@
                 @can('view warehouse')
                 {{-- <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a></li> --}}
                     <li class="nav-item @if(Route::is('warehouses.*')) active open @endif">
-                        <a href="{{ route('warehouses.index') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a>
+                        <a href="{{ route('warehouses.index') }}">
+                            <i class="material-icons">local_convenience_store</i>
+                            <span>Warehouse Management</span></a>
                     </li>
                    {{-- <a href="javascript:void(0);" class="menu-toggle"><i class="zmdi zmdi-swap-alt"></i><span>Warehouse Management</span></a>
                    <ul class="ml-menu">
@@ -57,6 +59,11 @@
                        </li>
                    </ul> --}}
                 @endcan
+                @role('warehouse manager')
+                <li class="nav-item @if(Route::is('payments.*')) active open @endif">
+                    <a href="{{ route('payments.index') }}"><i class="material-icons">payments</i><span>Payments</span></a>
+                </li>
+                @endrole
                 @can('view product')
                     <li class="nav-item @if(Route::is('products')) active open @endif"> <a href="{{ route('products') }}"><i class="material-icons">shop</i><span>Stock Management</span></a></li>
                 @endcan

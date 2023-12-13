@@ -31,6 +31,9 @@
                         @can('create warehouse')
                             <a class="btn btn-secondary btn-sm btn-round" href="{{ route('warehouses.create') }}">Add Warehouse</a>
                         @endcan
+                            @role('warehouse manager')
+                            <a class="btn btn-primary btn-md btn-round pr-5 mr-5" href="{{ route('wings.create') }}">Add Wing</a>
+                       @endrole
                     </div>
                     <div class="body">
                         <table class="table table-hover dataTable js-exportable" id="warehouses">
@@ -86,7 +89,6 @@
                                                     </a> --}}
                                                     <a class="dropdown-item" href="{{ route('warehouses.orders.requests.index', ['warehouse' => $warehouse->id]) }}">
                                                         <span>Orders Storage Requests</span></a>
-                                                    </a>
                                                 </div>
                                             </div>
                                         </td>

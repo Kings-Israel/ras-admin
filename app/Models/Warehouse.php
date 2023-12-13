@@ -58,4 +58,8 @@ class Warehouse extends Model
     {
         return $this->morphMany(OrderRequest::class, 'requesteable');
     }
+    public function wings()
+    {
+        return $this->hasMany(Wing::class);
+    }
 }

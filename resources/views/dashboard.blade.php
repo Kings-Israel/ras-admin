@@ -71,6 +71,30 @@
         @endrole
         <div class="row clearfix">
             @can('view warehouse')
+                @role('warehouse manager')
+                <div class="col-lg-4 col-md-6">
+                    <div class="card text-center">
+                        <div class="header">
+                            <ul class="header-dropdown">
+                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
+                                    <ul class="dropdown-menu slideUp">
+                                        <li><a href="javascript:void(0);" onclick="changeStorageRequestsView('pending-storage-requests')">Pending</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeStorageRequestsView('approved-storage-requests')">Approved</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body" id="pending-storage-requests" style="display: block">
+                            <span class="font-bold">Pending Storage Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_storage_requests }}" data-speed="100" data-fresh-interval="200">{{ $pending_storage_requests }}</h3>
+                        </div>
+                        <div class="body" id="approved-storage-requests" style="display: none">
+                            <span class="font-bold">Approved Storage Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $approved_storage_requests }}" data-speed="100" data-fresh-interval="200">{{ $approved_storage_requests }}</h3>
+                        </div>
+                    </div>
+                </div>
+                 @else
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
                         <div class="body">
@@ -79,6 +103,7 @@
                         </div>
                     </div>
                 </div>
+                @endrole
             @endcan
             @can('view product')
                 <div class="col-lg-3 col-md-6">
@@ -161,6 +186,8 @@
         </div>
         <div class="row clearfix">
             @can('view warehouse')
+                @role('warehouse manager')
+                @else
                 <div class="col-lg-4 col-md-6">
                     <div class="card text-center">
                         <div class="header">
@@ -183,6 +210,7 @@
                         </div>
                     </div>
                 </div>
+                @endrole
             @endcan
             @role('financier')
                 <div class="col-lg-4 col-md-6">
