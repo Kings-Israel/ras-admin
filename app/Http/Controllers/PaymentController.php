@@ -70,8 +70,8 @@ class PaymentController extends Controller
     public function show(string $id)
     {
 
-        return view('payment.index', [
-            'page' => 'Payments',
+        return view('payment.view', [
+            'page' => 'Payment Details',
             'breadcrumbs' => [
                 'Payments' => route('payments.index')
             ],
