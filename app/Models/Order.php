@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
 class Order extends Model
@@ -70,6 +73,14 @@ class Order extends Model
         return $this->belongsTo(WarehouseOrder::class, 'id', 'order_id');
     }
 
+    /**
+     * Get the driver associated with the Order
+     */
+    public function driver(): HasOne
+    {
+        return $this->hasOne(User::class, 'id', 'driver_id');
+    }
+
     public function resolveOrderBadgeStatus(): string
     {
         switch ($this->status) {
@@ -95,5 +106,36 @@ class Order extends Model
                 return 'badge-info';
                 break;
         }
+    }
+
+    public function resolveOrderBadgePaymentStatus(): string
+    {
+        switch ($this->status) {
+            case 'pending':
+                return 'badge-info';
+                break;
+            case 'paid':
+                return 'badge-success';
+                break;
+            default:
+                return 'badge-info';
+                break;
+        }
+    }
+
+    public function checkInspectionIsComplete(): DateTime|bool
+    {
+        $last_inspection_report_date = $this->updated_at;
+        foreach ($this->orderItems as $item) {
+            if (!$item->inspectionReport()->exists()) {
+                return false;
+            }
+
+            if (Carbon::parse($item->inspectionReport->created_at)->greaterThan(Carbon::parse($last_inspection_report_date))) {
+                $last_inspection_report_date = $item->inspectionReport->created_at;
+            }
+        }
+
+        return $last_inspection_report_date;
     }
 }

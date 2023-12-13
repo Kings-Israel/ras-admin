@@ -11,6 +11,16 @@
                 <div class="card">
                     <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
+                        <div class="d-flex">
+                            <div class="d-flex mr-2">
+                                <h6 class="mr-2">Order Status:</h6>
+                                <span class="badge {{ $order->resolveOrderBadgeStatus() }}">{{ Str::title($order->status) }}</span>
+                            </div>
+                            <div class="d-flex">
+                                <h6 class="mr-2">Payment Status:</h6>
+                                <span class="badge {{ $order->invoice->resolvePaymentStatus() }}">{{ Str::title($order->invoice->payment_status) }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -20,7 +30,9 @@
                 <div class="card">
                     <div class="d-flex justify-content-between">
                         <h6 class="card-title">Business Details</h6>
-                        <a href="{{ route('vendors.show', ['business' => $order->business]) }}" class="btn btn-sm btn-round btn-secondary mb-2">View Vendor</a>
+                        @role('admin')
+                            <a href="{{ route('vendors.show', ['business' => $order->business]) }}" class="btn btn-sm btn-round btn-secondary mb-2">View Vendor</a>
+                        @endrole
                     </div>
                     <div class="body">
                         <div class="d-flex">
@@ -44,7 +56,9 @@
                 <div class="card">
                     <div class="d-flex justify-content-between">
                         <h6 class="card-title">User</h6>
-                        <a href="{{ route('users.show', ['user' => $order->user]) }}" class="btn btn-primary btn-sm btn-round mb-2">View User</a>
+                        @role('admin')
+                            <a href="{{ route('users.show', ['user' => $order->user]) }}" class="btn btn-primary btn-sm btn-round mb-2">View User</a>
+                        @endrole
                     </div>
                     <div class="body">
                         <div class="d-flex">
@@ -78,16 +92,52 @@
                     </div>
                 @endcan
             @endif
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="body">
-                        <div class="d-flex">
-                            <span class="mr-2">Payment Status: </span>
-                            <h6><strong>{{ Str::title($order->invoice->payment_status) }}</strong></h6>
+            @if ($order->driver)
+                <div class="col-md-6 col-sm-12">
+                    <div class="card">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="card-title">Driver</h6>
+                        </div>
+                        <div class="body">
+                            <div class="d-flex">
+                                <span class="mr-2">Name:</span>
+                                <h6><strong>{{ $order->driver->first_name }} {{ $order->driver->last_name }}</strong></h6>
+                            </div>
+                            <div class="d-flex">
+                                <span class="mr-2">Email:</span>
+                                <h6><strong>{{ $order->driver->email }}</strong></h6>
+                            </div>
+                            <div class="d-flex">
+                                <span class="mr-2">Phone Number:</span>
+                                <h6><strong>{{ $order->driver->phone_number }}</strong></h6>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+                @if ($order->driver_id == auth()->id())
+                    <div class="col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="card-title">Update Delivery Status</h6>
+                            </div>
+                            <div class="body">
+                                <div class="d-flex">
+                                    <span class="mr-2">Name:</span>
+                                    <h6><strong>{{ $order->driver->first_name }} {{ $order->driver->last_name }}</strong></h6>
+                                </div>
+                                <div class="d-flex">
+                                    <span class="mr-2">Email:</span>
+                                    <h6><strong>{{ $order->driver->email }}</strong></h6>
+                                </div>
+                                <div class="d-flex">
+                                    <span class="mr-2">Phone Number:</span>
+                                    <h6><strong>{{ $order->driver->phone_number }}</strong></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            @endif
         </div>
         <div class="card">
             <h6 class="card-title">Products</h6>
@@ -109,7 +159,7 @@
                                 <td>{{ $item->quantity }}</td>
                                 <td>
                                     <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">Details</a>
-                                    @if ($item->productReleaseRequest && $item->productReleaseRequest->status == 'pending')
+                                    @if ($item->productReleaseRequest && $item->productReleaseRequest->status == 'pending' && $order->driver_id == NULL)
                                         @can('update', $item->productReleaseRequest)
                                             <a class="btn btn-sm btn-round btn-secondary" href="#release-product-{{ $item->id }}" data-toggle="modal" data-target="#release-product-{{ $item->id }}">Release Product</a>
                                             <div class="modal fade" id="release-product-{{ $item->id }}" tabindex="-1" role="dialog">
