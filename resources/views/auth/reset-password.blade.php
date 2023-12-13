@@ -36,7 +36,7 @@
         </div>
 
         <div class="footer">
-            <button type="submit" class="btn btn-primary btn-round btn-block">SUBMIT</button>
+            <button type="submit" class="btn btn-primary btn-round btn-block">Submit</button>
         </div>
     </form>
 </div>

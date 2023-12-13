@@ -31,7 +31,7 @@
         <!-- Page Loader -->
         <div class="page-loader-wrapper">
             <div class="loader">
-                <div class="m-t-30"><img src="{{ asset('assets/images/logo-alt.png') }}" style="object-fit: contain"alt="Alpino"></div>
+                <div class="m-t-30"><img src="{{ asset('assets/images/logo-alt.png') }}" style="object-fit: contain"alt="Real Sources Africa"></div>
                 <p>Please wait...</p>
             </div>
         </div>

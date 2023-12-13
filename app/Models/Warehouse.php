@@ -62,4 +62,8 @@ class Warehouse extends Model
     {
         return $this->hasMany(Wing::class);
     }
+    public function productReleaseRequests(): HasMany
+    {
+        return $this->hasMany(ReleaseProductRequest::class);
+    }
 }

@@ -9,8 +9,11 @@
         <div class="row clearfix">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="header">
+                    <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
+                        @role('admin')
+                            <a class="btn btn-secondary btn-sm btn-round" href="{{ route('users.drivers.create') }}">Add Driver</a>
+                        @endrole
                     </div>
                     <div class="body">
                         <table class="table table-bordered table-striped table-hover dataTable js-exportable">
@@ -33,7 +36,7 @@
                                         <td>{{ Carbon\Carbon::parse($user->last_login)->diffForHumans() }}</td>
                                         <td>{{ $user->created_at->diffForHumans() }}</td>
                                         <td>
-                                            <a href="{{ route('users.show', ['user' => $user]) }}" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
+                                            <a href="{{ route('users.show', ['user' => $user]) }}" class="btn btn-sm btn-primary btn-round waves-effect">Details</a>
                                         </td>
                                     </tr>
                                 @endforeach

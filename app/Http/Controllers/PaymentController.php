@@ -69,7 +69,14 @@ class PaymentController extends Controller
      */
     public function show(string $id)
     {
-        //
+
+        return view('payment.index', [
+            'page' => 'Payments',
+            'breadcrumbs' => [
+                'Payments' => route('payments.index')
+            ],
+            'invoices' => []
+        ]);
     }
 
     /**

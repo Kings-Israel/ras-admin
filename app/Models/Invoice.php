@@ -57,6 +57,14 @@ class Invoice extends Model
         return $this->hasOne(FinancingRequest::class);
     }
 
+    /**
+     * Get the orderFinancing associated with the Invoice
+     */
+    public function orderFinancing(): HasOne
+    {
+        return $this->hasOne(OrderFinancing::class);
+    }
+
     public function calculateTotalAmount(): int
     {
         $total_amount = 0;
@@ -72,11 +80,21 @@ class Invoice extends Model
         return $total_amount;
     }
 
-    /**
-     * Get the orderFinancing associated with the Invoice
-     */
-    public function orderFinancing(): HasOne
+    public function resolvePaymentStatus(): string
     {
-        return $this->hasOne(OrderFinancing::class);
+        switch ($this->payment_status) {
+            case 'pending':
+                return 'badge-info';
+                break;
+            case 'paid':
+                return 'badge-success';
+                break;
+            case 'cancelled':
+                return 'badge-danger';
+                break;
+            default:
+                return 'badge-info';
+                break;
+        }
     }
 }

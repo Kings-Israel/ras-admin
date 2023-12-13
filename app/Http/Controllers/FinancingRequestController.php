@@ -32,7 +32,7 @@ class FinancingRequestController extends Controller
 
     public function show(FinancingRequest $financing_request)
     {
-        $financing_request->load('invoice.orders.orderItems.product.business', 'invoice.user');
+        $financing_request->load('invoice.orders.orderItems.product.business', 'invoice.user', 'anchorHistory', 'bankDebts', 'operatingDebts', 'bankers', 'capitalStructure', 'companyManagers', 'shareholders', 'company', 'documents');
 
         return view('financiers.requests.show', [
             'page' => 'Financing Request',
@@ -63,6 +63,40 @@ class FinancingRequestController extends Controller
 
         $financing_institution = FinancingInstitution::all();
 
+        // Admin makes all approvals without a checker
+        if (auth()->user()->hasRole('admin')) {
+            if (!$financing) {
+                $financing = OrderFinancing::create([
+                    'invoice_id' => $financing_request->invoice->id,
+                    'financing_institution_id' => $financing_institution->first()->id,
+                    'first_approval_by' => auth()->id(),
+                    'first_approval_on' => now(),
+                    'second_approval_by' => auth()->id(),
+                    'second_approval_on' => now(),
+                ]);
+            } else {
+                $financing->update([
+                    'second_approval_by' => auth()->id(),
+                    'second_approval_on' => now(),
+                ]);
+            }
+
+            // TODO: Implement transfer of funds from financier wallet to vendors and service providers.
+
+            $financing_request->invoice->update([
+                'payment_status' => 'paid'
+            ]);
+
+            $financing_request->invoice->orders->each(fn ($order) => $order->update(['status' => 'in progress']));
+
+            // Send notification to user
+            $financing_request->invoice->user->notify(new FinancingRequestUpdated($financing_request->load('invoice'), 'accepted'));
+
+            toastr()->success('', 'Financing request successfully updated');
+
+            return back();
+        }
+
         if (!$financing) {
             $financing = OrderFinancing::create([
                 'invoice_id' => $financing_request->invoice->id,
@@ -83,6 +117,14 @@ class FinancingRequestController extends Controller
             $financing_request->update([
                 'status' => 'accepted'
             ]);
+
+            // TODO: Implement transfer of funds from financier wallet to vendors and service providers.
+
+            $financing_request->invoice->update([
+                'payment_status' => 'paid'
+            ]);
+
+            $financing_request->invoice->orders->each(fn ($order) => $order->update(['status' => 'in progress']));
 
             // Send notification to user
             $financing_request->invoice->user->notify(new FinancingRequestUpdated($financing_request->load('invoice'), 'accepted'));

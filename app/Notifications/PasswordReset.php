@@ -47,7 +47,9 @@ class PasswordReset extends Notification
         }
 
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
+                    ->line('Hello')
+                    ->line('You are receiving this email because a password reset request was made.')
+                    ->line('Click below to proceed to reset your password and login.')
                     ->action('Reset Password', url('password-reset', $this->token))
                     ->line('Thank you for using our application!');
     }

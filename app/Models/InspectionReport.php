@@ -62,4 +62,20 @@ class InspectionReport extends Model
     {
         return $this->belongsTo(OrderItem::class);
     }
+
+    public function resolveValidityStatus()
+    {
+        $validity = $this->product_validity;
+        switch ($validity) {
+            case 'valid':
+                return 'badge-success';
+                break;
+            case 'invalid':
+                return 'badge-danger';
+                break;
+            default:
+                return 'badge-danger';
+                break;
+        }
+    }
 }

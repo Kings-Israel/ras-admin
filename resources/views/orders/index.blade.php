@@ -26,9 +26,10 @@
                                     <th>User Name</th>
                                     <th>Vendor</th>
                                     <th>Products</th>
+                                    <th>Warehouse</th>
                                     <th>Status</th>
-                                    <th>Created At</th>
-                                    <th></th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -38,10 +39,11 @@
                                         <td>{{ $order->user->first_name }} {{ $order->user->last_name }}</td>
                                         <td>{{ $order->business->name }}</td>
                                         <td>{{ $order->orderItems->count() }}</td>
+                                        <td>{{ $order->warehouse ? $order->warehouse->warehouse->name : '' }}</td>
                                         <td><span class="badge {{ $order->resolveOrderBadgeStatus() }}">{{ Str::title($order->status) }}</span></td>
                                         <td>{{ $order->created_at->format('d M Y') }}</td>
                                         <td>
-                                            <a href="{{ route('orders.show', ['order' => $order]) }}" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
+                                            <a href="{{ route('orders.show', ['order' => $order]) }}" class="btn btn-sm btn-primary btn-round waves-effect">Details</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -63,6 +65,6 @@
     <script src="{{ asset('assets/plugins/jquery-datatable/buttons/buttons.print.min.js') }}"></script>
     {{-- <script src="{{ asset('assets/js/pages/tables/jquery-datatable.js') }}"></script> --}}
     <script>
-        $('#orders').DataTable().order([5, 'desc']).draw();
+        $('#orders').DataTable().order([6, 'asc']).draw();
     </script>
 @endpush

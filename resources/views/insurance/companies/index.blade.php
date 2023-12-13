@@ -29,7 +29,9 @@
                 <div class="card">
                     <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
-                        <a class="btn btn-secondary btn-sm btn-round" href="{{ route('insurance.companies.create') }}">Add Insurance Company</a>
+                        @role('admin')
+                            <a class="btn btn-secondary btn-sm btn-round" href="{{ route('insurance.companies.create') }}">Add Insurance Company</a>
+                        @endrole
                     </div>
                     <div class="body">
                         <table class="table table-hover dataTable js-exportable" id="insurers">
@@ -46,50 +48,50 @@
                             </thead>
                             <tbody>
                                 @foreach ($insurers as $insurer)
-                                    <tr>
-                                        <td>{{ $insurer->name }}</td>
-                                        <td>{{ $insurer->country ? $insurer->country->name : '' }}</td>
-                                        <td>{{ $insurer->users_count }}</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>{{ $insurer->created_at->format('d M Y') }}</td>
-                                        <td>
-                                            {{-- <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">Edit</a> --}}
-                                            <div class="btn-group" x-data="{ open: false }">
-                                                <button class="mr-2 btn btn-primary btn-sm dropdown-toggle btn-round" type="button"
-                                                    x-on:click="open = ! open">
-                                                    <i data-feather="eye"></i>
-                                                    Actions
-                                                </button>
-                                                <div
-                                                    x-cloak
-                                                    x-show="open"
-                                                    x-transition
-                                                    @click.away="open = false"
-                                                    @keydown.escape.window = "open = false"
-                                                    class="search-results"
-                                                >
-                                                    @can('update insurance company')
-                                                        <a class="dropdown-item" href="#" >
-                                                            <span>Edit</span>
-                                                        </a>
-                                                    @endcan
+                                    @can('view', $insurer)
+                                        <tr>
+                                            <td>{{ $insurer->name }}</td>
+                                            <td>{{ $insurer->country ? $insurer->country->name : '' }}</td>
+                                            <td>{{ $insurer->users_count }}</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>{{ $insurer->created_at->format('d M Y') }}</td>
+                                            <td>
+                                                {{-- <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">Edit</a> --}}
+                                                <div class="btn-group" x-data="{ open: false }">
+                                                    <button class="mr-2 btn btn-primary btn-sm dropdown-toggle btn-round" type="button"
+                                                        x-on:click="open = ! open">
+                                                        <i data-feather="eye"></i>
+                                                        Actions
+                                                    </button>
+                                                    <div
+                                                        x-cloak
+                                                        x-show="open"
+                                                        x-transition
+                                                        @click.away="open = false"
+                                                        @keydown.escape.window = "open = false"
+                                                        class="search-results"
+                                                    >
+                                                        @can('update', $insurer)
+                                                            <a class="dropdown-item" href="#" >
+                                                                <span>Edit</span>
+                                                            </a>
+                                                        @endcan
 
-                                                    @can('view insurance company')
                                                         <a class="dropdown-item" href="#">
                                                             <span>View</span>
                                                         </a>
-                                                    @endcan
 
-                                                    @can('view insurance request')
-                                                        <a class="dropdown-item" href="#">
-                                                            <span>Insurance Requests</span>
-                                                        </a>
-                                                    @endcan
+                                                        @can('view insurance request')
+                                                            <a class="dropdown-item" href="#">
+                                                                <span>Insurance Requests</span>
+                                                            </a>
+                                                        @endcan
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
+                                    @endcan
                                 @endforeach
                             </tbody>
                         </table>

@@ -37,10 +37,26 @@ class OrderItem extends Model
     }
 
     /**
+     * Get the insuranceReport associated with the OrderItem
+     */
+    public function insuranceReport(): HasOne
+    {
+        return $this->hasOne(InsuranceReport::class);
+    }
+
+    /**
      * Get all of the orderRequests for the OrderItem
      */
     public function orderRequests(): HasMany
     {
         return $this->hasMany(OrderRequest::class);
+    }
+
+    /**
+     * Get the productReleaseRequest associated with the OrderItem
+     */
+    public function productReleaseRequest(): HasOne
+    {
+        return $this->hasOne(ReleaseProductRequest::class);
     }
 }

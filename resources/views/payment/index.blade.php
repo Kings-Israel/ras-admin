@@ -45,7 +45,7 @@
                                         <td>{{ $invoice->delivery_location_address }}</td>
                                         <td>{{ $invoice->created_at->format('d M Y') }}</td>
                                         <td>
-                                           <a href="" class="btn btn-primary">view details</a>
+                                           <a href="{{route('payment.show', $invoice->id)}}" class="btn btn-primary">view details</a>
                                         </td>
                                     </tr>
                                 @endforeach

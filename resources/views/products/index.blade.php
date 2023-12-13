@@ -91,6 +91,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($products as $product)
+<<<<<<< HEAD
                                     <tr>
                                         <td>
                                             @if($product && $product->product && ($product->image || $product->product->image))
@@ -121,6 +122,20 @@
                                             <a href="{{route('product.details', $product->product->id ?? $product->id)}}" class="btn btn-sm btn-primary btn-round waves-effect" >DETAILS</a>
                                         </td>
                                     </tr>
+=======
+                                    @can('view', $product)
+                                        <tr>
+                                            <td>{{ $product->name }}</td>
+                                            <td>{{ $product->business->name }}</td>
+                                            <td>{{ $product->price ? $product->price : $product->min_price.' - '.$product->max_price }}</td>
+                                            <td>{{ $product->warehouse }}</td>
+                                            <td>{{ $product->created_at->format('d M Y') }}</td>
+                                            <td>
+                                                <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
+                                            </td>
+                                        </tr>
+                                    @endcan
+>>>>>>> add7acdb7e3ccb81542ac8ed7fcbfe2eba3b85dd
                                 @endforeach
                             </tbody>
                         </table>

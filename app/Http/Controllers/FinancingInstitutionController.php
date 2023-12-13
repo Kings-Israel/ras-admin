@@ -69,7 +69,6 @@ class FinancingInstitutionController extends Controller
 
     public function store(Request $request)
     {
-//        dd($request->all());
         $request->validate([
             'institution_name' => ['required'],
             'institution_phone_number' => ['required', new PhoneNumber],

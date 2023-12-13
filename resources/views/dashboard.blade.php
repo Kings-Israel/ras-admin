@@ -288,29 +288,88 @@
                 </div>
             @endcan
             @can('view inspection report')
-            <div class="col-lg-4 col-md-6">
-                <div class="card text-center">
-                    <div class="header">
-                        <ul class="header-dropdown">
-                            <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
-                                <ul class="dropdown-menu slideUp">
-                                    <li><a href="javascript:void(0);" onclick="changeInspectionReportsView('completed-inspection-reports')">Completed</a></li>
-                                    <li><a href="javascript:void(0);" onclick="changeInspectionReportsView('pending-inspection-reports')">Pending</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="body" id="completed-inspection-reports" style="display: block">
-                        <span class="font-bold">Completed Inspection Reports</span>
-                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $completed_inspection_reports_count }}" data-speed="100" data-fresh-interval="200">{{ $completed_inspection_reports_count }}</h3>
-                    </div>
-                    <div class="body" id="pending-inspection-reports" style="display: none">
-                        <span class="font-bold">Pending Inspection Reports</span>
-                        <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_inspection_reports_count }}" data-speed="100" data-fresh-interval="200">{{ $pending_inspection_reports_count }}</h3>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card text-center">
+                        <div class="header">
+                            <ul class="header-dropdown">
+                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
+                                    <ul class="dropdown-menu slideUp">
+                                        <li><a href="javascript:void(0);" onclick="changeInspectionReportsView('completed-inspection-reports')">Completed</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeInspectionReportsView('pending-inspection-reports')">Pending</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body" id="completed-inspection-reports" style="display: block">
+                            <span class="font-bold">Completed Inspection Reports</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $completed_inspection_reports_count }}" data-speed="100" data-fresh-interval="200">{{ $completed_inspection_reports_count }}</h3>
+                        </div>
+                        <div class="body" id="pending-inspection-reports" style="display: none">
+                            <span class="font-bold">Pending Inspection Reports</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_inspection_reports_count }}" data-speed="100" data-fresh-interval="200">{{ $pending_inspection_reports_count }}</h3>
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endcan
+            @endcan
+            {{-- Insurance Requests and Reports --}}
+            @can('view insurance request')
+                <div class="col-lg-4 col-md-6">
+                    <div class="card text-center">
+                        <div class="header">
+                            <ul class="header-dropdown">
+                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
+                                    <ul class="dropdown-menu slideUp">
+                                        <li><a href="javascript:void(0);" onclick="changeInsuranceRequestsView('accpeted-insurance-requests')">Accepted</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeInsuranceRequestsView('pending-insurance-requests')">Pending</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeInsuranceRequestsView('rejected-insurance-requests')">Rejected</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeInsuranceRequestsView('completed-insurance-requests')">Completed</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body" id="accpeted-insurance-requests" style="display: block">
+                            <span class="font-bold">Accepted Insurance Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $accepted_insurance_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $accepted_insurance_requests_count }}</h3>
+                        </div>
+                        <div class="body" id="pending-insurance-requests" style="display: none">
+                            <span class="font-bold">Pending Insurance Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_insurance_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $pending_insurance_requests_count }}</h3>
+                        </div>
+                        <div class="body" id="rejected-insurance-requests" style="display: none">
+                            <span class="font-bold">Rejected Insurance Requests</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $rejected_insurance_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $rejected_insurance_requests_count }}</h3>
+                        </div>
+                        <div class="body" id="completed-insurance-requests" style="display: none">
+                            <span class="font-bold">Completed Insurance Reports</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $completed_insurance_reports_count }}" data-speed="100" data-fresh-interval="200">{{ $completed_insurance_reports_count }}</h3>
+                        </div>
+                    </div>
+                </div>
+            @endcan
+            @can('view insurance report')
+                <div class="col-lg-4 col-md-6">
+                    <div class="card text-center">
+                        <div class="header">
+                            <ul class="header-dropdown">
+                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
+                                    <ul class="dropdown-menu slideUp">
+                                        <li><a href="javascript:void(0);" onclick="changeInsuranceReportsView('completed-insurance-reports')">Completed</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeInsuranceReportsView('pending-insurance-reports')">Pending</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body" id="completed-insurance-reports" style="display: block">
+                            <span class="font-bold">Completed Insurance Reports</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $completed_insurance_reports_count }}" data-speed="100" data-fresh-interval="200">{{ $completed_insurance_reports_count }}</h3>
+                        </div>
+                        <div class="body" id="pending-insurance-reports" style="display: none">
+                            <span class="font-bold">Pending Insurance Reports</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $pending_insurance_reports_count }}" data-speed="100" data-fresh-interval="200">{{ $pending_insurance_reports_count }}</h3>
+                        </div>
+                    </div>
+                </div>
+            @endcan
         </div>
         @can('view financing request')
             <div class="row clearfix">
@@ -363,6 +422,32 @@
                         </div>
                         <div class="body m-b-10">
                             <canvas id="completed_reports_rate" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endcan
+        @can('view insurance report')
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12">
+                    <div class="card visitors-map">
+                        <div class="header">
+                            <h2><strong>Insurance</strong> Requests</h2>
+                        </div>
+                        <div class="body m-b-10">
+                            <canvas id="insurance_requests_rate" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12">
+                    <div class="card visitors-map">
+                        <div class="header">
+                            <h2><strong>Completed</strong> Insurance Reports</h2>
+                        </div>
+                        <div class="body m-b-10">
+                            <canvas id="completed_insurance_reports_rate" height="100"></canvas>
                         </div>
                     </div>
                 </div>
@@ -1094,7 +1179,6 @@
             let accepted_inspection_requests_graph_data = {!! json_encode($accepted_inspection_requests_graph_data) !!}
             let rejected_inspection_requests_graph_data = {!! json_encode($rejected_inspection_requests_graph_data) !!}
             let inspection_reports_graph_data = {!! json_encode($inspection_reports_graph_data) !!}
-            // console.log(financing_requests_graph_data)
 
             new Chart(document.getElementById("inspection_requests_rate").getContext("2d"),
             config = {
@@ -1143,6 +1227,77 @@
                         datasets: [{
                             label: "Completed Reports",
                             data: inspection_reports_graph_data,
+                            borderColor: 'rgba(241,95,121, 0.2)',
+                            backgroundColor: 'rgba(241,95,121, 0.5)',
+                            pointBorderColor: 'rgba(241,95,121, 0.3)',
+                            pointBackgroundColor: 'rgba(241,95,121, 0.2)',
+                            pointBorderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: false,
+                    }
+                }
+            );
+        </script>
+    @endcan
+    @can('view insurance report')
+        <script>
+            let months = {!! json_encode($months) !!}
+            let pending_insurance_requests_graph_data = {!! json_encode($pending_insurance_requests_graph_data) !!}
+            let accepted_insurance_requests_graph_data = {!! json_encode($accepted_insurance_requests_graph_data) !!}
+            let rejected_insurance_requests_graph_data = {!! json_encode($rejected_insurance_requests_graph_data) !!}
+            let insurance_reports_graph_data = {!! json_encode($insurance_reports_graph_data) !!}
+            // console.log(financing_requests_graph_data)
+
+            new Chart(document.getElementById("insurance_requests_rate").getContext("2d"),
+            config = {
+                type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: "Pending",
+                            data: pending_insurance_requests_graph_data,
+                            borderColor: 'rgba(241,95,121, 0.2)',
+                            backgroundColor: 'rgba(241,95,121, 0.5)',
+                            pointBorderColor: 'rgba(241,95,121, 0.3)',
+                            pointBackgroundColor: 'rgba(241,95,121, 0.2)',
+                            pointBorderWidth: 1
+                        }, {
+                            label: "Accepted",
+                            data: accepted_insurance_requests_graph_data,
+                            borderColor: 'rgba(140,147,154, 0.2)',
+                            backgroundColor: 'rgba(140,147,154, 0.2)',
+                            pointBorderColor: 'rgba(140,147,154, 0)',
+                            pointBackgroundColor: 'rgba(140,147,154, 0.9)',
+                            pointBorderWidth: 1
+                        }, {
+                            label: "Rejected",
+                            data: rejected_insurance_requests_graph_data,
+                            borderColor: 'rgba(49,55,64, 0.2)',
+                            backgroundColor: 'rgba(49,55,64, 0.2)',
+                            pointBorderColor: 'rgba(49,55,64, 0)',
+                            pointBackgroundColor: 'rgba(49,55,64, 0.9)',
+                            pointBorderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: false,
+
+                    }
+                }
+            );
+
+            new Chart(document.getElementById("completed_insurance_reports_rate").getContext("2d"),
+                config = {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: "Completed Insurance Reports",
+                            data: insurance_reports_graph_data,
                             borderColor: 'rgba(241,95,121, 0.2)',
                             backgroundColor: 'rgba(241,95,121, 0.5)',
                             pointBorderColor: 'rgba(241,95,121, 0.3)',
@@ -1227,6 +1382,48 @@
             } else if (view == 'pending-inspection-reports') {
                 pending_inspection_reports.style.display = 'block';
                 completed_inspection_reports.style.display = 'none';
+            }
+        }
+
+        function changeInsuranceRequestsView(view) {
+            const accepted_insurance_requests = document.getElementById('accpeted-insurance-requests');
+            const pending_insurance_requests = document.getElementById('pending-insurance-requests');
+            const rejected_insurance_requests = document.getElementById('rejected-insurance-requests');
+            const completed_insurance_requests = document.getElementById('completed-insurance-requests');
+
+            if (view == 'accpeted-insurance-requests') {
+                accepted_insurance_requests.style.display = 'block';
+                pending_insurance_requests.style.display = 'none';
+                rejected_insurance_requests.style.display = 'none';
+                completed_insurance_requests.style.display = 'none';
+            } else if (view == 'rejected-insurance-requests') {
+                accepted_insurance_requests.style.display = 'none';
+                pending_insurance_requests.style.display = 'none';
+                rejected_insurance_requests.style.display = 'block';
+                completed_insurance_requests.style.display = 'none';
+            } else if (view == 'pending-insurance-requests') {
+                accepted_insurance_requests.style.display = 'none';
+                pending_insurance_requests.style.display = 'block';
+                rejected_insurance_requests.style.display = 'none';
+                completed_insurance_requests.style.display = 'none';
+            } else if (view == 'completed-insurance-requests') {
+                accepted_insurance_requests.style.display = 'none';
+                pending_insurance_requests.style.display = 'none';
+                rejected_insurance_requests.style.display = 'none';
+                completed_insurance_requests.style.display = 'block';
+            }
+        }
+
+        function changeInsuranceReportsView(view) {
+            const accepted_insurance_reports = document.getElementById('completed-insurance-reports');
+            const pending_insurance_reports = document.getElementById('pending-insurance-reports');
+
+            if (view == 'completed-insurance-reports') {
+                pending_insurance_reports.style.display = 'none';
+                completed_insurance_reports.style.display = 'block';
+            } else if (view == 'pending-insurance-reports') {
+                pending_insurance_reports.style.display = 'block';
+                completed_insurance_reports.style.display = 'none';
             }
         }
 

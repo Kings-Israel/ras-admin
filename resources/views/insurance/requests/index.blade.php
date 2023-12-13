@@ -43,7 +43,7 @@
                                         @endrole
                                         <td>{{ $insurance_request->created_at->format('d M Y') }}</td>
                                         <td>
-                                            @can('view insurance report')
+                                            @can('view', $insurance_request)
                                                 <a href="{{ route('insurance.requests.show', ['order_request' => $insurance_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">View</a>
                                             @endcan
                                         </td>
