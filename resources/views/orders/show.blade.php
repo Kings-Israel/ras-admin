@@ -169,14 +169,14 @@
                                                             @csrf
                                                             <input type="hidden" name="order_id" value="{{ $item->order->id }}">
                                                             <div class="modal-body">
-                                                                <div class="">
+                                                                <div>
                                                                     <label for="role_name">Select Driver</label>
-                                                                    <select class="form-control show-tick" name="driver_id" style="width: 50% !important">
-                                                                        @foreach ($drivers as $driver)
-                                                                            <option value="{{ $driver->id }}">{{ $driver->first_name }} {{ $driver->last_name }}</option>
-                                                                        @endforeach
-                                                                    </select>
                                                                 </div>
+                                                                <select class="form-control form-select" name="driver_id">
+                                                                    @foreach ($drivers as $driver)
+                                                                        <option value="{{ $driver->id }}">{{ $driver->first_name }} {{ $driver->last_name }}</option>
+                                                                    @endforeach
+                                                                </select>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="submit" class="btn btn-primary btn-round waves-effect">Submit</button>
