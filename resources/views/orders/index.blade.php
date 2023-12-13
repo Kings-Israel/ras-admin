@@ -39,7 +39,7 @@
                                         <td>{{ $order->user->first_name }} {{ $order->user->last_name }}</td>
                                         <td>{{ $order->business->name }}</td>
                                         <td>{{ $order->orderItems->count() }}</td>
-                                        <td>{{ $order->warehouse->warehouse->name }}</td>
+                                        <td>{{ $order->warehouse ? $order->warehouse->warehouse->name : '' }}</td>
                                         <td><span class="badge {{ $order->resolveOrderBadgeStatus() }}">{{ Str::title($order->status) }}</span></td>
                                         <td>{{ $order->created_at->format('d M Y') }}</td>
                                         <td>
