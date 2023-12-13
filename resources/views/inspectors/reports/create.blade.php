@@ -227,6 +227,18 @@
                                 </div>
 
                                 <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label for="">General Product Validity Status</label>
+                                            <select name="product_validity" id="" class="form-control">
+                                                <option value="valid">Valid</option>
+                                                <option value="invalid">Invalid</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
                                     <label for="Max Capacity">Applicant Signature</label>
                                     <div class="form-group">
                                         <input type="file" accept=".pdf" name="applicant_sign" class="form-control" id="" />
@@ -234,7 +246,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-12">
+                                <div class="col-6">
                                     <label for="Max Capacity">Copy of Report</label>
                                     <div class="form-group">
                                         <input type="file" accept=".pdf" name="report" class="form-control" id="" required />

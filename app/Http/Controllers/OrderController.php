@@ -12,16 +12,33 @@ class OrderController extends Controller
     public function index()
     {
         if (auth()->user()->hasRole('admin')) {
-            $orders = Order::with('business.country', 'business.city', 'user', 'orderItems', 'warehouse')->get();
+            $orders = Order::with('business.country', 'business.city', 'user', 'orderItems', 'warehouse', 'driver')->get();
         } else {
             // Warehouse Manager
             $user_warehouses = auth()->user()->warehouses->pluck('id');
+            if (count($user_warehouses) > 0) {
+                $orders = Order::with('business.country', 'business.city', 'user', 'orderItems')
+                                ->whereHas('warehouse', function ($query) use ($user_warehouses) {
+                                    $query->whereIn('warehouse_id', $user_warehouses);
+                                })
+                                ->get();
+            }
 
-            $orders = Order::with('business.country', 'business.city', 'user', 'orderItems')
-                            ->whereHas('warehouse', function ($query) use ($user_warehouses) {
-                                $query->whereIn('warehouse_id', $user_warehouses);
-                            })
-                            ->get();
+            // Driver
+            $driver_permissions = [
+                'create delivery',
+                'update delivery',
+                'view delivery',
+                'delete delivery',
+                'create stocklift request',
+                'view stocklift request',
+                'update stocklift request',
+                'delete stocklift request',
+            ];
+
+            if (auth()->user()->hasAllPermissions($driver_permissions)) {
+                $orders = Order::with('business.country', 'business.city', 'user', 'orderItems')->where('driver_id', auth()->id())->get();
+            }
         }
 
         return view('orders.index', [
@@ -35,7 +52,7 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $order->load('business.country', 'business.city', 'user', 'orderItems.productReleaseRequest', 'invoice.financingRequest', 'warehouse');
+        $order->load('business.country', 'business.city', 'user', 'orderItems.productReleaseRequest', 'invoice.financingRequest', 'warehouse', 'driver');
 
         $driver_permissions = [
             'create delivery',

@@ -39,9 +39,9 @@
                 @role('admin')
                     <li class="nav-item @if(Route::is('vendors.*')) active open @endif"> <a href="{{ route('vendors.index') }}"><i class="material-icons">polymer</i><span>Vendor Management</span></a></li>
                 @endrole
-                @can('view order')
+                @canany(['view order', 'view delivery'])
                     <li class="nav-item @if(Route::is('orders.*')) active open @endif"> <a href="{{ route('orders.index') }}"><i class="material-icons">layers</i><span>Order Management</span></a></li>
-                @endcan
+                @endcanany
                 @can('view warehouse')
                     {{-- <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a></li> --}}
                     {{-- <li class="nav-item @if(Route::is('warehouses.*')) active open @endif">

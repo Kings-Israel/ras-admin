@@ -8,6 +8,7 @@ use App\Models\Country;
 use App\Models\InspectingInstitution;
 use App\Models\InspectionReport;
 use App\Models\InspectorUser;
+use App\Models\Order;
 use App\Models\OrderConversation;
 use App\Models\OrderRequest;
 use App\Models\ServiceCharge;
@@ -311,6 +312,11 @@ class InspectorController extends Controller
         ]);
 
         InspectionReport::create(collect($request->all())->except('applicant_sign', 'report')->toArray());
+
+        $order = Order::find($order_request->orderItem->order_id);
+        $order->update([
+            'delivery_status' => 'inspection'
+        ]);
 
         toastr()->success('', 'Report added successfully');
 
