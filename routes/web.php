@@ -165,6 +165,7 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::get('/', [InsuranceController::class, 'orders'])->name('index');
             Route::get('/{order_request}/details', [InsuranceController::class, 'order'])->name('show');
             Route::put('/{insurance_request}/update', [InsuranceController::class, 'updateRequest'])->name('update');
+            Route::get('/{order_request}/buyer/details', [InsuranceController::class, 'orderBuyerDetails'])->name('buyer.details');
         });
 
         Route::group(['prefix' => '/reports', 'as' => 'reports.'], function () {
