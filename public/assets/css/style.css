@@ -32,3 +32,6 @@ h4 {
 section.content {
     z-index: 4 !important;
 }
+.card .body {
+    color: black !important;
+}
