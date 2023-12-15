@@ -19,11 +19,11 @@
                     </div>
                     <div>
                         @role('warehouse manager')
-{{--                <x-primary-button class="btn btn-sm btn-primary btn-round waves-effect" data-modal-target="add-product-modal" data-modal-toggle="add-product-modal">Add Product</x-primary-button>--}}
-                <x-primary-button class="btn btn-sm btn-primary btn-round waves-effect" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Product</x-primary-button>
+                                                <a href="{{route('product.create')}}" class="btn btn-sm btn-primary btn-round waves-effect" >Add Product</a>
 
-{{--                <x-product-modal modal_id="add-product-modal" >--}}
-{{--                    name="Create Product"--}}
+{{--                        <x-primary-button class="btn btn-sm btn-primary btn-round waves-effect" data-modal-target="add-product-modal" data-modal-toggle="add-product-modal">Add Product</x-primary-button>--}}
+{{--                <x-product-modal modal_id="add-product-modal" name="Create Product">--}}
+
 {{--                    <div class="relative w-full max-w-4xl max-h-full">--}}
 {{--                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">--}}
 {{--                            <button type="button" data-modal-hide="add-product-modal" class="absolute top-1 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">--}}
@@ -39,32 +39,7 @@
 {{--                        </div>--}}
 {{--                    </div>--}}
 {{--                </x-product-modal>--}}
-
-                        <!-- Button trigger modal -->
-{{--                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">--}}
-{{--                            Launch demo modal--}}
-{{--                        </button>--}}
-
-                        <!-- Modal -->
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog relative w-full max-w-4xl max-h-full">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="exampleModalLabel">New Product</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        @include('products.create')
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary">Add product</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        @endrole
+        @endrole
             </div>
                     <br/>
                     <br/>
@@ -91,7 +66,6 @@
                             </thead>
                             <tbody>
                                 @foreach ($products as $product)
-<<<<<<< HEAD
                                     <tr>
                                         <td>
                                             @if($product && $product->product && ($product->image || $product->product->image))
@@ -122,20 +96,18 @@
                                             <a href="{{route('product.details', $product->product->id ?? $product->id)}}" class="btn btn-sm btn-primary btn-round waves-effect" >DETAILS</a>
                                         </td>
                                     </tr>
-=======
-                                    @can('view', $product)
-                                        <tr>
-                                            <td>{{ $product->name }}</td>
-                                            <td>{{ $product->business->name }}</td>
-                                            <td>{{ $product->price ? $product->price : $product->min_price.' - '.$product->max_price }}</td>
-                                            <td>{{ $product->warehouse }}</td>
-                                            <td>{{ $product->created_at->format('d M Y') }}</td>
-                                            <td>
-                                                <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>
-                                            </td>
-                                        </tr>
-                                    @endcan
->>>>>>> add7acdb7e3ccb81542ac8ed7fcbfe2eba3b85dd
+{{--                                    @can('view', $product)--}}
+{{--                                        <tr>--}}
+{{--                                            <td>{{ $product->name }}</td>--}}
+{{--                                            <td>{{ $product->business->name }}</td>--}}
+{{--                                            <td>{{ $product->price ? $product->price : $product->min_price.' - '.$product->max_price }}</td>--}}
+{{--                                            <td>{{ $product->warehouse }}</td>--}}
+{{--                                            <td>{{ $product->created_at->format('d M Y') }}</td>--}}
+{{--                                            <td>--}}
+{{--                                                <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>--}}
+{{--                                            </td>--}}
+{{--                                        </tr>--}}
+{{--                                    @endcan--}}
                                 @endforeach
                             </tbody>
                         </table>

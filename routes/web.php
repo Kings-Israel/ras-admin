@@ -77,7 +77,7 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     Route::get('/api/products/{id}', [ProductController::class, 'details'])->name('product.details');
     Route::get('/products', [ProductController::class, 'index'])->name('products');
-//    Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
+    Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
     Route::get('/product/store', [ProductController::class, 'store'])->name('product.store');
 
 

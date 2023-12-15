@@ -69,13 +69,19 @@ class PaymentController extends Controller
      */
     public function show(string $id)
     {
-
+        $invoice=Invoice::findOrFail($id);
+        if ($invoice){
+            $orders=Order::whereIn('invoice_id',$invoice)->with('orderItems', 'orderItems.product','orderItems.product.category', 'orderItems.product.business', 'orderItems.product.business.country')->get();
+        }else{
+            $orders=[];
+        }
         return view('payment.view', [
             'page' => 'Payment Details',
             'breadcrumbs' => [
                 'Payments' => route('payments.index')
             ],
-            'invoices' => []
+            'invoice' => $invoice,
+            'orders' =>$orders
         ]);
     }
 

@@ -24,7 +24,7 @@ class ProductDetails extends StepComponent
     public $max_quantity_order_unit;
     public $color;
     public $usage;
-
+    public $currentStep = 1;
     public $categories = [];
     public $shapes = [];
     public $colors = [];
@@ -63,7 +63,14 @@ class ProductDetails extends StepComponent
 
         $this->nextStep();
     }
-
+    public function nextStep()
+    {
+        $this->currentStep++;
+    }
+    public function previousStep()
+    {
+        $this->currentStep--;
+    }
     public function render()
     {
         return view('livewire.product.steps.product-details');

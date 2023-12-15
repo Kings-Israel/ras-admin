@@ -26,7 +26,64 @@
             <div class="row clearfix">
                 <div class="col-lg-12">
                     <div class="card">
+                        <div class="header d-flex justify-content-between">
+                            <h2><strong>{{ Str::title($page) }}</strong></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="card">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="card-title">Invoice Details</h6>
+                        </div>
                         <div class="body">
+
+                            <div class="row">
+                                <p class="col-md-6"><strong>Payment Status:  </strong> {{$invoice->payment_status ?? 'N/A' }}</p>
+                                <p class="col-md-6"><strong>Total Amount:  </strong> {{$invoice->total_amount ?? 'N/A' }}</p>
+                                <p class="col-md-6"><strong>Delivery Location Address:  </strong> {{$invoice->delivery_location_address ?? 'N/A' }}</p>
+                                <p class="col-md-6"><strong>Requested On:  </strong> {{$invoice->created_at ?? 'N/A' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="card">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="card-title">Order and Products Information</h6>
+                        </div>
+                        <div class="body col-8">
+                           @foreach($orders as $order)
+                            <p class="card-text mr-2"><strong> Order Status:</strong>{{ $order->status ?? '' }}</p>
+                            <p class="card-text mr-2"><strong>Delivery Status:</strong>{{ $order->delivery_status ?? ''}}</p>
+                            <p class="card-text mr-2"><strong>Requested On:</strong>{{ $order->created_at ?? ''}}</p>
+                            @endforeach
+                        </div>
+                        <br/>
+                        <div class="body col-8">
+                            @foreach ($order->orderItems as $orderItem)
+                            <p class="card-text mr-2"><strong>Product Name:</strong> {{$orderItem->product->name ?? '' }}</p>
+                            <p class="card-text mr-2"><strong>Product Description:</strong> {{$orderItem->product->description ?? '' }}</p>
+                            <p class="card-text mr-2"><strong>Product Category:</strong> {{$orderItem->product->category->name ?? '' }}</p>
+                            <p class="card-text mr-2"><strong>Requested Quantity:</strong> {{$orderItem->quantity ?? '' }}</p>
+                            <p class="card-text mr-2"><strong>Amount Value:</strong> {{$orderItem->amount ?? '' }}</p>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="card-title">Product Vendor</h6>
+                            </div>
+                            <div class="body col-12">
+                                @foreach ($order->orderItems as $orderItem)
+                                <p class="card-text mr-2"><strong>Name: </strong> {{ $orderItem->product->business->name ?? 'N/A' }}</p>
+                                <p class="card-text mr-2"><strong>Country: </strong> {{$orderItem->product->business->country->name ?? 'N/A' }}</p>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
