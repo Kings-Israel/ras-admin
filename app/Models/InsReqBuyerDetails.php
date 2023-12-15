@@ -17,6 +17,22 @@ class InsReqBuyerDetails extends Model
      */
     protected $guarded = [];
 
+    protected $casts = [
+        'income_sources' => 'array',
+        'wealth_sources' => 'array',
+    ];
+
+    /**
+     * Get the income tax file
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getIncomeTaxPinFileAttribute($value)
+    {
+        return config('app.frontend_url').'/storage/insurance/doc/'.$value;
+    }
+
     /**
      * Get the orderRequest that owns the InsReqBuyerCompanyDetails
      */

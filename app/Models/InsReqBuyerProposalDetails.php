@@ -25,6 +25,18 @@ class InsReqBuyerProposalDetails extends Model
     protected $guarded = [];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'transported_products' => 'array',
+        'vehicle_features' => 'array',
+        'previous_insurance_data' => 'array',
+        'previous_insurer' => 'array',
+    ];
+
+    /**
      * Get the orderRequest that owns the InsReqBuyerCompanyDetails
      */
     public function orderRequest(): BelongsTo
