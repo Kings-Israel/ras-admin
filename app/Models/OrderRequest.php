@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class OrderRequest extends Model
@@ -58,17 +59,17 @@ class OrderRequest extends Model
     /**
      * Get all of the insuranceRequestBuyerDetails for the OrderRequest
      */
-    public function insuranceRequestBuyerDetails(): HasMany
+    public function insuranceRequestBuyerDetails(): HasOne
     {
-        return $this->hasMany(InsReqBuyerDetails::class);
+        return $this->hasOne(InsReqBuyerDetails::class);
     }
 
     /**
      * Get all of the insuranceRequestBuyerCompanyDetails for the OrderRequest
      */
-    public function insuranceRequestBuyerCompanyDetails(): HasMany
+    public function insuranceRequestBuyerCompanyDetails(): HasOne
     {
-        return $this->hasMany(InsReqBuyerCompanyDetails::class);
+        return $this->hasOne(InsReqBuyerCompanyDetails::class);
     }
 
     /**
@@ -82,9 +83,9 @@ class OrderRequest extends Model
     /**
      * Get all of the insuranceRequestProposalDetails for the OrderRequest
      */
-    public function insuranceRequestProposalDetails(): HasMany
+    public function insuranceRequestProposalDetails(): hasOne
     {
-        return $this->hasMany(InsReqBuyerProposalDetails::class);
+        return $this->hasOne(InsReqBuyerProposalDetails::class);
     }
 
     /**

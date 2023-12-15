@@ -17,12 +17,28 @@ class InsReqBuyerCompanyDetails extends Model
      */
     protected $table = 'buyer_company_details';
 
+    protected $casts = [
+        'sources_of_income' => 'array',
+        'sources_of_wealth' => 'array',
+    ];
+
     /**
      * The attributes that aren't mass assignable.
      *
      * @var array
      */
     protected $guarded = [];
+
+    /**
+     * Get the income tax PIN File
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getIncomeTaxDocumentAttribute($value)
+    {
+        return config('app.frontend_url').'/storage/insurance/doc/'.$value;
+    }
 
     /**
      * Get the orderRequest that owns the InsReqBuyerCompanyDetails
