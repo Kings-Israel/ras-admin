@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class OrderRequest extends Model
@@ -29,6 +30,16 @@ class OrderRequest extends Model
         return config('app.url').'/storage/requests/'.$value;
     }
 
+
+    public function hasCostDescriptionFile(): bool
+    {
+        if ($this->cost_description_file && $this->cost_description_file != config('app.url').'/storage/requests/') {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Get the orderItem that owns the OrderRequest
      *
@@ -44,12 +55,43 @@ class OrderRequest extends Model
         return $this->morphTo();
     }
 
-    public function hasCostDescriptionFile(): bool
+    /**
+     * Get all of the insuranceRequestBuyerDetails for the OrderRequest
+     */
+    public function insuranceRequestBuyerDetails(): HasMany
     {
-        if ($this->cost_description_file && $this->cost_description_file != config('app.url').'/storage/requests/') {
-            return true;
-        }
+        return $this->hasMany(InsReqBuyerDetails::class);
+    }
 
-        return false;
+    /**
+     * Get all of the insuranceRequestBuyerCompanyDetails for the OrderRequest
+     */
+    public function insuranceRequestBuyerCompanyDetails(): HasMany
+    {
+        return $this->hasMany(InsReqBuyerCompanyDetails::class);
+    }
+
+    /**
+     * Get all of the insuranceRequestBuyerInuranceLossHistories for the OrderRequest
+     */
+    public function insuranceRequestBuyerInuranceLossHistories(): HasMany
+    {
+        return $this->hasMany(InsReqBuyerInsuranceLossHistory::class);
+    }
+
+    /**
+     * Get all of the insuranceRequestProposalDetails for the OrderRequest
+     */
+    public function insuranceRequestProposalDetails(): HasMany
+    {
+        return $this->hasMany(InsReqBuyerProposalDetails::class);
+    }
+
+    /**
+     * Get all of the insuranceRequestProposalVehicleDetails for the OrderRequest
+     */
+    public function insuranceRequestProposalVehicleDetails(): HasMany
+    {
+        return $this->hasMany(InsReqBuyerProposalVehicleDetails::class);
     }
 }
