@@ -293,7 +293,7 @@ class InsuranceController extends Controller
 
     public function order(OrderRequest $order_request)
     {
-        $order_request->load('orderItem.product.business', 'orderItem.product.media', 'orderItem.order.business', 'orderItem.order.user');
+        $order_request->load('orderItem.product.business', 'orderItem.product.media', 'orderItem.order.business', 'orderItem.order.user', 'insuranceRequestBuyerDetails', 'insuranceRequestBuyerCompanyDetails', 'insuranceRequestBuyerInuranceLossHistories', 'insuranceRequestProposalDetails', 'insuranceRequestProposalVehicleDetails');
 
         $insurer = $order_request->requesteable;
         $user = $order_request->orderItem->order->user;
@@ -306,7 +306,6 @@ class InsuranceController extends Controller
             $conversation->update([
                 'direct_message' => true,
             ]);
-
         }
 
         OrderConversation::firstOrCreate([
@@ -315,13 +314,27 @@ class InsuranceController extends Controller
         ]);
 
         return view('insurance.requests.show', [
-            'page' => 'Storage Request',
+            'page' => 'Insurance Request',
             'breadcrumbs' => [
                 'Insurance Requests' => route('insurance.requests.index'),
                 'Insurance Request Details' => route('insurance.requests.show', ['order_request' => $order_request])
             ],
             'order_request' => $order_request,
             'conversation_id' => $conversation->id,
+        ]);
+    }
+
+    public function orderBuyerDetails(OrderRequest $order_request)
+    {
+        $order_request->load('orderItem.product.business', 'orderItem.product.media', 'orderItem.order.business', 'orderItem.order.user', 'insuranceRequestBuyerDetails', 'insuranceRequestBuyerCompanyDetails', 'insuranceRequestBuyerInuranceLossHistories', 'insuranceRequestProposalDetails', 'insuranceRequestProposalVehicleDetails');
+
+        return view('insurance.buyer-details', [
+            'page' => 'Insurance Buyer Details',
+            'breadcrumbs' => [
+                'Insurance Requests' => route('insurance.requests.index'),
+                'Insurance Request Details' => route('insurance.requests.show', ['order_request' => $order_request])
+            ],
+            'order_request' => $order_request,
         ]);
     }
 

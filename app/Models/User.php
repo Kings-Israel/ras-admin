@@ -6,6 +6,7 @@ use App\Notifications\PasswordReset;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\Permission\Traits\HasRoles;
@@ -35,6 +36,22 @@ class User extends Authenticatable
             return config('app.frontend_url').'/storage/user/avatars/'.$value;
         }
         return public_path().'/assets/images/user.png';
+    }
+
+    /**
+     * Get the metaData associated with the User
+     */
+    public function metaData(): HasOne
+    {
+        return $this->hasOne(UserMetaData::class);
+    }
+
+    /**
+     * Get all of the identificationDocuments for the User
+     */
+    public function identificationDocuments(): HasMany
+    {
+        return $this->hasMany(UserIdentificationDoc::class);
     }
 
     /**

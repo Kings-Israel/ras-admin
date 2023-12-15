@@ -23,8 +23,11 @@
                 <div class="card">
                     <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
-                        <a href="#uploadInsuranceDocuments" data-toggle="modal" data-target="#uploadInsuranceDocuments" class="btn btn-primary btn-sm btn-round">Upload Reports</a>
-                        @can('create insurance report')
+                        <div class="d-flex justify-content-end">
+                            <a href="{{ route('insurance.requests.buyer.details', ['order_request' => $order_request]) }}" class="btn btn-sm btn-round btn-secondary">View Buyer Insurance Proposal Details</a>
+                            <a href="#uploadInsuranceDocuments" data-toggle="modal" data-target="#uploadInsuranceDocuments" class="btn btn-primary btn-sm btn-round">Upload Reports</a>
+                        </div>
+                        @can('view insurance report')
                             <div class="modal fade" id="uploadInsuranceDocuments" tabindex="-1" role="dialog">
                                 <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
