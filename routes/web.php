@@ -79,6 +79,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->name('products');
     Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
     Route::get('/product/store', [ProductController::class, 'store'])->name('product.store');
+    Route::get('/get-wing-locations/{wing}', 'ProductController@getWingLocations');
 
 
     Route::post('/products/store', [WarehouseProductController::class, 'store'])->name('products.store');

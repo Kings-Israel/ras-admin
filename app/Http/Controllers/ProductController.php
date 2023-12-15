@@ -46,7 +46,7 @@ class ProductController extends Controller
                     'wings'=>$wings,
                     'business'=>Business::all(),
                     'categories' => Category::all(),
-                    'warehouse' => [$warehouse->id],
+                    'warehouse' => $warehouse->id,
                     'units' => MeasurementUnit::all(),
                     'shapes' => collect(['Rectangle', 'Circle', 'Square', 'Rhombus', 'Sphere']),
                     'colors' => collect(['Red', 'Green', 'Blue', 'Purple', 'Yellow', 'Maroon', 'Orange', 'Gray', 'Magenta', 'Teal', 'Gold', 'White', 'Black']),
@@ -82,9 +82,15 @@ class ProductController extends Controller
             'product' => $product
         ]);
     }
+    public function getWingLocations($wingId)
+    {
+        $locations = Wing::findOrFail($wingId)->locations;
+        return response()->json($locations);
+    }
     public function create(){
         $userwarehouse=UserWarehouse::where('user_id', auth()->user()->id)->first();
         $warehouse = Warehouse::find($userwarehouse->warehouse_id);
+        $wings=Wing::where('warehouse_id', $warehouse->id)->with('locations')->get();
             return view('products.create', [
                 'page' => 'Create Product',
                 'breadcrumbs' => [
@@ -92,9 +98,9 @@ class ProductController extends Controller
                 ],
                 'business'=>Business::all(),
                 'categories' => Category::all(),
-                'warehouse' => [$warehouse->id],
+                'warehouse' => $warehouse->id,
                 'units' => MeasurementUnit::all(),
-                'wings' => Wing::with('locations')->get(),
+                'wings' => $wings,
                 'shapes' => collect(['Rectangle', 'Circle', 'Square', 'Rhombus', 'Sphere']),
                 'colors' => collect(['Red', 'Green', 'Blue', 'Purple', 'Yellow', 'Maroon', 'Orange', 'Gray', 'Magenta', 'Teal', 'Gold', 'White', 'Black']),
                 'usages' => collect(['Home Decor', 'Office Decor']),

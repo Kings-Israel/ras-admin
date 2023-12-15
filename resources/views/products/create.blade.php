@@ -36,13 +36,13 @@
                                         <div class="card col-6">
                                         <div class="row">
                                             <div class="grid md:grid-cols-2 gap-3">
-                                                <div class="mb-2 form-group mb-2">
+                                                <div class="mb-2 form-group mb-2 mr-5">
                                                     <x-input-label for="product_name" :value="__('Product Name')" class="text-black" />
                                                     <input type="text" name="name" :value="old('name')" id="name" autocomplete="off" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
                                                 </div>
                                                 @php($category_ids = $categories->pluck('id')->toArray())
-                                                <div class="form-group mb-2">
+                                                <div class="form-group mb-2 mr-5">
                                                     <x-input-label for="category" :value="__('Product Category')" class="text-black" />
                                                     <select name="category" id="category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                         <option value="">Select Product Category</option>
@@ -52,18 +52,18 @@
                                                     </select>
                                                     <x-input-error :messages="$errors->get('category')" class="mt-2" />
                                                 </div>
-                                                <div class="form-group mb-2">
+                                                <div class="form-group mb-2 mr-5">
                                                     <x-input-label for="product_material" :value="__('Product Material')" class="text-black" />
                                                     <input type="text" name="material" :value="old('material')" id="product_material" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                     <x-input-error :messages="$errors->get('material')" class="mt-2" />
                                                 </div>
-                                                <div class="form-group mb-2">
+                                                <div class="form-group mb-2 mr-5">
                                                     <x-input-label for="product_brand" :value="__('Product Brand')" class="text-black" />
                                                     <input type="text" name="brand" id="product_brand" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                     <x-input-error :messages="$errors->get('brand')" class="mt-2" />
                                                 </div>
                                                 <div class="flex gap-1">
-                                                    <div class="basis-2/5 form-group mb-2">
+                                                    <div class="basis-2/5 form-group mb-2 mr-5">
                                                         {{--                                <div class="flex justify-between">--}}
                                                         {{--                                    <x-input-label for="currency" :value="__('Currency')" class="text-black" />--}}
                                                         {{--                                    @php($vendor_currency = auth()->user()->business->global_currency)--}}
@@ -88,38 +88,38 @@
                                                             {{--                                    @endif--}}
                                                         </select>
                                                     </div>
-                                                    <div class="basis-3/5 form-group mb-2">
+                                                    <div class="basis-3/5 form-group mb-2 mr-5">
                                                         <x-input-label for="product_price" :value="__('Standard Price')" class="text-black" />
                                                         <input type="number" name="price" :value="old('price')" id="product_price" min="0" placeholder="0.00" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                         <x-input-error :messages="$errors->get('price')" class="mt-2" />
                                                     </div>
                                                 </div>
                                                 <div class="grid grid-cols-2 gap-1">
-                                                    <div class="form-group mb-2">
+                                                    <div class="form-group mb-2 mr-5">
                                                         <x-input-label for="product_min_price" :value="__('Min price ')" class="text-black" />
                                                         <input type="number" name="min_price" :value="old('min_price')" id="product_min_price" min="0" placeholder="0.00" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                         <x-input-error :messages="$errors->get('min_price')" class="mt-2" />
                                                     </div>
-                                                    <div class="form-group mb-2">
+                                                    <div class="form-group mb-2 mr-5">
                                                         <x-input-label for="product_max_price" :value="__('Max Price')" class="text-black" />
                                                         <input type="number" name="max_price" :value="old('max_price')" id="product_max_price" min="0" placeholder="0.00" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                         <x-input-error :messages="$errors->get('min_price')" class="mt-2" />
                                                     </div>
                                                 </div>
                                                 <div class="col-span-2 grid grid-cols-5 gap-2">
-                                                    <div class="col-span-2 form-group mb-2">
+                                                    <div class="col-span-2 form-group mb-2 mr-5">
                                                         <x-input-label for="product_minimum_quantity_order" :value="__('Minimum Order Quantity')" class="text-black" />
                                                         <input type="number" name="min_order_quantity" id="product_minimum_quantity_order" min="1" placeholder="0" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                         <x-input-error :messages="$errors->get('min_order_quantity')" class="mt-2" />
                                                         <x-input-error :messages="$errors->get('order_quantity_unit')" class="mt-2" />
                                                     </div>
-                                                    <div class="col-span-2 form-group mb-2">
+                                                    <div class="col-span-2 form-group mb-2 mr-5">
                                                         <x-input-label for="product_maximum_quantity_order" :value="__('Maximum Order Quantity')" class="text-black" />
                                                         <input type="number" name="max_order_quantity" id="product_maximum_quantity_order" min="1" placeholder="0" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                         <x-input-error :messages="$errors->get('max_order_quantity')" class="mt-2" />
                                                         <x-input-error :messages="$errors->get('order_quantity_unit')" class="mt-2" />
                                                     </div>
-                                                    <div class="col-span-1 form-group mb-2">
+                                                    <div class="col-span-1 form-group mb-2 mr-5">
                                                         <div class="flex justify-between">
                                                             <x-input-label for="product_brand" :value="__('Unit')" class="text-black" />
                                                             <div class="flex gap-2">
@@ -139,21 +139,21 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="form-group mb-2">
+                                                <div class="form-group mb-2 mr-5">
                                                     <x-input-label for="min quantity" :value="__('Min Quantity')" class="text-black" />
                                                     <input type="number" name="min_quantity" id="min_qunatity" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                     <x-input-error :messages="$errors->get('min_quatity')" class="mt-2" />
                                                 </div>
-                                                <div class="form-group mb-2">
+                                                <div class="form-group mb-2 mr-5">
                                                     <x-input-label for="product_place_of_origin" :value="__('Product Place of Origin')" class="text-black" />
                                                     <input type="text" name="place_of_origin" id="product_origin" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                     <x-input-error :messages="$errors->get('place_of_origin')" class="mt-2" />
                                                 </div>
-                                                <div class="form-group mb-2">
+                                                <div class="form-group mb-2 mr-5">
                                                     <x-input-label>Certificate of Origin</x-input-label>
                                                     <x-input-file accept=".pdf" class="" name="certificate_of_origin"></x-input-file>
                                                 </div>
-                                                <div class="form-group mb-2">
+                                                <div class="form-group mb-2 mr-5">
                                                     <div class="flex justify-between">
                                                         <x-input-label for="product_shape" :value="__('Product Shape')" class="text-black" />
                                                         <div class="flex gap-2">
@@ -174,7 +174,7 @@
                                                     <x-input-error :messages="$errors->get('shape')" class="mt-2" />
                                                 </div>
 
-                                                <div class="form-group mb-2">
+                                                <div class="form-group mb-2 mr-5">
                                                     <div class="flex justify-between">
                                                         <x-input-label for="product_color" :value="__('Product Color')" class="text-black" />
                                                         <div class="flex gap-2">
@@ -194,7 +194,7 @@
                                                     </select>
                                                     <x-input-error :messages="$errors->get('color')" class="mt-2" />
                                                 </div>
-                                                <div class="form-group mb-2">
+                                                <div class="form-group mb-2 mr-5">
                                                     <div class="flex justify-between">
                                                         <x-input-label for="product_usage" :value="__('Product Usage')" class="text-black" />
                                                         <div class="flex gap-2">
@@ -223,22 +223,36 @@
                                         <div class="card-body col-6">
                                         <div class="row">
                                             <div class="grid md:grid-cols-2 gap-3">
-                                                <div class="form-group mb-2 lg:col-span-2">
-                                                    <x-input-label for="warehouse" :value="__('Warehouse')" class="text-black" />
-                                                    <input type="text" name="warehouse" id="warehouse" editable="false" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
-                                                    <x-input-error :messages="$errors->get('warehouse')" class="mt-2" />
+{{--                                                <div class="form-group mb-2 mr-5 lg:col-span-2">--}}
+{{--                                                    <x-input-label for="warehouse" :value="__('Warehouse')" class="text-black" />--}}
+                                                    <input type="hidden" name="warehouse" id="warehouse" editable="false" value="{{$warehouse}}">
+{{--                                                    <x-input-error :messages="$errors->get('warehouse')" class="mt-2" />--}}
+{{--                                                </div>--}}
+                                                <div class="form-group mb-2 mr-5 lg:col-span-2">
+                                                <div id="wingForm">
+                                                    <label for="wing">Select Wing:</label>
+                                                    <select id="wing" name="wing mb-2">
+                                                        @foreach ($wings as $wing)
+                                                            <option value="{{ $wing->id }}">{{ $wing->wingname }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    <br/>
+                                                    <label for="wingLocations mt-2">Wing Locations:</label>
+                                                    <input type="text" id="wingLocations" name="wingLocations" readonly>
                                                 </div>
-                                                <div class="form-group mb-2 lg:col-span-2">
+                                                </div>
+
+                                                <div class="form-group mb-2 mr-5 lg:col-span-2">
                                                     <x-input-label for="product_description" :value="__('Product Description')" class="text-black" />
                                                     <textarea type="text" name="description" rows="4" id="product_description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"></textarea>
                                                     <x-input-error :messages="$errors->get('description')" class="mt-2" />
                                                 </div>
-                                                <div class="form-group mb-2">
+                                                <div class="form-group mb-2 mr-5">
                                                     <x-input-label for="product_model_number" :value="__('Product\'s Model Number')" class="text-black" />
                                                     <input type="text" name="model_number" id="product_model_number" min="0" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                     <x-input-error :messages="$errors->get('model_number')" class="mt-2" />
                                                 </div>
-                                                <div class="form-group mb-2">
+                                                <div class="form-group mb-2 mr-5">
                                                     <div class="flex justify-between">
                                                         <x-input-label for="product_regional_feature" :value="__('Product\'s Regional Feature')" class="text-black" />
                                                         <div class="flex gap-2">
@@ -258,7 +272,7 @@
                                                     </select>
                                                     <x-input-error :messages="$errors->get('regional_feature')" class="mt-2" />
                                                 </div>
-                                                <div class="form-group mb-2">
+                                                <div class="form-group mb-2 mr-5">
                                                     <x-input-label for="product_images" :value="__('Add Product Images')" class="text-black" />
                                                     <div class="flex flex-col flex-grow mb-3 hover:cursor-pointer">
                                                         <div x-data="{ images: null }" id="FileUpload" class="block w-full py-2 px-3 relative bg-gray-200 appearance-none border-2 border-dashed border-gray-300 rounded-md hover:shadow-outline-gray">
@@ -294,7 +308,7 @@
                                                     </div>
                                                     <x-input-error :messages="$errors->get('images')" class="mt-2" />
                                                 </div>
-                                                <div class="form-group mb-2">
+                                                <div class="form-group mb-2 mr-5">
                                                     <x-input-label for="product_video" :value="__('Add Product Video')" class="text-black" />
                                                     <div class="flex flex-col flex-grow mb-3 hover:cursor-pointer">
                                                         <div x-data="{ video: null }" id="FileUpload" class="block w-full py-2 px-3 relative bg-gray-200 appearance-none border-2 border-dashed border-gray-300 rounded-md hover:shadow-outline-gray">
@@ -330,7 +344,7 @@
                                                     </div>
                                                     <x-input-error :messages="$errors->get('video')" class="mt-2" />
                                                 </div>
-                                                <div class="form-group mb-2">
+                                                <div class="form-group mb-2 mr-5">
                                                     <x-input-label class="font-bold text-black">Confirm Availabilty Status</x-input-label>
                                                     <label class="relative inline-flex items-center cursor-pointer">
                                                         <input type="checkbox" checked value="in-stock" class="sr-only peer" name="product_availability">
@@ -352,7 +366,32 @@
                 </div>
             </div>
         </div>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                $('#wing').change(function () {
+                    var wingId = $(this).val();
+                    if (wingId) {
+                        $.ajax({
+                            url: '/get-wing-locations/' + wingId,
+                            type: 'GET',
+                            success: function (data) {
+                                $('#wingLocations').val(data.join(', '));
+                            },
+                            error: function (data) {
+                                console.log('Error:', data);
+                            }
+                        });
+                    } else {
+                        $('#wingLocations').val('');
+                    }
+                });
+            });
+        </script>
+
     </section>
+
     @push('scripts')
         <script src="{!! config('services.maps.key') !!}" async defer></script>
             <!-- Scripts -->
