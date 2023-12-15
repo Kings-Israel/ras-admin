@@ -128,7 +128,7 @@
                                 </div>
                                 <div class="d-flex">
                                     <span class="mr-2">Next of Kin Relationship:</span>
-                                    <h6><strong></strong></h6>
+                                    <h6><strong>{{ $order_request->orderItem->order->user->metaData->next_of_kin_relationship }}</strong></h6>
                                 </div>
                             </div>
                             @if ($order_request->insuranceRequestBuyerDetails->wealth_sources && count($order_request->insuranceRequestBuyerDetails->wealth_sources) > 0)
