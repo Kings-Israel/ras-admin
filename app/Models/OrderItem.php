@@ -59,4 +59,23 @@ class OrderItem extends Model
     {
         return $this->hasOne(ReleaseProductRequest::class);
     }
+
+    public function vendorHasCompletedInsuranceReport(): bool
+    {
+        if (
+            !$this->orderRequests()->where('requesteable_type', 'App\Models\InsuranceCompany')->first()->businessSubsidiaries()->exists()
+            && !$this->orderRequests()->where('requesteable_type', 'App\Models\InsuranceCompany')->first()->businessInformation()->exists()
+            && !$this->orderRequests()->where('requesteable_type', 'App\Models\InsuranceCompany')->first()->businessSalesInformation()->exists()
+            && !$this->orderRequests()->where('requesteable_type', 'App\Models\InsuranceCompany')->first()->businessSales()->exists()
+            && !$this->orderRequests()->where('requesteable_type', 'App\Models\InsuranceCompany')->first()->businessSalesBadDebts()->exists()
+            && !$this->orderRequests()->where('requesteable_type', 'App\Models\InsuranceCompany')->first()->businessSalesLargeBadDebts()->exists()
+            && !$this->orderRequests()->where('requesteable_type', 'App\Models\InsuranceCompany')->first()->businessSecurity()->exists()
+            && !$this->orderRequests()->where('requesteable_type', 'App\Models\InsuranceCompany')->first()->businessCreditManagement()->exists()
+            && !$this->orderRequests()->where('requesteable_type', 'App\Models\InsuranceCompany')->first()->businessCreditLimits()->exists()
+        ) {
+            return false;
+        }
+
+        return true;
+    }
 }

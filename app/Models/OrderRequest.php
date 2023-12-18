@@ -95,4 +95,92 @@ class OrderRequest extends Model
     {
         return $this->hasMany(InsReqBuyerProposalVehicleDetails::class);
     }
+
+    /**
+     * Get all of the businessSubsidiaries for the OrderRequest
+     */
+    public function businessSubsidiaries(): HasMany
+    {
+        return $this->hasMany(InsReqBusinessSubsidiary::class);
+    }
+
+    /**
+     * Get the businessInformation associated with the OrderRequest
+     */
+    public function businessInformation(): HasOne
+    {
+        return $this->hasOne(InsReqBusinessInformation::class);
+    }
+
+    /**
+     * Get the businessSalesInformation associated with the OrderRequest
+     */
+    public function businessSalesInformation(): HasMany
+    {
+        return $this->hasMany(InsReqBusinessSalesInformation::class);
+    }
+
+    /**
+     * Get all of the businessSales for the OrderRequest
+     */
+    public function businessSales(): HasOne
+    {
+        return $this->hasOne(InsReqBusinessSales::class);
+    }
+
+    /**
+     * Get all of the businessSalesBadDebts for the OrderRequest
+     */
+    public function businessSalesBadDebts(): HasMany
+    {
+        return $this->hasMany(InsReqBusinessSalesBadDebts::class);
+    }
+
+    /**
+     * Get all of the businessSalesLargeBadDebts for the OrderRequest
+     */
+    public function businessSalesLargeBadDebts(): HasMany
+    {
+        return $this->hasMany(InsReqBusinessSalesLargeBadDebts::class);
+    }
+
+    /**
+     * Get the businessSecurity associated with the OrderRequest
+     */
+    public function businessSecurity(): HasOne
+    {
+        return $this->hasOne(InsReqBusinessSecurity::class);
+    }
+
+    /**
+     * Get the businessCreditManagement associated with the OrderRequest
+     */
+    public function businessCreditManagement(): HasOne
+    {
+        return $this->hasOne(InsReqBusinessCreditManagement::class);
+    }
+
+    /**
+     * Get all of the businessCreditLimits for the OrderRequest
+     */
+    public function businessCreditLimits(): HasMany
+    {
+        return $this->hasMany(InsReqBusinessCreditLimit::class);
+    }
+
+    /**
+     * Get the importInstruction associated with the OrderRequest
+     */
+    public function importInstruction(): HasOne
+    {
+        return $this->hasOne(ImportClearingForwardingInstruction::class);
+    }
+
+    /**
+     * Get the exportInstruction associated with the OrderRequest
+     */
+    public function exportInstruction(): HasOne
+    {
+        return $this->hasOne(ExportClearingForwardingInstruction::class);
+    }
 }

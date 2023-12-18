@@ -15,7 +15,6 @@ class InsuranceRequestPolicy
     public function view(User $user, OrderRequest $orderRequest): bool
     {
         $insurers = $user->insuranceCompanies->pluck('id');
-        dd($insurers);
 
         if ($user->hasPermissionTo('view insurance request') && $insurers->contains($orderRequest->requesteable_id) && $orderRequest->requesteable_type == InsuranceCompany::class) {
             return true;

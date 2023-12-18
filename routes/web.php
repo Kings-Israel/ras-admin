@@ -130,6 +130,13 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::get('/', [LogisticsController::class, 'orders'])->name('index');
             Route::get('{order_request}', [LogisticsController::class, 'order'])->name('show');
             Route::post('{delivery_request}/update', [DeliveryRequestController::class, 'update'])->name('update');
+
+            Route::get('/reports/pending', [LogisticsController::class, 'pendingReports'])->name('reports.pending');
+            Route::get('/reports/completed', [LogisticsController::class, 'completedReports'])->name('reports.completed');
+            Route::get('/reports/{order_request}/import/create', [LogisticsController::class, 'createImportReport'])->name('reports.import.create');
+            Route::post('/reports/{order_request}/import/store', [LogisticsController::class, 'storeImportReport'])->name('reports.import.store');
+            Route::get('/reports/{order_request}/export/create', [LogisticsController::class, 'createExportReport'])->name('reports.export.create');
+            Route::post('/reports/{order_request}/export/store', [LogisticsController::class, 'storeExportReport'])->name('reports.export.store');
         });
     });
 
@@ -166,6 +173,7 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::get('/{order_request}/details', [InsuranceController::class, 'order'])->name('show');
             Route::put('/{insurance_request}/update', [InsuranceController::class, 'updateRequest'])->name('update');
             Route::get('/{order_request}/buyer/details', [InsuranceController::class, 'orderBuyerDetails'])->name('buyer.details');
+            Route::get('/{order_request}/vendor/details', [InsuranceController::class, 'orderVendorDetails'])->name('vendor.details');
         });
 
         Route::group(['prefix' => '/reports', 'as' => 'reports.'], function () {

@@ -23,35 +23,18 @@
                 <div class="card">
                     <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
-                        <a href="#uploadInsuranceDocuments" data-toggle="modal" data-target="#uploadInsuranceDocuments" class="btn btn-primary btn-sm btn-round">Upload Reports</a>
-                        @can('create insurance report')
-                            <div class="modal fade" id="uploadInsuranceDocuments" tabindex="-1" role="dialog">
-                                <div class="modal-dialog modal-lg" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="title" id="uploadInsuranceDocumentsLabel">Add Delivery Report Documents</h4>
-                                        </div>
-                                        {{-- <form action="{{ route('inspection.requests.reports.store', ['order_request' => $order_request]) }}" method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            <div class="modal-body">
-                                                <div class="row clearfix">
-                                                    <div class="col-sm-6">
-                                                        <label for="role_name">Insurance Cost</label>
-                                                        <div class="form-group">
-                                                            <input type="number" min="0" class="form-control" placeholder="Enter Cost of Inspection" name="inspection_code" autocomplete="off" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="submit" class="btn btn-primary btn-round waves-effect">UPLOAD</button>
-                                                <button type="button" class="btn btn-danger btn-simple btn-round waves-effect" data-dismiss="modal">CLOSE</button>
-                                            </div>
-                                        </form> --}}
-                                    </div>
-                                </div>
-                            </div>
-                        @endcan
+                        <div class="d-flex justify-content-end">
+                            @if (!$order_request->importInstruction)
+                                <a href="{{ route('deliveries.requests.reports.import.create', ['order_request' => $order_request]) }}" class="btn btn-primary btn-sm btn-round">Upload Import Report</a>
+                            @else
+                                <a href="#" class="btn btn-primary btn-sm btn-round">View Import Report</a>
+                            @endif
+                            @if (!$order_request->exportInstruction)
+                                <a href="{{ route('deliveries.requests.reports.export.create', ['order_request' => $order_request]) }}" class="btn btn-info btn-sm btn-round">Upload Export Report</a>
+                            @else
+                                <a href="#" class="btn btn-info btn-sm btn-round">View Export Report</a>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
