@@ -15,15 +15,19 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6 col-sm-12">
+                <div class="col-md-8 col-sm-12">
                     <div class="card">
                         <div class="d-flex justify-content-between">
                             <h6 class="card-title">Product Details</h6>
                         </div>
                         <div class="body">
                             <div class="image-container mb-2">
-                            @if($product->image)
-                                <img src="{{ asset($product->image->path) }}" alt="{{ $product->name}}" style="max-width: 100px; max-height: 100px; border-radius: 50%;">
+                                @if(!empty($product->media))
+                                    @foreach($product->media as $media)
+                                    @if($media->type =='image')
+                                            <img src="{{ asset($media->file) }}" alt="{{ $product->name}}" style="max-width: 200px; max-height: 200px; border-radius: 50%;">
+                                        @endif
+                                    @endforeach
                             @else
                                 <img src="{{ asset('assets/images/product-placeholder.png') }}" alt="Placeholder" style="max-width: 100px; max-height: 100px; border-radius: 50%;">
                             @endif
@@ -54,21 +58,21 @@
                         </div>
                 </div>
                 </div>
-                    <div class="col-md-6 col-sm-12">
-                        <div class="card">
-                            <div class="d-flex justify-content-between">
-                                <h6 class="card-title">Business and Vendor Information</h6>
-                            </div>
-                            <div class="body col-8">
-                                <p class="card-text mr-2"><strong> Name:</strong>{{ $product->business->user->first_name ?? '' }} {{ $product->business->user->last_name }}</p>
-                                <p class="card-text mr-2"><strong>Email:</strong>{{ $product->business->user->email ?? ''}}</p>
-                                <p class="card-text mr-2"><strong>Phone Number:</strong>{{ $product->business->user->phone_number ?? ''}}</p>
-                            </div>
-                            <hr/>
-                            <div class="body col-8">
-                                <p class="card-text mr-2"><strong>Business Name:</strong> {{$product->business->name ?? '' }}</p>
-                            </div>
-                        </div>
+                    <div class="col-md-4 col-sm-12">
+{{--                        <div class="card">--}}
+{{--                            <div class="d-flex justify-content-between">--}}
+{{--                                <h6 class="card-title">Business and Vendor Information</h6>--}}
+{{--                            </div>--}}
+{{--                            <div class="body col-8">--}}
+{{--                                <p class="card-text mr-2"><strong> Name:</strong>{{ $product->business->user->first_name ?? '' }} {{ $product->business->user->last_name }}</p>--}}
+{{--                                <p class="card-text mr-2"><strong>Email:</strong>{{ $product->business->user->email ?? ''}}</p>--}}
+{{--                                <p class="card-text mr-2"><strong>Phone Number:</strong>{{ $product->business->user->phone_number ?? ''}}</p>--}}
+{{--                            </div>--}}
+{{--                            <hr/>--}}
+{{--                            <div class="body col-8">--}}
+{{--                                <p class="card-text mr-2"><strong>Business Name:</strong> {{$product->business->name ?? '' }}</p>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
 
                         <div class="col-md-6 col-sm-12">
                             <div class="card">

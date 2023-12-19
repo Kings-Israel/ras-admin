@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class WarehouseProduct extends Model
 {
     use HasFactory;
+    protected $guarded=[''];
     protected $table='warehouse_products';
 
     public function warehouse()
@@ -16,10 +17,10 @@ class WarehouseProduct extends Model
         return $this->belongsTo(Warehouse::class);
     }
 
-//    public function product()
-//    {
-//        return $this->belongsTo(Product::class);
-//    }
+    public function winglocation()
+    {
+        return $this->belongsTo(WingLocation::class, 'wing_locations_id');
+    }
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id');

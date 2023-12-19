@@ -6,13 +6,17 @@ use App\Models\Business;
 use App\Models\Category;
 use App\Models\MeasurementUnit;
 use App\Models\Product;
+use App\Models\ProductMedia;
 use App\Models\ProductMedia as ModelsProductMedia;
 use App\Models\UserWarehouse;
 use App\Models\Warehouse;
 use App\Models\WarehouseProduct;
+use App\Models\WarehouseRestocking;
 use App\Models\Wing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -34,32 +38,22 @@ class ProductController extends Controller
                         'product.category',
                         'product.business.user',
                         'product.warehouse.country',
-                        'product.location.wing'
+                        'winglocation',
+                        'product.media'
                     )->get(['warehouse_products.*']);
-                    $wings=Wing::where('warehouse_id', $warehouse->id)->with('locations')->get();
                 return view('products.index', [
                     'page' => 'Products',
                     'breadcrumbs' => [
                         'Products' => route('products')
                     ],
                     'products'=>$products,
-                    'wings'=>$wings,
-                    'business'=>Business::all(),
-                    'categories' => Category::all(),
-                    'warehouse' => $warehouse->id,
-                    'units' => MeasurementUnit::all(),
-                    'shapes' => collect(['Rectangle', 'Circle', 'Square', 'Rhombus', 'Sphere']),
-                    'colors' => collect(['Red', 'Green', 'Blue', 'Purple', 'Yellow', 'Maroon', 'Orange', 'Gray', 'Magenta', 'Teal', 'Gold', 'White', 'Black']),
-                    'usages' => collect(['Home Decor', 'Office Decor']),
-                    'regions' => collect(['Africa', 'USA', 'Europe', 'Middle East', 'Asia', 'Other']),
-                    'currencies' => collect(['USD', 'EUR', 'GBP', 'KSH', 'JPY']),
                 ]);
 
             } else {
                 $products = [];
             }
         }else{
-            $products = Product::with('category','business.user', 'warehouse.country',)->get();
+            $products = Product::with('category','business.user', 'warehouse.country','media')->get();
         }
         return view('products.index', [
             'page' => 'Products',
@@ -72,7 +66,7 @@ class ProductController extends Controller
     public function details($id)
     {
         $product = Product::where('id', $id)
-            ->with('category', 'business.user', 'warehouse.country', 'location.wing')
+            ->with('category', 'business.user', 'warehouse.country', 'location.wing', 'media')
             ->first();
             return view('products.details', [
             'page' => 'Product',
@@ -84,7 +78,8 @@ class ProductController extends Controller
     }
     public function getWingLocations($wingId)
     {
-        $locations = Wing::findOrFail($wingId)->locations;
+        $wing = Wing::findOrFail($wingId);
+        $locations = $wing->locations;
         return response()->json($locations);
     }
     public function create(){
@@ -124,8 +119,10 @@ class ProductController extends Controller
                 'images.*' => ['mimes:png,jpg,jpeg', 'max:4096'],
                 'video' => ['nullable', 'mimes:mp4', 'max:10000']
             ];
+            try {
+                DB::beginTransaction();
             $product = Product::create([
-                'business_id' => auth()->user()->business->id,
+//                'business_id' =>null,
                 'name' => $request->input('name'),
                 'category_id' => $request->input('category'),
                 'price' => $request->input('price'),
@@ -143,33 +140,52 @@ class ProductController extends Controller
                 'model_number' => $request->model_number,
                 'is_available' => $request->product_availability,
                 'regional_featre' => $request->regional_feature,
+                'is_warehouse_product'=>1
             ]);
+            $product_id=$product->id;
             WarehouseProduct::create([
-                'warehouse_id'=>$request->input('warehouse_code'),
-                'product_id'=>$product->id,
-                'quantity'=>$request->quantity,
-                'wing_locations_id'=>$request->location
+                'warehouse_id'=>$request->warehouse,
+                'product_id'=>$product_id,
+                'quantity'=>$request->initial_quantity,
+                'wing_locations_id'=>$request->wingLocation,
+                'min_quantity'=>$request->min_quantity
             ]);
-            foreach ($this->images as $image) {
-                ModelsProductMedia::create([
-                    'product_id' => $product->id,
-                    'file' => pathinfo($image->store('product', 'vendor'), PATHINFO_BASENAME),
-                    'type' => 'image',
+            if ($request->initial_quantity >0){
+                WarehouseRestocking::create([
+                    'product_id' => $product_id,
+                    'warehouse_id'=>$request->input('warehouse'),
+                    'user_id'=>auth()->user()->id,
+                    'quantity'=>$request->initial_quantity,
+
                 ]);
             }
+                foreach ($request->images as $image) {
+                    ProductMedia::create([
+                        'product_id' => $product_id,
+                        'file' => pathinfo($image->store('product', 'warehouse'), PATHINFO_BASENAME),
+                        'type' => 'image',
+                    ]);
+                }
 
-            if ($this->video) {
-                ModelsProductMedia::create([
-                    'product_id' => $product->id,
-                    'file' => pathinfo($this->video->store('product', 'vendor'), PATHINFO_BASENAME),
-                    'type' => 'video',
-                ]);
-            }
-
+                if ($request->hasFile('video')) {
+                    ProductMedia::create([
+                        'product_id' => $product_id,
+                        'file' => pathinfo($request->video->store('product', 'warehouse'), PATHINFO_BASENAME),
+                        'type' => 'video',
+                    ]);
+                }
+                DB::commit();
             activity()->causedBy(auth()->user())->performedOn($product)->log('add a new product');
 
             toastr()->success('', 'Product added successfully');
 
             return redirect()->route('products');
+
+            }  catch (\Exception $e) {
+                    DB::rollBack();
+                    Log::error('Error adding product: ' . $e->getMessage());
+                    toastr()->error('', 'An error occurred while adding the product');
+                    return redirect()->route('products');
+}
         }
 }

@@ -78,13 +78,13 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/api/products/{id}', [ProductController::class, 'details'])->name('product.details');
     Route::get('/products', [ProductController::class, 'index'])->name('products');
     Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
-    Route::get('/product/store', [ProductController::class, 'store'])->name('product.store');
-    Route::get('/get-wing-locations/{wing}', 'ProductController@getWingLocations');
+    Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
+    Route::get('/get-wing-locations/{wing}', [ProductController::class,'getWingLocations']);
 
 
-    Route::post('/products/store', [WarehouseProductController::class, 'store'])->name('products.store');
-    Route::get('/{product}/edit', [WarehouseProductController::class, 'edit'])->name('products.edit');
-    Route::patch('/{product}/update', [WarehouseProductController::class, 'update'])->name('products.update');
+//    Route::post('/products/store', [WarehouseProductController::class, 'store'])->name('products.store');
+//    Route::get('/{product}/edit', [WarehouseProductController::class, 'edit'])->name('products.edit');
+//    Route::patch('/{product}/update', [WarehouseProductController::class, 'update'])->name('products.update');
 
 
     Route::resource('wings', WingController::class);

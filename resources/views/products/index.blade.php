@@ -48,17 +48,17 @@
                             <thead>
                                 <tr><th>Image</th>
                                     <th>Name</th>
-                                    <th>Product Owner</th>
                                     <th>Category</th>
                                     <th>SKU Code/Model</th>
 {{--                                    <th>Unit(UOM)</th>--}}
 {{--                                    <th>Packaging</th>--}}
 {{--                                    <th>Location</th>--}}
                                     @role('warehouse manager')
-                                         <td>Location/Wing</td>
+                                         <td>Wing/Location</td>
 {{--                                        <th>Last Restocked On</th>--}}
                                         <th>Quantity</th>
                                     @else
+                                        <th>Product Owner</th>
                                         <th>Warehouse</th>
                                     @endrole
                                     <th></th>
@@ -68,27 +68,31 @@
                                 @foreach ($products as $product)
                                     <tr>
                                         <td>
-                                            @if($product && $product->product && ($product->image || $product->product->image))
-                                                <img src="{{ asset($product->image->path ?? $product->product->image->path) }}" alt="{{ $product->name ?? $product->product->name }}" style="max-width: 100px; max-height: 100px; border-radius: 50%;">
+                                            @if($product && $product->product && ($product->media || $product->product->media))
+                                                @foreach($product->media ?? $product->product->media as $media)
+                                                    @if($media->type =='image')
+                                                        <img src="{{ asset($media->file) }}" alt="{{ $product->product->name ?? $product->name}}" style="max-width: 80px; max-height: 80px; border-radius: 50%;">
+                                                    @endif
+                                                @endforeach
                                             @else
                                                 <img src="{{ asset('assets/images/product-placeholder.png') }}" alt="Placeholder" style="max-width: 100px; max-height: 100px; border-radius: 50%;">
                                             @endif
                                         </td>
                                         <td>{{ $product->name ?? $product->product->name ?? '' }}</td>
-                                        <td>{{ $product->business->name ?? $product->product->business->name ?? '' }}</td>
                                         <td>{{ $product->category->name ?? $product->product->category->name ?? ''}}</td>
                                         <td>{{ $product->model_number ?? $product->product->model_number ?? ''}}</td>
 {{--                                        <td>{{ $product->price ? $product->price : $product->min_price.' - '.$product->max_price }}</td>--}}
                                         @role('warehouse manager')
                                             <td>
-                                                {{ optional($product->product->location)->name ?? '' }}
-                                                @if ($product->product->location && $product->product->location->wing)
-                                                    , {{ optional($product->product->location->wing)->name ?? '' }}
+                                                @if (!empty($product->winglocation))
+                                                    {{ optional($product->winglocation->wing)->wingname ?? '' }}
+                                                    , {{ optional($product->winglocation)->location_name ?? '' }}
                                                 @endif
                                             </td>
 {{--                                            <td>{{$product->updated_at ?? ''}}</td>--}}
                                             <td>{{$product->quantity ?? ''}}</td>
                                         @else
+                                            <td>{{ $product->business->name ?? $product->product->business->name ?? '' }}</td>
                                         <td>{{ $product->warehouse->name ?? $product->product->warehouse->name ??  '' }}</td>
                                         @endrole
 {{--                                        <td>{{ $product->created_at->format('d M Y') }}</td>--}}

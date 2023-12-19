@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ProductMedia extends Model
 {
     use HasFactory;
+    protected $guarded=[''];
 
     /**
      * Get the product that owns the ProductMedia
