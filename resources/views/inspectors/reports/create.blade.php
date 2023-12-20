@@ -247,7 +247,7 @@
                                 </div>
 
                                 <div class="col-6">
-                                    <label for="Max Capacity">Copy of Report</label>
+                                    <label for="Max Capacity">Certificate</label>
                                     <div class="form-group">
                                         <input type="file" accept=".pdf" name="report" class="form-control" id="" required />
                                         <x-input-error :messages="$errors->get('report')" class="mt-2 list-unstyled"></x-input-error>

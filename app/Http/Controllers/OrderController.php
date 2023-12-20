@@ -90,7 +90,8 @@ class OrderController extends Controller
 
         $order = Order::find($request->order_id)
                     ->update([
-                        'driver_id' => $request->driver_id
+                        'driver_id' => $request->driver_id,
+                        'delivery_status' => 'customs'
                     ]);
 
         $release_product_request->update([
@@ -98,6 +99,17 @@ class OrderController extends Controller
         ]);
 
         toastr()->success('', 'Order release updated successfully');
+
+        return back();
+    }
+
+    public function updateDeliveryStatus(Request $request, Order $order)
+    {
+        $order->update([
+            'delivery_status' => $request->delivery_status
+        ]);
+
+        toastr()->success('', 'Order updated successfully');
 
         return back();
     }

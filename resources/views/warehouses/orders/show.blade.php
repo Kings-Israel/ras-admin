@@ -198,54 +198,56 @@
                     </div>
                 </div>
             </div>
-            @can('update warehouse')
-                <div class="col-md-5 col-sm-12">
-                    <form action="{{ route('order.request.update', ['order_request' => $order_request]) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="card">
-                            <div class="body">
-                                <h6>Enter/Update Storage Cost</h6>
-                                <div class="row">
-                                    <div class="col-md-12 col-sm-12">
-                                        <div class="form-group">
-                                            <label for="cost">Enter Delivery Cost</label>
-                                            <input type="number" min="0" class="form-control" placeholder="Enter Cost of Storage" name="cost" autocomplete="off" />
-                                            <x-input-error :messages="$errors->get('cost')" class="mt-1" />
+            @if (!$order_request->cost && !$order_request->status == 'accepted')
+                @can('update warehouse')
+                    <div class="col-md-5 col-sm-12">
+                        <form action="{{ route('order.request.update', ['order_request' => $order_request]) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="card">
+                                <div class="body">
+                                    <h6>Enter/Update Storage Cost</h6>
+                                    <div class="row">
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="cost">Enter Delivery Cost</label>
+                                                <input type="number" min="0" class="form-control" placeholder="Enter Cost of Storage" name="cost" autocomplete="off" />
+                                                <x-input-error :messages="$errors->get('cost')" class="mt-1" />
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="cost_description_file">Upload Pro-forma</label>
+                                                <input type="file" accept=".pdf" name="cost_description_file" class="form-control" id="" />
+                                                <x-input-error :messages="$errors->get('cost_description_file')" class="mt-1" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12">
+                                            <label for="cost_description_file">Enter Cost Description</label>
+                                            <textarea name="cost_description" id="" rows="6" class="form-control" placeholder="Enter Cost Description"></textarea>
+                                            <x-input-error :messages="$errors->get('cost_description')" class="mt-1" />
                                         </div>
                                     </div>
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label for="cost_description_file">Upload Pro-forma</label>
-                                            <input type="file" accept=".pdf" name="cost_description_file" class="form-control" id="" />
-                                            <x-input-error :messages="$errors->get('cost_description_file')" class="mt-1" />
-                                        </div>
+                                    <div class="d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-primary btn-round waves-effect">Submit</button>
                                     </div>
-                                    <div class="col-md-12 col-sm-12">
-                                        <label for="cost_description_file">Enter Cost Description</label>
-                                        <textarea name="cost_description" id="" rows="6" class="form-control" placeholder="Enter Cost Description"></textarea>
-                                        <x-input-error :messages="$errors->get('cost_description')" class="mt-1" />
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-end">
-                                    <button type="submit" class="btn btn-primary btn-round waves-effect">Submit</button>
                                 </div>
                             </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="col-md-7 col-sm-12">
-                    <div class="card">
-                        <div class="body overflowhidden" id="app">
-                            <order-chat-component
-                                email={{ auth()->user()->email }}
-                                type='App\Models\Warehouse'
-                                sender={{ $order_request->requesteable_id }}
-                                conversation={{ $conversation_id }}
-                            ></order-chat-component>
-                        </div>
+                        </form>
+                    </div>
+                @endcan
+            @endif
+            <div class="col-md-7 col-sm-12">
+                <div class="card">
+                    <div class="body overflowhidden" id="app">
+                        <order-chat-component
+                            email={{ auth()->user()->email }}
+                            type='App\Models\Warehouse'
+                            sender={{ $order_request->requesteable_id }}
+                            conversation={{ $conversation_id }}
+                        ></order-chat-component>
                     </div>
                 </div>
-            @endcan
+            </div>
         </div>
     </div>
 </section>

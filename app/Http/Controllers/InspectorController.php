@@ -178,9 +178,9 @@ class InspectorController extends Controller
     public function orders()
     {
         // $orders = OrderStorageRequest::with('orderItem.order.business', 'orderItem.product.media')->where('warehouse_id', $warehouse->id)->get();
-        $orders = OrderRequest::with('orderItem.order.business', 'orderItem.product.media')->where('requesteable_type', InspectingInstitution::class)->get();
+        // $orders = OrderRequest::with('orderItem.order.business', 'orderItem.product.media')->where('requesteable_type', InspectingInstitution::class)->get();
 
-        $orders = OrderRequest::with('orderItem.product.business', 'orderItem.order')->where('requesteable_type', InspectingInstitution::class)->get();
+        $orders = OrderRequest::with('orderItem.product', 'orderItem.order.business')->where('status', 'pending')->where('requesteable_type', InspectingInstitution::class)->get();
         // if (auth()->user()->hasRole('admin')) {
         // } else {
         //     if (auth()->user()->hasPermissionTo('view inspection report') && count(auth()->user()->inspectors) <= 0) {

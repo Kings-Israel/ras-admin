@@ -13,6 +13,10 @@
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
                         <div class="d-flex">
                             <div class="d-flex mr-2">
+                                <h6 class="mr-2">Delivery Stage:</h6>
+                                <span class="badge">{{ Str::title($order->delivery_status) }}</span>
+                            </div>
+                            <div class="d-flex mr-2">
                                 <h6 class="mr-2">Order Status:</h6>
                                 <span class="badge {{ $order->resolveOrderBadgeStatus() }}">{{ Str::title($order->status) }}</span>
                             </div>
@@ -114,24 +118,40 @@
                         </div>
                     </div>
                 </div>
-                @if ($order->driver_id == auth()->id())
+                @if ($order->delivery_status != 'delivered')
+                    @if ($order->driver_id == auth()->id())
+                        <div class="col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="card-title">Update Delivery Status</h6>
+                                </div>
+                                <div class="body">
+                                    <form action="{{ route('warehouses.orders.delivery.status.update', ['order' => $order]) }}" method="post">
+                                        @csrf
+                                        <select name="delivery_status" id="" class="form-control">
+                                            <option value="">Select Status</option>
+                                            <option value="customs" @if($order->delivery_status == 'customs') selected @endif>Customs</option>
+                                            <option value="shipping" @if($order->delivery_status == 'shipping') selected @endif>In Transit</option>
+                                            <option value="delivered" @if($order->delivery_status == 'delivered') selected @endif>Delivered</option>
+                                        </select>
+                                        <div class="d-flex justify-content-end">
+                                            <button class="btn btn-sm btn-round btn-primary" type="submit">Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                @else
                     <div class="col-md-6 col-sm-12">
                         <div class="card">
                             <div class="d-flex justify-content-between">
-                                <h6 class="card-title">Update Delivery Status</h6>
+                                <h6 class="card-title">Delivery Status</h6>
                             </div>
                             <div class="body">
                                 <div class="d-flex">
-                                    <span class="mr-2">Name:</span>
-                                    <h6><strong>{{ $order->driver->first_name }} {{ $order->driver->last_name }}</strong></h6>
-                                </div>
-                                <div class="d-flex">
-                                    <span class="mr-2">Email:</span>
-                                    <h6><strong>{{ $order->driver->email }}</strong></h6>
-                                </div>
-                                <div class="d-flex">
-                                    <span class="mr-2">Phone Number:</span>
-                                    <h6><strong>{{ $order->driver->phone_number }}</strong></h6>
+                                    <span class="mr-2">Delivery Status: </span>
+                                    <h6>{{ Str::title($order->delivery_status) }}</h6>
                                 </div>
                             </div>
                         </div>

@@ -64,4 +64,12 @@ class Product extends Model
     {
         return $this->hasMany(ProductMedia::class);
     }
+
+    /**
+     * Get all of the orderItems for the Product
+     */
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
+    }
 }

@@ -15,8 +15,8 @@
                 </select>
             </form>
         </div>
-        @role('admin')
-            <div class="row clearfix">
+        <div class="row clearfix">
+            @role('admin')
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
                         <div class="body">
@@ -57,19 +57,17 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-12">
-                <div class="card">
-                    <div class="header">
-                        <h2><strong>Orders</strong> & Sales</h2>
-                    </div>
-                    <div class="body">
-                        <canvas id="bar_chart" height="100"></canvas>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2><strong>Orders</strong> & Sales</h2>
+                        </div>
+                        <div class="body">
+                            <canvas id="bar_chart" height="100"></canvas>
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endrole
-        <div class="row clearfix">
+            @endrole
             @can('view warehouse')
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
@@ -90,16 +88,6 @@
                     </div>
                 </div>
             @endcan
-            {{-- @can('view stocklift requests')
-                <div class="col-lg-4 col-md-6">
-                    <div class="card text-center">
-                        <div class="body">
-                            <span>Total Stocklift Requests</span>
-                            <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">{{ $total_stocklift_requests }}</h3>
-                        </div>
-                    </div>
-                </div>
-            @endcan --}}
             @role('admin')
                 <div class="col-lg-3 col-md-3">
                     <div class="card text-center">
@@ -158,8 +146,6 @@
                     </div>
                 </div>
             @endrole
-        </div>
-        <div class="row clearfix">
             @can('view warehouse')
                 <div class="col-lg-4 col-md-6">
                     <div class="card text-center">
@@ -184,19 +170,9 @@
                     </div>
                 </div>
             @endcan
-            @role('financier')
+            @can('view financing request')
                 <div class="col-lg-4 col-md-6">
                     <div class="card text-center">
-                        <div class="header">
-                            <ul class="header-dropdown">
-                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
-                                    <ul class="dropdown-menu slideUp">
-                                        <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('financing-limit')">Financing Limit</a></li>
-                                       </ul>
-                                </li>
-                            </ul>
-                        </div>
-
                         <div class="body" id="financing-limit" style="display: block">
                             <span class="font-bold">Financing Limit</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $financing_total_limit}}"
@@ -207,15 +183,6 @@
                 </div>
                 <div class="col-lg-4 col-md-6">
                     <div class="card text-center">
-                        <div class="header">
-                            <ul class="header-dropdown">
-                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
-                                    <ul class="dropdown-menu slideUp">
-                                        <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('financing-disbursed')">Disbursed Amount</a></li>
-                                       </ul>
-                                </li>
-                            </ul>
-                        </div>
                         <div class="body" id="financing-disbursed" style="display: block">
                             <span class="font-bold">Disbursed Amount</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="{{$financing_total_invoices}}"
@@ -224,7 +191,7 @@
                         </div>
                     </div>
                 </div>
-            @endrole
+            @endcan
             @can('view inspection request')
                 <div class="col-lg-4 col-md-6">
                     <div class="card text-center">
@@ -342,26 +309,59 @@
                     </div>
                 </div>
             @endcan
-        </div>
-        @can('view financing request')
-            <div class="row clearfix">
+            @canany(['view warehouse', 'view delivery', 'update delivery'])
+                <div class="col-lg-4 col-md-6">
+                    <div class="card text-center">
+                        <div class="header">
+                            <ul class="header-dropdown">
+                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
+                                    <ul class="dropdown-menu slideUp">
+                                        <li><a href="javascript:void(0);" onclick="changeDeliveriesOutView('completed-deliveries')">Completed</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeDeliveriesOutView('in-progress-deliveries')">In Progress</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body" id="completed-deliveries" style="display: block">
+                            <span class="font-bold">Completed Deliveries</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $orders_delivered_out }}" data-speed="100" data-fresh-interval="200">{{ $orders_delivered_out }}</h3>
+                        </div>
+                        <div class="body" id="in-progress-deliveries" style="display: none">
+                            <span class="font-bold">Deliveries in Progress</span>
+                            <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $orders_on_delivery_out }}" data-speed="100" data-fresh-interval="200">{{ $orders_on_delivery_out }}</h3>
+                        </div>
+                    </div>
+                </div>
+            @endcanany
+            @can('view financing request')
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="card text-center">
-                        <div class="body mb-3" id="pending-financing-requests">
+                        <div class="header">
+                            <ul class="header-dropdown">
+                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
+                                    <ul class="dropdown-menu slideUp">
+                                        <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('approved-financing-requests')">Approved</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('pending-financing-requests')">Pending</a></li>
+                                        <li><a href="javascript:void(0);" onclick="changeFinancingRequestsView('rejected-financing-requests')">Rejected</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body" id="pending-financing-requests" style="display: none">
                             <span class="font-bold">Pending Financing Requests</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $financing_requests_count }}" data-speed="100" data-fresh-interval="200">{{ $financing_requests_count }}</h3>
                         </div>
-                        <div class="body mb-3" id="approved-financing-requests">
+                        <div class="body" id="approved-financing-requests" style="display: block">
                             <span class="font-bold">Approved Financing Requests</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">0</h3>
                         </div>
-                        <div class="body mb-3" id="rejected-financing-requests">
+                        <div class="body" id="rejected-financing-requests" style="display: none">
                             <span class="font-bold">Rejected Financing Requests</span>
                             <h3 class="m-b-10 number count-to" data-from="0" data-to="0" data-speed="100" data-fresh-interval="200">0</h3>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-8 col-md-6">
+                <div class="col-12">
                     <div class="card visitors-map">
                         <div class="header">
                             <h2><strong>Financing</strong> Requests</h2>
@@ -371,10 +371,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        @endcan
-        @can('view inspection report')
-            <div class="row clearfix">
+            @endcan
+            @can('view inspection report')
                 <div class="col-lg-12 col-md-12">
                     <div class="card visitors-map">
                         <div class="header">
@@ -385,8 +383,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row clearfix">
                 <div class="col-lg-12 col-md-12">
                     <div class="card visitors-map">
                         <div class="header">
@@ -397,10 +393,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        @endcan
-        @can('view insurance report')
-            <div class="row clearfix">
+            @endcan
+            @can('view insurance report')
                 <div class="col-lg-12 col-md-12">
                     <div class="card visitors-map">
                         <div class="header">
@@ -411,8 +405,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row clearfix">
                 <div class="col-lg-12 col-md-12">
                     <div class="card visitors-map">
                         <div class="header">
@@ -423,10 +415,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        @endcan
-        @role('admin')
-            <div class="row clearfix">
+            @endcan
+            @role('admin')
                 <div class="col-lg-12 col-md-12">
                     <div class="card visitors-map">
                         <div class="header">
@@ -464,46 +454,28 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        @endrole
-        @role('admin')
-            <div class="row clearfix">
+            @endrole
+            @role('admin')
                 <div class="col-lg-4 col-md-6">
                     <div class="card">
                         <div class="header">
                             <h2><strong>Top</strong> Businesses</h2>
                         </div>
-                        <div class="body m-b-10">
-                            <div class="progress-container l-black">
-                                <span class="progress-badge">New Stores</span>
-                                <div class="progress">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100" style="width: 68%;">
-                                        <span class="progress-value">68%</span>
+                        @foreach ($top_businesses as $business)
+                            <div class="body m-b-10">
+                                <div class="progress-container l-black">
+                                    <span class="progress-badge">{{ $business->name }}</span>
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="{{ $business->orders_percentage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ $business->orders_percentage }}%;">
+                                            <span class="progress-value">{{ $business->orders_percentage }}%</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="body m-b-10">
-                            <div class="progress-container progress-info">
-                                <span class="progress-badge">Hekima Goods</span>
-                                <div class="progress">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="86" aria-valuemin="0" aria-valuemax="100" style="width: 91%;">
-                                        <span class="progress-value">91%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="body m-b-20">
-                            <div class="progress-container progress-warning">
-                                <span class="progress-badge">Cement Ltd</span>
-                                <div class="progress">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100" style="width: 35%;">
-                                        <span class="progress-value">35%</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
                     <div class="card">
                         <div class="header">
                             <h2><strong>Top</strong> Categories by Products</h2>
@@ -516,21 +488,13 @@
                                         <p>{{ $label }}</p>
                                     </div>
                                 @endforeach
-                                {{-- <div class="col-4">
-                                    <h4 class="margin-0">20%</h4>
-                                    <p>Weekly</p>
-                                </div>
-                                <div class="col-4">
-                                    <h4 class="margin-0">30%</h4>
-                                    <p>Daily</p>
-                                </div> --}}
                             </div>
                             @php($product_categories = implode(', ', $product_categories_ratio['series']))
                             <div class="sparkline-pie">{{ $product_categories }}</div>
                         </div>
                     </div>
                 </div>
-                @can('view warehouse', 'update warehouse')
+                {{-- @can('view warehouse', 'update warehouse')
                     <div class="col-lg-4 col-md-6">
                         <div class="card">
                             <div class="header">
@@ -614,16 +578,16 @@
                             <div id="sparkline15"></div>
                         </div>
                     </div>
-                </div>
-            </div>
-        @endrole
+                </div> --}}
+            @endrole
+        </div>
         @role('admin')
             <div class="row clearfix">
                 <div class="col-lg-12 col-md-12">
                     <div class="card">
                         <div class="header">
                             <h2><strong>Product</strong> Sales </h2>
-                            <ul class="header-dropdown">
+                            {{-- <ul class="header-dropdown">
                                 <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="zmdi zmdi-more"></i> </a>
                                     <ul class="dropdown-menu slideUp">
                                         <li><a href="javascript:void(0);">Action</a></li>
@@ -632,7 +596,7 @@
                                         <li><a href="javascript:void(0);" class="boxs-close">Deletee</a></li>
                                     </ul>
                                 </li>
-                            </ul>
+                            </ul> --}}
                         </div>
                         <div class="body sales_report">
                             <div class="table-responsive">
@@ -641,93 +605,33 @@
                                         <tr>
                                             <th>Product</th>
                                             <th>Business</th>
-                                            <th>Change</th>
-                                            <th>Sales</th>
+                                            {{-- <th>Change</th> --}}
+                                            {{-- <th>Sales</th> --}}
                                             <th>Price</th>
                                             <th>Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <h6>Alpino 4.1</h6>
-                                                <span>WrapTheme To By Again</span>
-                                            </td>
-                                            <td>
-                                                <ul class="list-unstyled team-info">
-                                                    <li><img src="assets/images/xs/avatar1.jpg" alt="Avatar"></li>
-                                                    <li><img src="assets/images/xs/avatar2.jpg" alt="Avatar"></li>
-                                                    <li><img src="assets/images/xs/avatar3.jpg" alt="Avatar"></li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <div class="sparkline text-left" data-type="line" data-width="8em" data-height="20px" data-line-Width="1.5" data-line-Color="#00c5dc"
-                                                data-fill-Color="transparent">3,5,1,6,5,4,8,3</div>
-                                            </td>
-                                            <td>11,200</td>
-                                            <td>$83</td>
-                                            <td><strong>$22,520</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <h6>Compass 2.0</h6>
-                                                <span>WrapTheme To By Again</span>
-                                            </td>
-                                            <td>
-                                                <ul class="list-unstyled team-info">
-                                                    <li><img src="assets/images/xs/avatar2.jpg" alt="Avatar"></li>
-                                                    <li><img src="assets/images/xs/avatar3.jpg" alt="Avatar"></li>
-                                                    <li><img src="assets/images/xs/avatar4.jpg" alt="Avatar"></li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <div class="sparkline text-left" data-type="line" data-width="8em" data-height="20px" data-line-Width="1.5" data-line-Color="#f4516c"
-                                                data-fill-Color="transparent">4,6,3,2,5,6,5,4</div>
-                                            </td>
-                                            <td>11,200</td>
-                                            <td>$66</td>
-                                            <td><strong>$13,205</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <h6>Nexa 1.1</h6>
-                                                <span>WrapTheme To By Again</span>
-                                            </td>
-                                            <td>
-                                                <ul class="list-unstyled team-info">
-                                                    <li><img src="assets/images/xs/avatar4.jpg" alt="Avatar"></li>
-                                                    <li><img src="assets/images/xs/avatar6.jpg" alt="Avatar"></li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <div class="sparkline text-left" data-type="line" data-width="8em" data-height="20px" data-line-Width="1.5" data-line-Color="#31db3d"
-                                                data-fill-Color="transparent">7,3,2,1,5,4,6,8</div>
-                                            </td>
-                                            <td>12,080</td>
-                                            <td>$93</td>
-                                            <td><strong>$17,700</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <h6>Oreo 2.2</h6>
-                                                <span>ThemeMakker To By Again</span>
-                                            </td>
-                                            <td>
-                                                <ul class="list-unstyled team-info">
-                                                    <li><img src="assets/images/xs/avatar1.jpg" alt="Avatar"></li>
-                                                    <li><img src="assets/images/xs/avatar3.jpg" alt="Avatar"></li>
-                                                    <li><img src="assets/images/xs/avatar2.jpg" alt="Avatar"></li>
-                                                    <li><img src="assets/images/xs/avatar9.jpg" alt="Avatar"></li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <div class="sparkline text-left" data-type="line" data-width="8em" data-height="20px" data-line-Width="1.5" data-line-Color="#2d342e"
-                                                data-fill-Color="transparent">3,1,2,5,4,6,2,3</div>
-                                            </td>
-                                            <td>18,200</td>
-                                            <td>$178</td>
-                                            <td><strong>$17,700</strong></td>
-                                        </tr>
+                                        @foreach ($top_selling_products as $product)
+                                            <tr>
+                                                <td>
+                                                    <h6>{{ $product->name }}</h6>
+                                                </td>
+                                                <td>
+                                                    <ul class="list-unstyled team-info">
+                                                        <li><img src="{{ $product->business->primary_cover_image }}" alt="Avatar" style="object-fit: fill"></li>
+                                                        <li><img src="{{ $product->business->secondary_cover_image }}" alt="Avatar" style="object-fit: fill"></li>
+                                                    </ul>
+                                                </td>
+                                                {{-- <td>
+                                                    <div class="sparkline text-left" data-type="line" data-width="8em" data-height="20px" data-line-Width="1.5" data-line-Color="#00c5dc"
+                                                    data-fill-Color="transparent">3,5,1,6,5,4,8,3</div>
+                                                </td> --}}
+                                                {{-- <td>11,200</td> --}}
+                                                <td>{{ $product->price }}</td>
+                                                <td><strong>$22,520</strong></td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -815,16 +719,18 @@
 @push('scripts')
     <script src="{{ asset('assets/plugins/chartjs/Chart.bundle.js') }}"></script>
     <script src="{{ asset('assets/js/pages/charts/chartjs.js') }}"></script>
+    <script>
+        let months = {!! json_encode($months) !!}
+    </script>
     @role('admin')
     <script>
         $(function () {
             let user_registration_graph_data = {!! json_encode($user_registration_rate_graph_data) !!}
             let vendor_registration_graph_data = {!! json_encode($vendor_registration_rate_graph_data) !!}
             let total_orders_graph_rate = {!! json_encode($total_orders_graph_rate) !!}
-            let months = {!! json_encode($months) !!}
+
             let warehouses = {!! json_encode($warehouses) !!}
             let countries = {!! json_encode($countries) !!}
-            console.log(total_orders_graph_rate)
 
             new Chart(document.getElementById("user_registration_rate").getContext("2d"),
             config = {
@@ -1119,7 +1025,6 @@
         <script>
             $(function () {
                 let financing_requests_graph_data = {!! json_encode($financing_requests_graph_data) !!}
-                let months = {!! json_encode($months) !!}
                 new Chart(document.getElementById("financing_request_rate").getContext("2d"),
                     config = {
                         type: 'line',
@@ -1146,7 +1051,6 @@
     @endcan
     @can('view inspection report')
         <script>
-            let months = {!! json_encode($months) !!}
             let pending_inspection_requests_graph_data = {!! json_encode($pending_inspection_requests_graph_data) !!}
             let accepted_inspection_requests_graph_data = {!! json_encode($accepted_inspection_requests_graph_data) !!}
             let rejected_inspection_requests_graph_data = {!! json_encode($rejected_inspection_requests_graph_data) !!}
@@ -1216,7 +1120,6 @@
     @endcan
     @can('view insurance report')
         <script>
-            let months = {!! json_encode($months) !!}
             let pending_insurance_requests_graph_data = {!! json_encode($pending_insurance_requests_graph_data) !!}
             let accepted_insurance_requests_graph_data = {!! json_encode($accepted_insurance_requests_graph_data) !!}
             let rejected_insurance_requests_graph_data = {!! json_encode($rejected_insurance_requests_graph_data) !!}
@@ -1444,6 +1347,19 @@
                 rejected_financing_requests.style.display = 'none';
             }
         }
+
+        function changeDeliveriesOutView(view) {
+            const completed_deliveries = document.getElementById('completed-deliveries');
+            const in_progress_deliveries = document.getElementById('in-progress-deliveries');
+            if (view == 'completed-deliveries') {
+                completed_deliveries.style.display = 'block';
+                in_progress_deliveries.style.display = 'none';
+            } else if (view == 'in-progress-deliveries') {
+                completed_deliveries.style.display = 'none';
+                in_progress_deliveries.style.display = 'block';
+            }
+        }
+
         $(document).ready(function() {
             // Listen for the change event on the select element
             $('#date_filter').change(function() {

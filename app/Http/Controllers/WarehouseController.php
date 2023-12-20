@@ -13,6 +13,7 @@ use App\Models\UserWarehouse;
 use App\Models\Warehouse;
 use App\Models\WarehouseOrder;
 use App\Models\OrderRequest;
+use App\Models\ReleaseProductRequest;
 use App\Models\VendorStorageRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -370,6 +371,39 @@ class WarehouseController extends Controller
             ],
             'order_request' => $order_request,
             'conversation_id' => $conversation->id,
+        ]);
+    }
+
+    public function productReleaseRequests(Warehouse $warehouse = NULL)
+    {
+        if ($warehouse) {
+            $orders = ReleaseProductRequest::with('orderItem.order', 'orderItem.product.business', 'warehouse')->where('warehouse_id', $warehouse->id)->get();
+        } else {
+            if (auth()->user()->hasRole('admin')) {
+                $orders = ReleaseProductRequest::with('orderItem.order', 'orderItem.product.business', 'warehouse')->get();
+            } else {
+                $user_warehouses = auth()->user()->warehouses->pluck('id');
+                $orders = ReleaseProductRequest::with('orderItem.order', 'orderItem.product.business', 'warehouse')->whereIn('warehouse_id', $user_warehouses)->get();
+            }
+        }
+
+        // if ($warehouse) {
+        //     return view('warehouses.requests.vendor.index', [
+        //         'page' => 'Warehouse Storage Request',
+        //         'breadcrumbs' => [
+        //             'Warehouses' => route('warehouses.index'),
+        //             'Warehouse Orders from Vendors' => route('warehouses.orders.requests.vendors.index', ['warehouse' => $warehouse])
+        //         ],
+        //         'orders' => $orders
+        //     ]);
+        // } else {
+        // }
+        return view('warehouses.requests.product-release-requests', [
+            'page' => 'Product Release Requests',
+            'breadcrumbs' => [
+                'Warehouses' => route('warehouses.index'),
+            ],
+            'orders' => $orders
         ]);
     }
 

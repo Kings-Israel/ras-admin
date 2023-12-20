@@ -24,6 +24,8 @@ use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use VisitLog;
+use App\Models\WarehouseProduct;
+use App\Models\OrderItem;
 
 class DashboardController extends Controller
 {
@@ -106,9 +108,24 @@ class DashboardController extends Controller
 
         // Top Businesses
         $top_businesses = [];
+        $businesses = Business::whereHas('orders')
+                                ->withCount('orders')
+                                ->get()
+                                ->sortByDesc('orders_count')
+                                ->take(3);
+
+        $total_orders_count = Order::count();
+        foreach ($businesses as $business) {
+            $business['orders_percentage'] = round(($business->orders_count / $total_orders_count) * 100);
+            array_push($top_businesses, $business);
+        }
 
         // Top Selling Products
-        $top_selling_products = [];
+        $top_selling_products = Product::with('business')
+                                        ->withCount('orderItems')
+                                        ->get()
+                                        ->sortByDesc('order_items_count')
+                                        ->take(5);
 
         // Top Categories by products
         $top_categories_by_number_of_products = [];
@@ -122,14 +139,32 @@ class DashboardController extends Controller
 
         $orders_on_delivery_in = 0;
         $orders_on_delivery_out = 0;
+        $orders_delivered_out = 0;
+
+        if (auth()->user()->hasRole('admin')) {
+            $orders_on_delivery_out = Order::where('driver_id', '!=', NULL)->where('delivery_status', '!=', 'delivered')->count();
+            $orders_delivered_out = Order::where('driver_id', '!=', NULL)->where('delivery_status', 'delivered')->count();
+        } else {
+            $drivers = User::with('roles', 'permissions')->whereHas('driverProfile')->get()->pluck('id');
+            if ($drivers->contains(auth()->id())) {
+                $orders_on_delivery_out += Order::where('driver_id', auth()->id())->where('delivery_status', '!=', 'delivered')->count();
+                $orders_delivered_out += Order::where('driver_id', auth()->id())->where('delivery_status', 'delivered')->count();
+            }
+            $user_warehouses = auth()->user()->warehouses;
+
+            if (auth()->user()->hasPermissionTo('view warehouse') && $user_warehouses->count() > 0) {
+                $orders_on_delivery_out += Order::where('driver_id', auth()->id())->where('delivery_status', '!=', 'delivered')->count();
+                $orders_delivered_out += Order::where('driver_id', auth()->id())->where('delivery_status', 'delivered')->count();
+            }
+        }
 
         $total_stocklift_requests = 0;
 
         // Financing Requests
         $financing_requests_count = 0;
         $financing_requests_graph_data = [];
-        $financier_total_invoices=0;
-        $financing_total_limit=0;
+        $financier_total_invoices = 0;
+        $financing_total_limit = 0;
 
         // Site visits log
         $site_visits_series = [];
@@ -278,7 +313,7 @@ class DashboardController extends Controller
         if ($site_visit_difference <= 0) {
             $site_visits_rate = 0;
         } else {
-            $site_visits_rate = ceil(($site_visit_difference / ($current_month_site_visits - $prev_month_site_visits)) * 100);
+            $site_visits_rate = round(($site_visit_difference / ($current_month_site_visits - $prev_month_site_visits)) * 100);
         }
 
         if ($prev_month_site_visits < $current_month_site_visits) {
@@ -298,6 +333,10 @@ class DashboardController extends Controller
         $warehouses = Warehouse::with('users', 'products', 'country', 'city')->get();
         $warehouses_count = $warehouses->count();
         $products_count = Product::count();
+        if (!auth()->user()->hasRole('admin') && auth()->user()->hasPermissionTo('view warehouse')) {
+            $user_warehouses = auth()->user()->warehouses->pluck('id');
+            $products_count = WarehouseProduct::whereIn('warehouse_id', $user_warehouses)->count();
+        }
 
         $all_categories = Category::withCount('products')
                                     ->orderBy('products_count', 'DESC')
@@ -338,16 +377,17 @@ class DashboardController extends Controller
         $highest_category_name = '';
         $highest_category_percent = '';
         $highest_category = 0;
+        $product_count = Product::count();
         foreach ($all_categories as $key => $category) {
-            $product_count = Product::where('category_id', $category->id)->count();
             if ($product_count > 0) {
-                array_push($product_per_category, $product_count);
+                $product_category_count = Product::where('category_id', $category->id)->count();
+                array_push($product_per_category, $product_category_count);
                 array_push($categories_formatted, $category->name);
                 array_push($category_colors, $colors[rand(0, count($colors) - 1)]);
-                array_push($product_percent_per_category, ceil((Product::where('category_id', $category->id)->count() / $products_count) * 100));
+                array_push($product_percent_per_category, round(($product_category_count / $product_count) * 100));
             }
-            if ($product_count > $highest_category) {
-                $highest_category = $product_count;
+            if ($product_category_count > $highest_category) {
+                $highest_category = $product_category_count;
                 $highest_category_name = $category->name;
                 $highest_category_id = $category->id;
             }
@@ -357,7 +397,7 @@ class DashboardController extends Controller
         }
 
         if ($products_count > 0) {
-            $highest_category_percent = (string) ceil((Product::where('category_id', $highest_category_id)->count() / $products_count) * 100).'%';
+            $highest_category_percent = (string) round((Product::where('category_id', $highest_category_id)->count() / $products_count) * 100).'%';
         }
 
         $product_categories_ratio = [
@@ -556,6 +596,12 @@ class DashboardController extends Controller
             'selectedDateFilter' => $dateFilter,
             'financing_total_limit'=>$financing_total_limit ?? 0.00,
             'financing_total_invoices'=>$financing_total_invoices ?? 0.00,
+
+            'top_businesses' => $top_businesses,
+            'top_selling_products' => $top_selling_products,
+
+            'orders_on_delivery_out' => $orders_on_delivery_out,
+            'orders_delivered_out' => $orders_delivered_out,
         ]);
     }
 }
