@@ -58,6 +58,7 @@
         border-radius: 15px;
     }
 </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
 @endsection
 @section('content')
     <section class="content home">
@@ -86,9 +87,10 @@
                                     </div>
                                 </div>
                             </div>
-                                    <form method="POST" action="{{ route('product.store') }}" id="product-details-wizard-form" enctype="multipart/form-data">
-                                        @csrf
-                                        @method('POST')
+                            <form method="POST" action="{{ route('product.store') }}" id="product-details-wizard-form" enctype="multipart/form-data">
+                                @csrf
+                                @method('POST')
+
                                         <div class="card">
                                             <div class="row setup-content" id="step-1">
                                                 <div class="col-xs-12">
@@ -96,7 +98,7 @@
                                                         <h3> Product Info</h3>
                                             <div class="grid md:grid-cols-2 gap-3">
                                                 <div class="form-group col-md-6 col-lg-5 mb-2 ml-2">
-                                                    <x-input-label for="product_name" :value="__('Product Name')" class="text-black" />
+                                                    <x-input-label for="product_name" :value="__('Product Name')" class="text-black pr-2" />
                                                     <input type="text" name="name" :value="old('name')" id="name" autocomplete="off" class="ml-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
                                                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
                                                 </div>
@@ -298,13 +300,16 @@
                                                     <x-input-error :messages="$errors->get('regional_feature')" class="mt-2" />
                                                 </div>
                                             </div>
-                                                        <div class="col-12 flex justify-end gap-2 mt-4">
-                                                        <button class="btn btn-md btn-primary waves-effect nextBtn btn-lg pull-right" type="button" > Next </button>
-                                                        </div>
+
 {{--                                            <div class="flex justify-end gap-2 mt-4">--}}
 {{--                                                <x-primary-button type="submit" class="btn btn-sm btn-primary waves-effect" wire:click="submit">Proceed</x-primary-button>--}}
 {{--                                            </div>--}}
-                                                    </div></div></div>
+                                                    </div></div>
+                                                <div class="col-12 flex justify-end gap-2 mt-4 mr-5 ">
+                                                    <button class="btn btn-md btn-primary waves-effect nextBtn btn-md pull-right" type="button" > Next </button>
+                                                </div>
+                                            </div>
+
                                         <div class="row setup-content" id="step-2">
                                             <div class="col-xs-12">
                                                 <div class="col-md-12">
@@ -316,28 +321,31 @@
 
 {{--                                                    <x-input-error :messages="$errors->get('warehouse')" class="mt-2" />--}}
 {{--                                                </div>--}}
-                                                <div class="form-group lg:col-span-2">
-                                                 <x-input-label for="wing" :value="__('  Wing')" class="text-black" />
+                                                <div class="form-group lg:col-span-2 ml-5">
+                                                 <x-input-label for="wing" :value="__('  Wing')" class="text-black mr-5" />
                                                     <select id="wing" name="wing"
-                                                            class="form-select ml-3 bg-gray-50 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
+                                                            class="ml-2 form-select ml-3 bg-gray-50 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                         <option value="">Select Wing</option>
                                                         @foreach($wings as $wing)
                                                             <option value="{{ $wing->id }}">{{ $wing->wingname }}</option>
                                                         @endforeach
                                                     </select>
-                                                    <div class="form-group">
+                                                    <br/>
+                                                    <div class="form-group mt-4">
                                                         <x-input-label for="winglocation" :value="__('Wing Location')" class="text-black" />
                                                     <select id="wingLocation" name="wingLocation" class="form-select ml-3 bg-gray-50 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                                                     </select>
                                                     </div>
                                                 </div>
-                                                <div class="flex justify-end gap-2 mt-4 float-right">
-                                                    <button class="btn btn-md btn-primary waves-effect text-center text-gray-800 gap-2 focus:ring-0 btn-prev"><i class="fas fa-arrow-left text-gray-800 my-auto"></i> Back</button>
-                                                    <button  class="btn btn-primary nextBtn btn-lg pull-right" type="button" > Next </button>
-                                                </div>
+
                                             </div>
                                         </div>
-                                        </div></div></div></div>
+                                        </div></div>
+                                                <div class="flex gap-2 mt-4 float-right mr-5">
+                                                    <button class="btn btn-md btn-primary waves-effect text-center text-gray-800 gap-2 focus:ring-0 mr-4"><i class="fas fa-arrow-left text-gray-800 my-auto"></i> Back</button>
+                                                    <button  class="btn btn-primary nextBtn btn-md pull-right" type="button" > Next </button>
+                                                </div>
+                                            </div></div>
                                             <div class="row setup-content" id="step-3">
                                                 <div class="col-xs-12">
                                                     <div class="col-md-12">
@@ -360,9 +368,9 @@
                                                                             <template x-if="images[index].type.includes('image/')"><i class="fas fa-file-image"></i></template>
                                                                             <template x-if="images[index].type.includes('video/')"><i class="fas fa-file-video"></i></template>
                                                                             <span class="font-medium text-gray-900" x-text="images[index].name">Uploading</span>
-                                                                            {{-- <span class="text-xs self-end text-gray-500" x-text="filesize(images[index].size)">...</span> --}}
+                                                                             <span class="text-xs self-end text-gray-500" x-text="filesize(images[index].size)">...</span>
                                                                         </div>
-                                                                    </template>
+                                                            </template>
                                                                 </div>
                                                             </template>
                                                             <template x-if="images === null">
@@ -396,7 +404,7 @@
                                                                             <template x-if="video[index].type.includes('image/')"><i class="fas fa-file-image"></i></template>
                                                                             <template x-if="video[index].type.includes('video/')"><i class="fas fa-file-video"></i></template>
                                                                             <span class="font-medium text-gray-900" x-text="video[index].name">Uploading</span>
-                                                                            {{-- <span class="text-xs self-end text-gray-500" x-text="filesize(video[index].size)">...</span> --}}
+                                                                             <span class="text-xs self-end text-gray-500" x-text="filesize(video[index].size)">...</span>
                                                                         </div>
                                                                     </template>
                                                                 </div>
@@ -416,22 +424,22 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <x-input-label class="font-bold text-black">Confirm Availabilty Status</x-input-label>
-                                                    <label class="relative inline-flex items-center cursor-pointer">
-                                                        <input type="checkbox" checked value="1" class="sr-only peer" name="product_availability">
+{{--                                                    <label class="relative inline-flex items-center cursor-pointer">--}}
+                                                        <input type="checkbox" checked value="1"  name="product_availability">
                                                         <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-orange-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-orange-600"></div>
                                                         <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">In Stock</span>
-                                                    </label>
+{{--                                                    </label>--}}
                                                 </div>
 
-                                            <div class="flex justify-end gap-2 mt-4">
-                                                <x-secondary-outline-button class="btn btn-sm btn-primary waves-effect text-center text-gray-800 gap-2 focus:ring-0 btn-prev"><i class="fas fa-arrow-left text-gray-800 my-auto"></i> Back</x-secondary-outline-button>
-                                                <x-primary-button type="submit" class="btn btn-md btn-primary btn-round waves-effect">Add Product</x-primary-button>
-                                            </div>
                                                     </div>
                                         </div>
+                                                <div class="flex justify-end gap-2 mt-3 mb-2">
+                                                    <x-secondary-outline-button class="btn btn-sm btn-primary waves-effect text-center text-gray-800 gap-2 focus:ring-0 btn-prev"><i class="fas fa-arrow-left text-gray-800 my-auto"></i> Back</x-secondary-outline-button>
+                                                    <x-primary-button type="submit" class="btn btn-md btn-primary btn-round waves-effect">Add Product</x-primary-button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </form>
+                            </form>
                     </div>
                 </div>
             </div>
@@ -439,6 +447,17 @@
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
         <script>
+            $(document).ready(function () {
+                var currentStep = 1;
+
+                $('#backButton').click(function () {
+                    if (currentStep > 1) {
+                        currentStep--;
+                        window.location.hash = '#step' + currentStep;
+                    }
+                });
+            });
+
             $(document).ready(function () {
                 $('#wing').on('change', function () {
                     var wingId = $(this).val();
@@ -513,14 +532,25 @@
                 });
 
                 $('div.setup-panel div a.btn-primary').trigger('click');
+
+                document.addEventListener('DOMContentLoaded', function () {
+                    new Vue({
+                        el: '#app', // Make sure to set the correct element ID or class
+                        data: {
+                            images: null,
+                            video: null,
+                        },
+                    });
+                });
             });
         </script>
-
+        </div>
     </section>
 
     @push('scripts')
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
 {{--        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>--}}
+        <!-- Add this to your layout or page -->
 
         @endpush
 @endsection

@@ -62,6 +62,7 @@
                                         <th>Warehouse</th>
                                     @endrole
                                     <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -95,10 +96,14 @@
                                             <td>{{ $product->business->name ?? $product->product->business->name ?? '' }}</td>
                                         <td>{{ $product->warehouse->name ?? $product->product->warehouse->name ??  '' }}</td>
                                         @endrole
-{{--                                        <td>{{ $product->created_at->format('d M Y') }}</td>--}}
-                                        <td>
-                                            <a href="{{route('product.details', $product->product->id ?? $product->id)}}" class="btn btn-sm btn-primary btn-round waves-effect" >DETAILS</a>
-                                        </td>
+
+                                           <td>
+                                               <a class="btn btn-sm btn-secondary" href="{{route('product.details', $product->product->id ?? $product->id)}}"><span>Details</span></a>
+                                           </td>
+                                            <td>
+                                                <a class="btn btn-sm btn-primary" href="{{route('product.restock', $product->product->id ?? $product->id)}}" class="btn btn-sm btn-secondary btn-round waves-effect" ><span>Restock</span></a>
+                                            </td>
+
                                     </tr>
 {{--                                    @can('view', $product)--}}
 {{--                                        <tr>--}}

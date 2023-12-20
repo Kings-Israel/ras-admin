@@ -79,8 +79,9 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->name('products');
     Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
     Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
+    Route::get('/product/restock/{product}', [ProductController::class, 'restock'])->name('product.restock');
+    Route::post('/product/restocking', [ProductController::class, 'restocking'])->name('product.restocking');
     Route::get('/get-wing-locations/{wing}', [ProductController::class,'getWingLocations']);
-
 
 //    Route::post('/products/store', [WarehouseProductController::class, 'store'])->name('products.store');
 //    Route::get('/{product}/edit', [WarehouseProductController::class, 'edit'])->name('products.edit');

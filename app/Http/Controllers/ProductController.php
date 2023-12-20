@@ -103,6 +103,19 @@ class ProductController extends Controller
                 'currencies' => collect(['USD', 'EUR', 'GBP', 'KSH', 'JPY']),
                 ]);
         }
+    public function restock($product_id){
+        $userwarehouse=UserWarehouse::where('user_id', auth()->user()->id)->first();
+        $warehouse = Warehouse::find($userwarehouse->warehouse_id);
+        $product=Product::findOrFail($product_id);
+            return view('products.restock', [
+                'page' => 'Restock Product',
+                'breadcrumbs' => [
+                    'Product' => route('products')
+                ],
+                'warehouse' => $warehouse,
+                'product'=>$product,
+                ]);
+        }
 
         public function store(Request $request){
             $this->validate= [
@@ -185,6 +198,47 @@ class ProductController extends Controller
                     DB::rollBack();
                     Log::error('Error adding product: ' . $e->getMessage());
                     toastr()->error('', 'An error occurred while adding the product');
+                    return redirect()->route('products');
+}
+        }
+        public function restocking(Request $request){
+            $this->validate= [
+
+            ];
+            try {
+                DB::beginTransaction();
+                $userwarehouse=UserWarehouse::where('user_id', auth()->user()->id)->first();
+                $warehouse = Warehouse::find($userwarehouse->warehouse_id);
+            $product_id=$request->product_id;
+                $warehouseProduct = WarehouseProduct::where([
+                    'warehouse_id' => $warehouse->id,
+                    'product_id' => $product_id,
+                ])->first();
+
+                if ($warehouseProduct) {
+                    $warehouseProduct->update([
+                        'quantity' => $request->quantity,
+                    ]);
+                }
+                WarehouseRestocking::create([
+                    'product_id' => $product_id,
+                    'warehouse_id'=>$warehouse->id,
+                    'user_id'=>auth()->user()->id,
+                    'quantity'=>$request->quantity,
+
+                ]);
+
+                DB::commit();
+            activity()->causedBy(auth()->user())->performedOn($product_id)->log('restcoked product');
+
+            toastr()->success('', 'Product restocked successfully');
+
+            return redirect()->route('products');
+
+            }  catch (\Exception $e) {
+                    DB::rollBack();
+                    Log::error('Error adding product: ' . $e->getMessage());
+                    toastr()->error('', 'An error occurred while restocking the product');
                     return redirect()->route('products');
 }
         }
