@@ -86,11 +86,11 @@
                                                         <a class="dropdown-item" href="#">
                                                             <span>View</span>
                                                         </a>
-                                                    {{-- <a class="dropdown-item" href="{{ route('warehouses.storage.requests.index', ['warehouse' => $warehouse->id]) }}">
-                                                        <span>Storage Requests</span></a>
-                                                    </a> --}}
-                                                    <a class="dropdown-item" href="{{ route('warehouses.orders.requests.index', ['warehouse' => $warehouse->id]) }}">
-                                                        <span>Orders Storage Requests</span></a>
+{{--                                                    --}}{{-- <a class="dropdown-item" href="{{ route('warehouses.storage.requests.index', ['warehouse' => $warehouse->id]) }}">--}}
+{{--                                                        <span>Storage Requests</span></a>--}}
+{{--                                                    </a> --}}
+{{--                                                    <a class="dropdown-item" href="{{ route('warehouses.orders.requests.details', ['warehouse' => $warehouse->id]) }}">--}}
+{{--                                                        <span>Orders Storage Requests</span></a>--}}
 
                                                         <a class="dropdown-item" href="{{ route('warehouses.orders.requests.vendors.index', ['warehouse' => $warehouse->id]) }}">
                                                             <span>Vendor Storage Requests</span></a>

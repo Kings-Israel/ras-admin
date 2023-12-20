@@ -44,10 +44,13 @@
                 @endcanany
                 @can('view warehouse')
                 {{-- <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a></li> --}}
+
                     <li class="nav-item @if(Route::is('warehouses.*')) active open @endif">
                         <a href="{{ route('warehouses.index') }}">
                             <i class="material-icons">local_convenience_store</i>
                             <span>Warehouse Management</span></a>
+
+
                     {{-- <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a></li> --}}
                     {{-- <li class="nav-item @if(Route::is('warehouses.*')) active open @endif">
                         <a href="{{ route('warehouses.index') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a>
