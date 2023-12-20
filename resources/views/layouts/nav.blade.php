@@ -43,18 +43,6 @@
                     <li class="nav-item @if(Route::is('orders.*')) active open @endif"> <a href="{{ route('orders.index') }}"><i class="material-icons">layers</i><span>Order Management</span></a></li>
                 @endcanany
                 @can('view warehouse')
-                {{-- <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a></li> --}}
-
-                    <li class="nav-item @if(Route::is('warehouses.*')) active open @endif">
-                        <a href="{{ route('warehouses.index') }}">
-                            <i class="material-icons">local_convenience_store</i>
-                            <span>Warehouse Management</span></a>
-
-
-                    {{-- <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a></li> --}}
-                    {{-- <li class="nav-item @if(Route::is('warehouses.*')) active open @endif">
-                        <a href="{{ route('warehouses.index') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a>
-                    </li> --}}
                     <li class="nav-item @if(Route::is('warehouses.*')) active @endif">
                         <a href="javascript:void(0);" class="menu-toggle"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a>
                         <ul class="ml-menu">
