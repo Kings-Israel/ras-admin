@@ -54,6 +54,7 @@
                             <p class="col-md-6"><strong>Max Price:  </strong> {{ $product->max_price }}</p>
                             <p class="col-md-6"><strong>Capacity in Warehouse:  </strong> {{ $product->capacity_in_warehouse }}</p>
                             <p class="col-md-6"><strong>Usage:  </strong> {{ $product->usage }}</p>
+                            <p class="col-md-6"><strong>Batch ID No (BIN):  </strong> {{ $product->bin }}</p>
                         </div>
                         </div>
                 </div>
@@ -80,8 +81,8 @@
                                     <h6 class="card-title">Warehouse/Wing/Location</h6>
                                 </div>
                                     <div class="body col-12">
-                                        <p class="card-text mr-2"><strong>Wing: </strong> {{$product->location->wing->wingname ?? 'N/A' }}</p>
-                                        <p class="card-text mr-2"><strong>Location: </strong> {{$product->location->location_name ?? 'N/A' }}</p>
+                                        <p class="card-text mr-2"><strong>Wing: </strong>{{ optional($product->winglocation->wing)->wingname ?? '' }}</p>
+                                        <p class="card-text mr-2"><strong>Location: </strong> {{ optional($product->winglocation)->location_name ?? '' }}</p>
                                         <p class="card-text mr-2"><strong>Occupancy: </strong> {{$product->location->square_fit ?? 1/2*(($product->location->height ?? 0) * ($product->location->width ?? 0) ) ?? '' }}</p>
                                     </div>
                                 </div>

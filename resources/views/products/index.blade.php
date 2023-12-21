@@ -26,6 +26,7 @@
                                 <tr>
                                     <th>Image</th>
                                     <th>Name</th>
+                                    <th>BIN</th>
                                     <th>Category</th>
                                     <th>Product Owner</th>
                                     <th>Price</th>
@@ -90,6 +91,7 @@
                                                 @endif
                                             </td>
                                             <td>{{ $product->name }}</td>
+                                            <td>{{ $product->bin }}</td>
                                             <td>{{ $product->category->name }}</td>
                                             <td>{{ $product->business->name }}</td>
                                             <td>{{ $product->price ? $product->price : $product->min_price.' - '.$product->max_price }}</td>

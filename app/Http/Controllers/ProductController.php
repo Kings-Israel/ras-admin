@@ -175,6 +175,7 @@ class ProductController extends Controller
                 'model_number' => $request->model_number,
                 'is_available' => $request->product_availability,
                 'regional_featre' => $request->regional_feature,
+                'bin' => $request->bin,
                 'is_warehouse_product'=>1
             ]);
 

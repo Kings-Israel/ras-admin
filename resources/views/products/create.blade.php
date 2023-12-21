@@ -227,7 +227,7 @@
                                                     <x-input-error :messages="$errors->get('color')" class="mt-2" />
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 col-lg-4">
+                                            <div class="col-md-3 col-lg-3">
                                                 <label for="product_usage">Product Usage</label>
                                                 <div class="form-group">
                                                     <select name="usage" id="product_usage"
@@ -246,7 +246,7 @@
                                                     <x-input-error :messages="$errors->get('usage')" class="mt-2" />
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 col-lg-4">
+                                            <div class="col-md-3 col-lg-3">
                                                 <label for="product_model_number">Product\'s Model Number</label>
                                                 <div class="form-group">
                                                     <input type="text" name="model_number"
@@ -256,7 +256,17 @@
                                                 </div>
                                                 <x-input-error :messages="$errors->get('model_number')" class="mt-2" />
                                             </div>
-                                            <div class="col-md-4 col-lg-4">
+                                            <div class="col-md-3 col-lg-3">
+                                                <label for="batch_id">Batch ID Number (BIN):</label>
+                                                <div class="form-group">
+                                                    <input type="text" name="bin" id="bin" class="form-control" value="{{ old('bin', $product->bin ?? '') }}">
+                                                    <div class="input-group-append ml-5">
+                                                        <button type="button" class="btn btn-secondary" id="generateBatchId">Generate</button>
+                                                    </div>
+                                                </div>
+                                                <x-input-error :messages="$errors->get('bin')" class="mt-2" />
+                                            </div>
+                                            <div class="col-md-3 col-lg-3">
                                                 <label for="product_regional_feature">Regional Feature</label>
                                                 <div class="form-group">
                                                     <select name="regional_feature" id="regional_feature"
@@ -421,6 +431,25 @@
                         $('#wingLocation').empty();
                     }
                 });
+            });
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const batchIdInput = document.getElementById('bin');
+                const generateButton = document.getElementById('generateBatchId');
+
+                generateButton.addEventListener('click', function () {
+                    const generatedBatchId = generateUniqueBatchId();
+                    batchIdInput.value = generatedBatchId;
+                });
+                function generateUniqueBatchId() {
+                    const getRandomNumber = (length) => Math.floor(Math.random() * Math.pow(10, length)).toString().padStart(length, '0');
+
+                    const firstPart = getRandomNumber(5);
+                    const secondPart = getRandomNumber(4);
+                    const thirdPart = getRandomNumber(5);
+
+                    return `${firstPart}-${secondPart}-${thirdPart}`;
+                }
             });
 
             // $(document).ready(function() {
