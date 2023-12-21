@@ -219,13 +219,13 @@ class ProductController extends Controller
 
             toastr()->success('', 'Product added successfully');
 
-            return redirect()->route('products');
+            return redirect()->route('products.index');
 
         }  catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error adding product: ' . $e->getMessage());
             toastr()->error('', 'An error occurred while adding the product');
-            return redirect()->route('products');
+            return redirect()->route('products.index');
         }
     }
 
