@@ -84,6 +84,14 @@ class Product extends Model
         return $this->belongsToMany(Warehouse::class, 'warehouse_products', 'product_id', 'warehouse_id');
     }
 
+    /**
+     * Get all of the orderItems for the Product
+     */
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     // public function warehouse()
     // {
     //     return $this->belongsTo(Warehouse::class);
