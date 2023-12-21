@@ -256,8 +256,6 @@ class ProductController extends Controller
             ]);
 
             DB::commit();
-
-                DB::commit();
                 $product=Product::find($product_id);
             activity()->causedBy(auth()->user())->performedOn($product)->log('restocked product');
 
