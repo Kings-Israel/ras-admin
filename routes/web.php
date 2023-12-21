@@ -64,7 +64,7 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::get('/buyers/orders/{warehouse?}', [WarehouseController::class, 'buyerOrders'])->name('requests.buyers.index');
             Route::get('/vendors/orders/{warehouse?}', [WarehouseController::class, 'vendorOrders'])->name('requests.vendors.index');
             Route::get('/{order_request}/details', [WarehouseController::class, 'order'])->name('requests.details');
-            Route::get('/product/release/requests/{warehouse?}', [WarehouseController::class, 'productReleaseRequests'])->name('requests.release');
+            Route::get('/product/release/requests/{warehouse?}', [WarehouseController::class, 'productReleaseRequests'])->name('requests.release.index');
             Route::post('/{release_product_request}/product/release', [OrderController::class, 'releaseProduct'])->name('product.release');
             Route::post('/{order}/delivery/status/update', [OrderController::class, 'updateDeliveryStatus'])->name('delivery.status.update');
         });

@@ -55,8 +55,8 @@
                             <li class="nav-item @if(Route::is('warehouses.orders.requests.vendors.*')) active open @endif">
                                 <a href="{{ route('warehouses.orders.requests.vendors.index') }}"><span>Vendor Storage Requests</span></a>
                             </li>
-                            <li class="nav-item @if(Route::is('warehouses.requests.release.*')) active open @endif">
-                                <a href="{{ route('warehouses.index') }}"><span>Release Order Requests</span></a>
+                            <li class="nav-item @if(Route::is('warehouses.orders.requests.release.*')) active open @endif">
+                                <a href="{{ route('warehouses.orders.requests.release.index') }}"><span>Release Order Requests</span></a>
                             </li>
                         </ul>
                     </li>
