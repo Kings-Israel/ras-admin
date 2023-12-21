@@ -293,7 +293,26 @@ class InsuranceController extends Controller
 
     public function order(OrderRequest $order_request)
     {
-        $order_request->load('orderItem.product.business', 'orderItem.product.media', 'orderItem.order.business', 'orderItem.order.user', 'insuranceRequestBuyerDetails', 'insuranceRequestBuyerCompanyDetails', 'insuranceRequestBuyerInuranceLossHistories', 'insuranceRequestProposalDetails', 'insuranceRequestProposalVehicleDetails');
+        $order_request->load(
+            'orderItem.product.business',
+            'orderItem.product.media',
+            'orderItem.order.business',
+            'orderItem.order.user',
+            'insuranceRequestBuyerDetails',
+            'insuranceRequestBuyerCompanyDetails',
+            'insuranceRequestBuyerInuranceLossHistories',
+            'insuranceRequestProposalDetails',
+            'insuranceRequestProposalVehicleDetails',
+            'businessSubsidiaries',
+            'businessInformation',
+            'businessSalesInformation',
+            'businessSales',
+            'businessSalesBadDebts',
+            'businessSalesLargeBadDebts',
+            'businessSecurity',
+            'businessCreditManagement',
+            'businessCreditLimits'
+        );
 
         $insurer = $order_request->requesteable;
         $user = $order_request->orderItem->order->user;
@@ -326,10 +345,62 @@ class InsuranceController extends Controller
 
     public function orderBuyerDetails(OrderRequest $order_request)
     {
-        $order_request->load('orderItem.product.business', 'orderItem.product.media', 'orderItem.order.business', 'orderItem.order.user', 'insuranceRequestBuyerDetails', 'insuranceRequestBuyerCompanyDetails', 'insuranceRequestBuyerInuranceLossHistories', 'insuranceRequestProposalDetails', 'insuranceRequestProposalVehicleDetails');
+        $order_request->load(
+            'orderItem.product.business',
+            'orderItem.product.media',
+            'orderItem.order.business',
+            'orderItem.order.user',
+            'insuranceRequestBuyerDetails',
+            'insuranceRequestBuyerCompanyDetails',
+            'insuranceRequestBuyerInuranceLossHistories',
+            'insuranceRequestProposalDetails',
+            'insuranceRequestProposalVehicleDetails',
+            'businessSubsidiaries',
+            'businessInformation',
+            'businessSalesInformation',
+            'businessSales',
+            'businessSalesBadDebts',
+            'businessSalesLargeBadDebts',
+            'businessSecurity',
+            'businessCreditManagement',
+            'businessCreditLimits'
+        );
 
         return view('insurance.buyer-details', [
             'page' => 'Insurance Buyer Details',
+            'breadcrumbs' => [
+                'Insurance Requests' => route('insurance.requests.index'),
+                'Insurance Request Details' => route('insurance.requests.show', ['order_request' => $order_request])
+            ],
+            'order_request' => $order_request,
+        ]);
+    }
+
+    public function orderVendorDetails(OrderRequest $order_request)
+    {
+        $order_request->load(
+            'orderItem.product.business',
+            'orderItem.product.media',
+            'orderItem.order.business',
+            'orderItem.order.user',
+            'insuranceRequestBuyerDetails',
+            'insuranceRequestBuyerCompanyDetails',
+            'insuranceRequestBuyerInuranceLossHistories',
+            'insuranceRequestProposalDetails',
+            'insuranceRequestProposalVehicleDetails',
+            'businessSubsidiaries',
+            'businessInformation',
+            'businessSalesInformation',
+            'businessSales',
+            'businessSalesBadDebts',
+            'businessSalesLargeBadDebts',
+            'businessSecurity',
+            'businessCreditManagement',
+            'businessCreditLimits'
+        );
+
+        return view('insurance.vendor-details', [
+            'page' => 'Insurance Vendor Details',
             'breadcrumbs' => [
                 'Insurance Requests' => route('insurance.requests.index'),
                 'Insurance Request Details' => route('insurance.requests.show', ['order_request' => $order_request])

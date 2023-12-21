@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class InsReqBuyerProposalDetails extends Model
+class InsReqBusinessCreditManagement extends Model
 {
     use HasFactory;
 
@@ -15,7 +15,7 @@ class InsReqBuyerProposalDetails extends Model
      *
      * @var string
      */
-    protected $table = 'buyer_proposal_details';
+    protected $table = 'business_credit_management';
 
     /**
      * The attributes that aren't mass assignable.
@@ -30,14 +30,11 @@ class InsReqBuyerProposalDetails extends Model
      * @var array
      */
     protected $casts = [
-        'transported_products' => 'array',
-        'vehicle_features' => 'array',
-        'previous_insurance_data' => 'array',
-        'previous_insurer' => 'array',
+        'methods_of_assessment' => 'array',
     ];
 
     /**
-     * Get the orderRequest that owns the InsReqBuyerCompanyDetails
+     * Get the orderRequest that owns the InsReqBusinessCreditManagement
      */
     public function orderRequest(): BelongsTo
     {

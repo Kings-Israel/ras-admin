@@ -235,15 +235,26 @@ class InspectorController extends Controller
 
     public function pendingReports()
     {
-        $user_inspecting_institutions_ids = auth()->user()->inspectors->pluck('id');
-        $order_requests = OrderRequest::with('orderItem.order.invoice', 'orderItem.product')
-                                        ->where('status', 'accepted')
-                                        ->whereHas('orderItem', function ($query) {
-                                            $query->whereDoesntHave('inspectionReport');
-                                        })
-                                        ->whereIn('requesteable_id', $user_inspecting_institutions_ids)
-                                        ->where('requesteable_type', InspectingInstitution::class)
-                                        ->get();
+        if (auth()->user()->hasRole('admin')) {
+            $order_requests = OrderRequest::with('orderItem.order.invoice', 'orderItem.product')
+                                            ->where('status', 'accepted')
+                                            ->whereHas('orderItem', function ($query) {
+                                                $query->whereDoesntHave('inspectionReport');
+                                            })
+                                            ->where('requesteable_type', InspectingInstitution::class)
+                                            ->get();
+
+        } else {
+            $user_inspecting_institutions_ids = auth()->user()->inspectors->pluck('id');
+            $order_requests = OrderRequest::with('orderItem.order.invoice', 'orderItem.product')
+                                            ->where('status', 'accepted')
+                                            ->whereHas('orderItem', function ($query) {
+                                                $query->whereDoesntHave('inspectionReport');
+                                            })
+                                            ->whereIn('requesteable_id', $user_inspecting_institutions_ids)
+                                            ->where('requesteable_type', InspectingInstitution::class)
+                                            ->get();
+        }
 
         return view('inspectors.reports.pending', [
             'page' => 'Pending Inspection Reports',

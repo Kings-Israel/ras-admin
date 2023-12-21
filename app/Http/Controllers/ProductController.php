@@ -107,6 +107,10 @@ class ProductController extends Controller
         $userwarehouse=UserWarehouse::where('user_id', auth()->user()->id)->first();
         $warehouse = Warehouse::find($userwarehouse->warehouse_id);
         $product=Product::findOrFail($product_id);
+        $current_quantity=0;
+        if ($product){
+            $current_quantity=WarehouseProduct::where('product_id',$product_id)->where('warehouse_id', $warehouse->id)->select('quantity')->first();
+        }
             return view('products.restock', [
                 'page' => 'Restock Product',
                 'breadcrumbs' => [
@@ -114,6 +118,7 @@ class ProductController extends Controller
                 ],
                 'warehouse' => $warehouse,
                 'product'=>$product,
+                'current_quantity'=>$current_quantity
                 ]);
         }
 
@@ -229,7 +234,8 @@ class ProductController extends Controller
                 ]);
 
                 DB::commit();
-            activity()->causedBy(auth()->user())->performedOn($product_id)->log('restcoked product');
+                $product=Product::find($product_id);
+            activity()->causedBy(auth()->user())->performedOn($product)->log('restocked product');
 
             toastr()->success('', 'Product restocked successfully');
 

@@ -20,6 +20,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Chat;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class LogisticsController extends Controller
 {
@@ -330,6 +332,220 @@ class LogisticsController extends Controller
             ],
             'order_request' => $order_request,
             'conversation_id' => $conversation->id,
+        ]);
+    }
+
+    public function createExportReport(OrderRequest $order_request)
+    {
+        $documents = [
+            'Commercial Invoices', 'Transport Document', 'Packing Lists', 'Certificate of Origin', 'Import Permit', 'Other'
+        ];
+        return view('logistics.deliveries.reports.export-report-create', [
+            'page' => 'Export Report',
+            'breadcrumbs' => [
+                'Order Request' => route('deliveries.requests.show', ['order_request' => $order_request]),
+            ],
+            'order_request' => $order_request,
+            'documents' => $documents,
+        ]);
+    }
+
+    public function storeExportReport(Request $request, OrderRequest $order_request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $export_instruction = $order_request->exportInstruction()->create([
+                'order_request_id' => $order_request->id,
+                'exporter' => $request->exporter,
+                'reference' => $request->reference,
+                'vat_number' => $request->vat_number,
+                'consignee' => $request->consignee,
+                'notify_party' => $request->notify_party,
+                'place_of_collection' => $request->place_of_collection,
+                'port_of_loading' => $request->port_of_loading,
+                'port_of_discharge' => $request->port_of_discharge,
+                'final_destination' => $request->final_destination,
+                'destination_country' => $request->destination_country,
+                'method_of_payment' => $request->method_of_payment,
+                'type_of_freight' => $request->type_of_freight,
+                'number_of_packages' => $request->number_of_packages,
+                'marks_and_numbers' => $request->marks_and_numbers,
+                'description_of_goods' => $request->description_of_goods,
+                'special_goods' => $request->special_goods,
+                'gross_mass' => $request->gross_mass,
+                'measurement' => $request->measurement,
+                'cargo_insurance' => $request->cargo_insurance,
+                'cargo_value' => $request->cargo_value,
+                'incoterms' => $request->incoterms,
+                'ci_value' => $request->ci_value,
+                'customs_export_purpose_code' => $request->customs_export_purpose_code,
+                'customs_export_number' => $request->customs_export_number,
+                'tarrif_heading' => $request->tarrif_heading,
+                'special_instructions' => $request->special_instructions,
+                'other' => $request->other,
+            ]);
+
+            if (count($request->documents) > 0) {
+                $documents = [];
+                foreach($request->documents as $key => $doc) {
+                    $documents[$key] = pathinfo($doc->store('logistics', 'reports'), PATHINFO_BASENAME);
+                }
+
+                $export_instruction->update([
+                    'documents_attached' => json_encode($documents),
+                ]);
+            }
+
+            DB::commit();
+
+            toastr()->success('', 'Report uploaded successfully');
+
+            return redirect()->route('deliveries.requests.show', ['order_request' => $order_request]);
+        } catch (\Exception $e){
+            info($e);
+
+            DB::rollback();
+
+            return back();
+        }
+    }
+
+    public function createImportReport(OrderRequest $order_request)
+    {
+        $documents = [
+            'Commercial Invoices', 'Transport Document', 'Packing Lists', 'Certificate of Origin', 'Import Permit', 'Other'
+        ];
+        return view('logistics.deliveries.reports.import-report-create', [
+            'page' => 'import Report',
+            'breadcrumbs' => [
+                'Order Request' => route('deliveries.requests.show', ['order_request' => $order_request]),
+            ],
+            'order_request' => $order_request,
+            'documents' => $documents,
+        ]);
+    }
+
+    public function storeImportReport(Request $request, OrderRequest $order_request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $import_instruction = $order_request->importInstruction()->create([
+                'order_request_id' => $order_request->id,
+                'importer' => $request->importer,
+                'reference' => $request->reference,
+                'customs_code' => $request->customs_code,
+                'vat_number' => $request->vat_number,
+                'supplier' => $request->supplier,
+                'transport_mode' => $request->transport_mode,
+                'name_of_vessel' => $request->name_of_vessel,
+                'eta' => Carbon::parse($request->eta)->format('Y-m-d'),
+                'transport_document_number' => $request->transport_document_number,
+                'transport_document_date' => Carbon::parse($request->transport_document_date)->format('Y-m-d'),
+                'shipment_reference_number' => $request->shipment_reference_number,
+                'invoice_number' => $request->invoice_number,
+                'invoice_date' => Carbon::parse($request->invoice_date)->format('Y-m-d'),
+                'port_of_entry' => $request->port_of_entry,
+                'customs_purpose_code' => $request->customers_purpose_code,
+                'destination_code' => $request->destination_code,
+                'tariff_determination' => $request->tariff_determination,
+                'customs_valuation_code' => $request->customs_valuation_code,
+                'customs_valuation_method' => $request->customs_valuation_method,
+                'customs_value_date' => Carbon::parse($request->customs_value_date)->format('Y-m-d'),
+                'number_of_packages' => $request->number_of_packages,
+                'special_goods' => $request->special_goods,
+                'gross_mass' => $request->gross_mass,
+                'measurement' => $request->measurement,
+                'import_permit_number' => $request->import_permit_number,
+                'incoterms' => $request->incoterms,
+                'mode_of_transport' => $request->mode_of_transport,
+                'delivery_address' => $request->delivery_address,
+                'split_delivery_address' => $request->split_delivery_address,
+                'special_instructions' => $request->special_instructions,
+                'other' => $request->other,
+            ]);
+
+            if (count($request->documents) > 0) {
+                $documents = [];
+                foreach($request->documents as $key => $doc) {
+                    $documents[$key] = pathinfo($doc->store('logistics', 'reports'), PATHINFO_BASENAME);
+                }
+
+                $import_instruction->update([
+                    'documents_attached' => json_encode($documents),
+                ]);
+            }
+
+            DB::commit();
+
+            toastr()->success('', 'Report uploaded successfully');
+
+            return redirect()->route('deliveries.requests.show', ['order_request' => $order_request]);
+        } catch (\Exception $e){
+            info($e);
+
+            DB::rollback();
+
+            return back();
+        }
+    }
+
+    public function pendingReports()
+    {
+        if (auth()->user()->hasRole('admin')) {
+            $order_requests = OrderRequest::with('orderItem.order.invoice', 'orderItem.product')
+                                            ->where('status', 'accepted')
+                                            ->whereDoesntHave('importInstruction')
+                                            ->whereDoesntHave('exportInstruction')
+                                            ->where('requesteable_type', LogisticsCompany::class)
+                                            ->get();
+        } else {
+            $user_logisics_company_ids = auth()->user()->logisticsCompanies->pluck('id');
+            $order_requests = OrderRequest::with('orderItem.order.invoice', 'orderItem.product')
+                                            ->where('status', 'accepted')
+                                            ->whereDoesntHave('importInstruction')
+                                            ->whereDoesntHave('exportInstruction')
+                                            ->whereIn('requesteable_id', $user_logisics_company_ids)
+                                            ->where('requesteable_type', LogisticsCompany::class)
+                                            ->get();
+        }
+
+        return view('logistics.deliveries.reports.pending', [
+            'page' => 'Pending Logistics Reports',
+            'breadcrumbs' => [
+                'Pending Logistics Reports' => route('deliveries.requests.reports.pending')
+            ],
+            'order_requests' => $order_requests
+        ]);
+    }
+
+    public function completedReports()
+    {
+        if (auth()->user()->hasRole('admin')) {
+            $order_requests = OrderRequest::with('orderItem.order.invoice', 'orderItem.product')
+                                            ->where('status', 'accepted')
+                                            ->whereHas('importInstruction')
+                                            ->whereHas('exportInstruction')
+                                            ->where('requesteable_type', LogisticsCompany::class)
+                                            ->get();
+        } else {
+            $user_logisics_company_ids = auth()->user()->logisticsCompanies->pluck('id');
+            $order_requests = OrderRequest::with('orderItem.order.invoice', 'orderItem.product')
+                                            ->where('status', 'accepted')
+                                            ->whereHas('importInstruction')
+                                            ->whereHas('exportInstruction')
+                                            ->whereIn('requesteable_id', $user_logisics_company_ids)
+                                            ->where('requesteable_type', LogisticsCompany::class)
+                                            ->get();
+        }
+
+        return view('logistics.deliveries.reports.completed', [
+            'page' => 'Completed Logistics Reports',
+            'breadcrumbs' => [
+                'Completed Logistics Reports' => route('deliveries.requests.reports.pending')
+            ],
+            'order_requests' => $order_requests
         ]);
     }
 }

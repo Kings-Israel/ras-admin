@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class InsReqBuyerProposalDetails extends Model
+class InsReqBusinessSalesInformation extends Model
 {
     use HasFactory;
 
@@ -15,7 +15,7 @@ class InsReqBuyerProposalDetails extends Model
      *
      * @var string
      */
-    protected $table = 'buyer_proposal_details';
+    protected $table = 'business_sales_information';
 
     /**
      * The attributes that aren't mass assignable.
@@ -25,19 +25,7 @@ class InsReqBuyerProposalDetails extends Model
     protected $guarded = [];
 
     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'transported_products' => 'array',
-        'vehicle_features' => 'array',
-        'previous_insurance_data' => 'array',
-        'previous_insurer' => 'array',
-    ];
-
-    /**
-     * Get the orderRequest that owns the InsReqBuyerCompanyDetails
+     * Get the orderRequest that owns the InsReqBusinessSalesInformation
      */
     public function orderRequest(): BelongsTo
     {

@@ -24,17 +24,22 @@
                     <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
                         <div class="d-flex justify-content-end">
-                            <a href="{{ route('insurance.requests.buyer.details', ['order_request' => $order_request]) }}" class="btn btn-sm btn-round btn-secondary">View Buyer Insurance Proposal Details</a>
-                            <a href="#uploadInsuranceDocuments" data-toggle="modal" data-target="#uploadInsuranceDocuments" class="btn btn-primary btn-sm btn-round">Upload Reports</a>
+                            @if ($order_request->insuranceRequestBuyerDetails && $order_request->insuranceRequestBuyerCompanyDetails && $order_request->insuranceRequestProposalDetails && $order_request->insuranceRequestProposalVehicleDetails)
+                                <a href="{{ route('insurance.requests.buyer.details', ['order_request' => $order_request]) }}" class="btn btn-sm btn-round btn-secondary">View Buyer Insurance Proposal Details</a>
+                            @endif
+                            @if ($order_request->where('requesteable_type', 'App\Models\InsuranceCompany')->exists() && $order_request->orderItem->vendorHasCompletedInsuranceReport())
+                                <a href="{{ route('insurance.requests.vendor.details', ['order_request' => $order_request]) }}" class="btn btn-sm btn-round btn-info">View Vendor Insurance Details</a>
+                            @endif
+                            {{-- <a href="#uploadInsuranceDocuments" data-toggle="modal" data-target="#uploadInsuranceDocuments" class="btn btn-primary btn-sm btn-round">Upload Reports</a> --}}
                         </div>
-                        @can('view insurance report')
+                        {{-- @can('view insurance report')
                             <div class="modal fade" id="uploadInsuranceDocuments" tabindex="-1" role="dialog">
                                 <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h4 class="title" id="uploadInsuranceDocumentsLabel">Add Insurance Report Documents</h4>
                                         </div>
-                                        {{-- <form action="{{ route('inspection.requests.reports.store', ['order_request' => $order_request]) }}" method="POST" enctype="multipart/form-data">
+                                        <form action="{{ route('inspection.requests.reports.store', ['order_request' => $order_request]) }}" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             <div class="modal-body">
                                                 <div class="row clearfix">
@@ -50,11 +55,11 @@
                                                 <button type="submit" class="btn btn-primary btn-round waves-effect">UPLOAD</button>
                                                 <button type="button" class="btn btn-danger btn-simple btn-round waves-effect" data-dismiss="modal">CLOSE</button>
                                             </div>
-                                        </form> --}}
+                                        </form>
                                     </div>
                                 </div>
                             </div>
-                        @endcan
+                        @endcan --}}
                     </div>
                 </div>
             </div>

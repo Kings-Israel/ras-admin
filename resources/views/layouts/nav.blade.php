@@ -150,13 +150,18 @@
                                     </li>
                                 @endcan
                                 @can('create stocklift request', 'update stocklift request', 'view stocklift request')
-                                    <li class="nav-item @if(Route::is('deliveries.requests.*')) active open @endif">
+                                    <li class="nav-item @if(Route::is('deliveries.requests.index') || Route::is('deliveries.requests.show')) active open @endif">
                                         <a href="{{ route('deliveries.requests.index') }}">Delivery Requests</a>
                                     </li>
                                 @endcan
+                                @can('create stocklift request', 'update stocklift request', 'view stocklift request')
+                                    <li class="nav-item @if(Route::is('deliveries.requests.reports.pending') || Route::is('deliveries.requests.reports.*.create')) active open @endif">
+                                        <a href="{{ route('deliveries.requests.reports.pending') }}">Pending Delivery Reports</a>
+                                    </li>
+                                @endcan
                                 @can('view stocklift request')
-                                    <li class="nav-item @if(Route::is('deliveries.reports.*')) active open @endif">
-                                        <a href="#">Delivery Reports</a>
+                                    <li class="nav-item @if(Route::is('deliveries.requests.reports.completed')) active open @endif">
+                                        <a href="{{ route('deliveries.requests.reports.completed') }}">Completed Delivery Reports</a>
                                     </li>
                                 @endcan
                             </ul>
