@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ProductMedia extends Model
 {
     use HasFactory;
+    protected $guarded=[''];
 
     /**
      * Get the product that owns the ProductMedia
@@ -26,6 +27,6 @@ class ProductMedia extends Model
      */
     public function getFileAttribute($value)
     {
-        return config('app.url').'/storage/vendor/product/'.$value;
+        return config('app.frontend_url').'/storage/vendor/product/'.$value;
     }
 }

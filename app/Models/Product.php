@@ -11,16 +11,33 @@ use Spatie\Sluggable\SlugOptions;
 
 class Product extends Model
 {
-    use HasSlug;
+    use HasFactory;
 
     /**
-     * Get the options for generating the slug.
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
      */
-    public function getSlugOptions() : SlugOptions
+    protected $guarded = [];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'is_available' => 'bool',
+    ];
+
+    /**
+     * Scope a query to only include isAvailable
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeAvailable($query)
     {
-        return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug');
+        return $query->where('is_available', true);
     }
 
     /**
@@ -50,14 +67,6 @@ class Product extends Model
     }
 
     /**
-     * Get the warehouse that owns the Product
-     */
-    public function warehouse(): BelongsTo
-    {
-        return $this->belongsTo(Warehouse::class);
-    }
-
-    /**
      * Get all of the media for the Product
      */
     public function media(): HasMany
@@ -65,11 +74,18 @@ class Product extends Model
         return $this->hasMany(ProductMedia::class);
     }
 
-    /**
-     * Get all of the orderItems for the Product
-     */
-    public function orderItems(): HasMany
+    public function location()
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->belongsTo(WingLocation::class);
     }
+
+    public function warehouses()
+    {
+        return $this->belongsToMany(Warehouse::class, 'warehouse_products', 'product_id', 'warehouse_id');
+    }
+
+    // public function warehouse()
+    // {
+    //     return $this->belongsTo(Warehouse::class);
+    // }
 }

@@ -43,10 +43,6 @@
                     <li class="nav-item @if(Route::is('orders.*')) active open @endif"> <a href="{{ route('orders.index') }}"><i class="material-icons">layers</i><span>Order Management</span></a></li>
                 @endcanany
                 @can('view warehouse')
-                    {{-- <a href="{{ route('warehouses') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a></li> --}}
-                    {{-- <li class="nav-item @if(Route::is('warehouses.*')) active open @endif">
-                        <a href="{{ route('warehouses.index') }}"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a>
-                    </li> --}}
                     <li class="nav-item @if(Route::is('warehouses.*')) active @endif">
                         <a href="javascript:void(0);" class="menu-toggle"><i class="material-icons">local_convenience_store</i><span>Warehouse Management</span></a>
                         <ul class="ml-menu">
@@ -59,14 +55,19 @@
                             <li class="nav-item @if(Route::is('warehouses.orders.requests.vendors.*')) active open @endif">
                                 <a href="{{ route('warehouses.orders.requests.vendors.index') }}"><span>Vendor Storage Requests</span></a>
                             </li>
-                            <li class="nav-item @if(Route::is('warehouses.orders.requests.release')) active open @endif">
-                                <a href="{{ route('warehouses.orders.requests.release') }}"><span>Release Product Requests</span></a>
+                            <li class="nav-item @if(Route::is('warehouses.requests.release.*')) active open @endif">
+                                <a href="{{ route('warehouses.index') }}"><span>Release Order Requests</span></a>
                             </li>
                         </ul>
                     </li>
                 @endcan
+                @role('warehouse manager')
+                <li class="nav-item @if(Route::is('payments.*')) active open @endif">
+                    <a href="{{ route('payments.index') }}"><i class="material-icons">payments</i><span>Payments</span></a>
+                </li>
+                @endrole
                 @can('view product')
-                    <li class="nav-item @if(Route::is('products')) active open @endif"> <a href="{{ route('products') }}"><i class="material-icons">shop</i><span>Stock Management</span></a></li>
+                    <li class="nav-item @if(Route::is('products.*')) active open @endif"> <a href="{{ route('products.index') }}"><i class="material-icons">shop</i><span>Stock Management</span></a></li>
                 @endcan
                 @can('view inspection report', 'view inspector')
                     <li class="nav-item @if(Route::is('inspection.*') || Route::is('inspectors.*')) active @endif">
@@ -137,18 +138,13 @@
                                     </li>
                                 @endcan
                                 @can('create stocklift request', 'update stocklift request', 'view stocklift request')
-                                    <li class="nav-item @if(Route::is('deliveries.requests.index') || Route::is('deliveries.requests.show')) active open @endif">
+                                    <li class="nav-item @if(Route::is('deliveries.requests.*')) active open @endif">
                                         <a href="{{ route('deliveries.requests.index') }}">Delivery Requests</a>
                                     </li>
                                 @endcan
-                                @can('create stocklift request', 'update stocklift request', 'view stocklift request')
-                                    <li class="nav-item @if(Route::is('deliveries.requests.reports.pending') || Route::is('deliveries.requests.reports.*.create')) active open @endif">
-                                        <a href="{{ route('deliveries.requests.reports.pending') }}">Pending Delivery Reports</a>
-                                    </li>
-                                @endcan
                                 @can('view stocklift request')
-                                    <li class="nav-item @if(Route::is('deliveries.requests.reports.completed')) active open @endif">
-                                        <a href="{{ route('deliveries.requests.reports.completed') }}">Completed Delivery Reports</a>
+                                    <li class="nav-item @if(Route::is('deliveries.reports.*')) active open @endif">
+                                        <a href="#">Delivery Reports</a>
                                     </li>
                                 @endcan
                             </ul>

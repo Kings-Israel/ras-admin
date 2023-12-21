@@ -128,6 +128,7 @@ return [
 
     'navigate' => [
         'show_progress_bar' => true,
+        'progress_bar_color' => '#2299dd',
     ],
 
     /*
@@ -154,7 +155,5 @@ return [
     |
     */
 
-    'pagination_theme' => 'bootstrap',
-
-    'asset_url' => config('app.env') === 'production' ? 'rsa-admin/livewire/livewire.js' : '',
+    'pagination_theme' => 'tailwind',
 ];

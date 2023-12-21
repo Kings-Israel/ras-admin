@@ -15,6 +15,7 @@ use App\Http\Controllers\InspectorController;
 use App\Http\Controllers\LogisticsController;
 use App\Http\Controllers\MarketingController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StorageRequestController;
@@ -24,6 +25,10 @@ use App\Http\Controllers\VendorController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\OrderRequestController;
+use App\Http\Controllers\WarehouseProductController;
+use App\Http\Controllers\Wing\ShelvesController;
+use App\Http\Controllers\Wing\WingController;
+use App\Http\Controllers\Wing\WingLocationController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 
@@ -68,11 +73,26 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/warehouses/storage/requests/{warehouse}', [StoreRequestController::class, 'index'])->name('warehouses.storage.requests');
 
     Route::resource('packaging', PackagingController::class);
+    Route::resource('payments', PaymentController::class);
     Route::get('/packaging', [PackagingController::class, 'index'])->name('packaging');
 
-    Route::get('/api/products/{id}', [ProductController::class, 'details'])->name('product');
-    Route::get('/products', [ProductController::class, 'index'])->name('products');
+    Route::get('/products/{product}/details', [ProductController::class, 'details'])->name('products.details');
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/product/create', [ProductController::class, 'create'])->name('products.create');
+    Route::post('/product/store', [ProductController::class, 'store'])->name('products.store');
+    Route::get('/product/restock/{product}', [ProductController::class, 'restock'])->name('products.restock');
+    Route::post('/product/restocking', [ProductController::class, 'restocking'])->name('products.restocking');
+    Route::get('/get-wing-locations/{wing}', [ProductController::class,'getWingLocations']);
 
+//    Route::post('/products/store', [WarehouseProductController::class, 'store'])->name('products.store');
+//    Route::get('/{product}/edit', [WarehouseProductController::class, 'edit'])->name('products.edit');
+//    Route::patch('/{product}/update', [WarehouseProductController::class, 'update'])->name('products.update');
+
+
+    Route::resource('wings', WingController::class);
+    Route::get('wing/locations/{wingid}', [WingController::class, 'show'])->name('wing.locations');
+    Route::resource('winglocations', WingLocationController::class);
+    Route::resource('locationshelves', ShelvesController::class);
     // Financiers
     // Route::resource('/financing-institutions', FinancingInstitutionController::class);
     Route::group(['prefix' => 'financing/institutions'], function () {
