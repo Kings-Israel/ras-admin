@@ -14,60 +14,37 @@
         <div class="row clearfix">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="header">
+                    <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
+                        @can('update warehouse')
+                            <a href="{{route('products.create')}}" class="btn btn-sm btn-primary btn-round waves-effect" >Add Product</a>
+                        @endcan
                     </div>
-                    <div>
-                        @role('warehouse manager')
-                                                <a href="{{route('product.create')}}" class="btn btn-sm btn-primary btn-round waves-effect" >Add Product</a>
-
-{{--                        <x-primary-button class="btn btn-sm btn-primary btn-round waves-effect" data-modal-target="add-product-modal" data-modal-toggle="add-product-modal">Add Product</x-primary-button>--}}
-{{--                <x-product-modal modal_id="add-product-modal" name="Create Product">--}}
-
-{{--                    <div class="relative w-full max-w-4xl max-h-full">--}}
-{{--                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">--}}
-{{--                            <button type="button" data-modal-hide="add-product-modal" class="absolute top-1 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">--}}
-{{--                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">--}}
-{{--                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>--}}
-{{--                                </svg>--}}
-{{--                                <span class="sr-only">Close modal</span>--}}
-{{--                            </button>--}}
-{{--                            <div class="px-2 py-2 lg:px-4">--}}
-{{--                                <h3 class="mb-2 text-2xl font-bold text-gray-900 dark:text-white space-y-4">New Product</h3>--}}
-{{--                                @include('products.create')--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                </x-product-modal>--}}
-        @endrole
-            </div>
-                    <br/>
-                    <br/>
                     <div class="body">
                         <table class="table table-bordered table-striped table-hover dataTable js-exportable">
                             <thead>
-                                <tr><th>Image</th>
+                                <tr>
+                                    <th>Image</th>
                                     <th>Name</th>
                                     <th>Category</th>
+                                    <th>Product Owner</th>
+                                    <th>Price</th>
                                     <th>SKU Code/Model</th>
-{{--                                    <th>Unit(UOM)</th>--}}
-{{--                                    <th>Packaging</th>--}}
-{{--                                    <th>Location</th>--}}
-                                    @role('warehouse manager')
-                                         <td>Wing/Location</td>
-{{--                                        <th>Last Restocked On</th>--}}
+                                    {{-- @role('warehouse manager')
+                                        <td>Wing/Location</td>
                                         <th>Quantity</th>
                                     @else
                                         <th>Product Owner</th>
-                                        <th>Warehouse</th>
-                                    @endrole
-                                    <th></th>
+                                        <th>Warehouses</th>
+                                    @endrole --}}
+                                    <th>Warehouses</th>
+                                    <th>Added On</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($products as $product)
-                                    <tr>
+                                    {{-- <tr>
                                         <td>
                                             @if($product && $product->product && ($product->media || $product->product->media))
                                                 @foreach($product->media ?? $product->product->media as $media)
@@ -82,7 +59,6 @@
                                         <td>{{ $product->name ?? $product->product->name ?? '' }}</td>
                                         <td>{{ $product->category->name ?? $product->product->category->name ?? ''}}</td>
                                         <td>{{ $product->model_number ?? $product->product->model_number ?? ''}}</td>
-{{--                                        <td>{{ $product->price ? $product->price : $product->min_price.' - '.$product->max_price }}</td>--}}
                                         @role('warehouse manager')
                                             <td>
                                                 @if (!empty($product->winglocation))
@@ -90,7 +66,6 @@
                                                     , {{ optional($product->winglocation)->location_name ?? '' }}
                                                 @endif
                                             </td>
-{{--                                            <td>{{$product->updated_at ?? ''}}</td>--}}
                                             <td>{{$product->quantity ?? ''}}</td>
                                         @else
                                             <td>{{ $product->business->name ?? $product->product->business->name ?? '' }}</td>
@@ -104,19 +79,38 @@
                                                 <a class="btn btn-sm btn-primary" href="{{route('product.restock', $product->product->id ?? $product->id)}}" class="btn btn-sm btn-secondary btn-round waves-effect" ><span>Restock</span></a>
                                             </td>
 
-                                    </tr>
-{{--                                    @can('view', $product)--}}
-{{--                                        <tr>--}}
-{{--                                            <td>{{ $product->name }}</td>--}}
-{{--                                            <td>{{ $product->business->name }}</td>--}}
-{{--                                            <td>{{ $product->price ? $product->price : $product->min_price.' - '.$product->max_price }}</td>--}}
-{{--                                            <td>{{ $product->warehouse }}</td>--}}
-{{--                                            <td>{{ $product->created_at->format('d M Y') }}</td>--}}
-{{--                                            <td>--}}
-{{--                                                <a href="#" class="btn btn-sm btn-primary btn-round waves-effect">DETAILS</a>--}}
-{{--                                            </td>--}}
-{{--                                        </tr>--}}
-{{--                                    @endcan--}}
+                                    </tr> --}}
+                                   @can('view', $product)
+                                       <tr>
+                                            <td>
+                                                @if ($product->media->where('type', 'image')->first())
+                                                    <img src="{{ $product->media->where('type', 'image')->first()->file }}" alt="" style="max-width: 80px; max-height: 80px; border-radius: 50%;">
+                                                @else
+                                                    <img src="{{ asset('assets/images/product-placeholder.png') }}" alt="Placeholder" style="max-width: 100px; max-height: 100px; border-radius: 50%;">
+                                                @endif
+                                            </td>
+                                            <td>{{ $product->name }}</td>
+                                            <td>{{ $product->category->name }}</td>
+                                            <td>{{ $product->business->name }}</td>
+                                            <td>{{ $product->price ? $product->price : $product->min_price.' - '.$product->max_price }}</td>
+                                            <td>{{ $product->model_number }}</td>
+                                            <td class="d-flex flex-wrap">
+                                                @if ($product->warehouses)
+                                                    @foreach ($product->warehouses as $warehouse)
+                                                        @if ($loop->last)
+                                                            {{ $warehouse->name }}
+                                                        @else
+                                                            {{ $warehouse->name.', ' }}
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </td>
+                                            <td>{{ $product->created_at->format('d M Y') }}</td>
+                                            <td>
+                                                <a href="{{ route('products.details', ['product' => $product]) }}" class="btn btn-sm btn-primary btn-round waves-effect">Details</a>
+                                            </td>
+                                       </tr>
+                                   @endcan
                                 @endforeach
                             </tbody>
                         </table>

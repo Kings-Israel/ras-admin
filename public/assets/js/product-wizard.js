@@ -18,7 +18,8 @@
         const productDetailsWizardForm = productDetailsWizard.querySelector('#product-details-wizard-form');
         // Wizard steps
         const productDetailsWizardFormStep1 = productDetailsWizardForm.querySelector('#product-details');
-        const productDetailsWizardFormStep2 = productDetailsWizardForm.querySelector('#product-media');
+        const productDetailsWizardFormStep2 = productDetailsWizardForm.querySelector('#warehouse-details');
+        const productDetailsWizardFormStep3 = productDetailsWizardForm.querySelector('#more-details');
 
         // Wizard next prev button
         const productDetailsWizardNext = [].slice.call(productDetailsWizardForm.querySelectorAll('.btn-next'));
@@ -46,6 +47,20 @@
                         }
                     }
                 },
+                description: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please enter product description'
+                        }
+                    }
+                },
+                model_number: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please enter product model number'
+                        }
+                    }
+                }
             },
             plugins: {
                 trigger: new FormValidation.plugins.Trigger(),
@@ -65,6 +80,25 @@
 
         // Property Details
         const FormValidation2 = FormValidation.formValidation(productDetailsWizardFormStep2, {
+            fields: {},
+            plugins: {
+                trigger: new FormValidation.plugins.Trigger(),
+                bootstrap5: new FormValidation.plugins.Bootstrap5({
+                    // Use this for enabling/changing valid/invalid class
+                    // eleInvalidClass: '',
+                    eleValidClass: '',
+                    rowSelector: '.form-group'
+                }),
+                autoFocus: new FormValidation.plugins.AutoFocus(),
+                submitButton: new FormValidation.plugins.SubmitButton()
+            }
+        }).on('core.form.valid', function () {
+            // Jump to the next step when all fields in the current step are valid
+            validationStepper.next();
+        });
+
+        // Property Details
+        const FormValidation3 = FormValidation.formValidation(productDetailsWizardFormStep3, {
             fields: {
                 images: {
                     validators: {
@@ -89,20 +123,6 @@
                         }
                     }
                 },
-                description: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Please enter product description'
-                        }
-                    }
-                },
-                model_number: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Please enter product model number'
-                        }
-                    }
-                }
             },
             plugins: {
                 trigger: new FormValidation.plugins.Trigger(),
@@ -133,6 +153,10 @@
                         FormValidation2.validate();
                         break;
 
+                    case 2:
+                        FormValidation3.validate();
+                        break;
+
                     default:
                         break;
                 }
@@ -144,6 +168,9 @@
                 event.preventDefault()
                 switch (validationStepper._currentIndex) {
                     case 1:
+                        validationStepper.previous();
+                        break;
+                    case 2:
                         validationStepper.previous();
                         break;
 

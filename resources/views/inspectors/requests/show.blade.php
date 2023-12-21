@@ -23,25 +23,7 @@
                 <div class="card">
                     <div class="header d-flex justify-content-between">
                         <h2><strong>{{ Str::title($page) }}</strong></h2>
-                        <a href="#uploadInspectionDocuments" data-toggle="modal" data-target="#uploadInspectionDocuments" class="btn btn-primary btn-sm btn-round">Upload Reports</a>
-                        @can('create inspection report')
-                            <div class="modal fade" id="uploadInspectionDocuments" tabindex="-1" role="dialog">
-                                <div class="modal-dialog modal-lg" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="title" id="uploadInspectionDocumentsLabel">Add Inspection Report</h4>
-                                        </div>
-                                        <form action="{{ route('inspection.requests.reports.store', ['order_request' => $order_request]) }}" method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            <div class="modal-footer">
-                                                <button type="submit" class="btn btn-primary btn-round waves-effect">UPLOAD</button>
-                                                <button type="button" class="btn btn-danger btn-simple btn-round waves-effect" data-dismiss="modal">CLOSE</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        @endcan
+                        <a href="{{ route('inspection.requests.reports.create', ['order_request' => $order_request]) }}" class="btn btn-sm btn-primary btn-round waves-effect">Add Report</a>
                     </div>
                 </div>
             </div>

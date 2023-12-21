@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Wing extends Model
 {
     use HasFactory;
-    protected $guarded=[''];
+
+    protected $guarded=[];
+
     public function warehouse()
     {
         return $this->belongsTo(Warehouse::class);
     }
+
     public function locations()
     {
         return $this->hasMany(WingLocation::class);

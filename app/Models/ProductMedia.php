@@ -27,6 +27,6 @@ class ProductMedia extends Model
      */
     public function getFileAttribute($value)
     {
-        return config('app.url').'/storage/vendor/product/'.$value;
+        return config('app.frontend_url').'/storage/vendor/product/'.$value;
     }
 }

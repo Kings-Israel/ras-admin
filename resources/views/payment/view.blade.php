@@ -84,7 +84,10 @@
                                 <p class="card-text mr-2"><strong>Country: </strong> {{$orderItem->product->business->country->name ?? 'N/A' }}</p>
                                 @endforeach
                             </div>
+<<<<<<< HEAD
                         <div class="body">
+=======
+>>>>>>> c260d165703ea9a534cdbd2ec6e64ad73b229a99
                         </div>
                     </div>
                 </div>

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\InspectingInstitution;
 use App\Models\InspectionReport;
 use App\Models\OrderRequest;
 use App\Models\User;

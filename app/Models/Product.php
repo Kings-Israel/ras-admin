@@ -11,7 +11,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Product extends Model
 {
-    use HasFactory, HasSlug;
+    use HasFactory;
 
     /**
      * The attributes that aren't mass assignable.
@@ -29,37 +29,6 @@ class Product extends Model
         'is_available' => 'bool',
     ];
 
-    public function getSearchResult(): SearchResult
-    {
-        $url = route('product', $this->slug);
-
-        return new \Spatie\Searchable\SearchResult(
-            $this,
-            $this->name,
-            $url
-        );
-    }
-
-    /**
-     * Get the options for generating the slug.
-     */
-    public function getSlugOptions() : SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom(['name', 'id'])
-            ->saveSlugsTo('slug')
-            ->usingSeparator('_');
-    }
-
-    /**
-     * Get the options for generating the slug.
-     */
-//    public function getSlugOptions() : SlugOptions
-//    {
-//        return SlugOptions::create()
-//            ->generateSlugsFrom('name')
-//            ->saveSlugsTo('slug');
-//    }
     /**
      * Scope a query to only include isAvailable
      *
@@ -98,30 +67,25 @@ class Product extends Model
     }
 
     /**
-     * Get the warehouse that owns the Product
-     */
-//    public function warehouse(): BelongsTo
-//    {
-//        return $this->belongsTo(Warehouse::class);
-//    }
-
-    /**
      * Get all of the media for the Product
      */
     public function media(): HasMany
     {
         return $this->hasMany(ProductMedia::class);
     }
+
     public function location()
     {
         return $this->belongsTo(WingLocation::class);
     }
+
     public function warehouses()
     {
         return $this->belongsToMany(Warehouse::class, 'warehouse_products', 'product_id', 'warehouse_id');
     }
-    public function warehouse()
-    {
-        return $this->belongsTo(Warehouse::class);
-    }
+
+    // public function warehouse()
+    // {
+    //     return $this->belongsTo(Warehouse::class);
+    // }
 }

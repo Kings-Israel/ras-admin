@@ -1,5 +1,18 @@
 @extends('layouts.app')
 @section('css')
+<style>
+    .form-control {
+        border: 1px solid #9c9c9c !important;
+    }
+
+    .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+        width: 100% !important;
+    }
+
+    .bootstrap-select .btn {
+        border: 1px solid #9c9c9c !important;
+    }
+</style>
 @endsection
 @section('content')
 <section class="content home">
@@ -247,7 +260,7 @@
                                 </div>
 
                                 <div class="col-6">
-                                    <label for="Max Capacity">Copy of Report</label>
+                                    <label for="Max Capacity">Certificate</label>
                                     <div class="form-group">
                                         <input type="file" accept=".pdf" name="report" class="form-control" id="" required />
                                         <x-input-error :messages="$errors->get('report')" class="mt-2 list-unstyled"></x-input-error>

@@ -64,8 +64,9 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::get('/buyers/orders/{warehouse?}', [WarehouseController::class, 'buyerOrders'])->name('requests.buyers.index');
             Route::get('/vendors/orders/{warehouse?}', [WarehouseController::class, 'vendorOrders'])->name('requests.vendors.index');
             Route::get('/{order_request}/details', [WarehouseController::class, 'order'])->name('requests.details');
-
+            Route::get('/product/release/requests/{warehouse?}', [WarehouseController::class, 'productReleaseRequests'])->name('requests.release');
             Route::post('/{release_product_request}/product/release', [OrderController::class, 'releaseProduct'])->name('product.release');
+            Route::post('/{order}/delivery/status/update', [OrderController::class, 'updateDeliveryStatus'])->name('delivery.status.update');
         });
     });
 
@@ -75,12 +76,12 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::resource('payments', PaymentController::class);
     Route::get('/packaging', [PackagingController::class, 'index'])->name('packaging');
 
-    Route::get('/api/products/{id}', [ProductController::class, 'details'])->name('product.details');
-    Route::get('/products', [ProductController::class, 'index'])->name('products');
-    Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
-    Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
-    Route::get('/product/restock/{product}', [ProductController::class, 'restock'])->name('product.restock');
-    Route::post('/product/restocking', [ProductController::class, 'restocking'])->name('product.restocking');
+    Route::get('/products/{product}/details', [ProductController::class, 'details'])->name('products.details');
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/product/create', [ProductController::class, 'create'])->name('products.create');
+    Route::post('/product/store', [ProductController::class, 'store'])->name('products.store');
+    Route::get('/product/restock/{product}', [ProductController::class, 'restock'])->name('products.restock');
+    Route::post('/product/restocking', [ProductController::class, 'restocking'])->name('products.restocking');
     Route::get('/get-wing-locations/{wing}', [ProductController::class,'getWingLocations']);
 
 //    Route::post('/products/store', [WarehouseProductController::class, 'store'])->name('products.store');
