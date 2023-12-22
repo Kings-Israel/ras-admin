@@ -91,7 +91,7 @@
                                             </td>
                                             <td>{{ $product->name }}</td>
                                             <td>{{ $product->category->name }}</td>
-                                            <td>{{ $product->business->name }}</td>
+                                            <td>{{ $product->business ? $product->business->name : 'Warehouse' }}</td>
                                             <td>{{ $product->price ? $product->price : $product->min_price.' - '.$product->max_price }}</td>
                                             <td>{{ $product->model_number }}</td>
                                             <td class="d-flex flex-wrap">

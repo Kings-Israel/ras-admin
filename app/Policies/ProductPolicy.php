@@ -15,7 +15,8 @@ class ProductPolicy
     {
         if ($user->hasPermissionTo('view warehouse')) {
             $user_warehouses = $user->warehouses->pluck('id');
-            if ($product->warehouses()->exists() && !$user_warehouses->diff($product->warehouses->pluck('id'))->isEmpty()) {
+
+            if ($product->warehouses()->exists() && !$user_warehouses->intersect($product->warehouses->pluck('id'))->isEmpty()) {
                 return true;
             }
         }

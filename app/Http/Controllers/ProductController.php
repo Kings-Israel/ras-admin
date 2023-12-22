@@ -56,7 +56,7 @@ class ProductController extends Controller
         //     $products = Product::with('category','business.user', 'warehouses.country','media')->get();
         // }
 
-        $products = Product::with('warehouses', 'business', 'media', 'category')->get();
+        $products = Product::with('warehouses', 'business', 'media', 'category')->orderBy('created_at', 'DESC')->get();
 
         return view('products.index', [
             'page' => 'Products',
@@ -134,7 +134,6 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
         $request->validate([
             'name' => ['required'],
             'category' => ['required'],
@@ -219,7 +218,7 @@ class ProductController extends Controller
             DB::rollBack();
             Log::error('Error adding product: ' . $e->getMessage());
             toastr()->error('', 'An error occurred while adding the product');
-            return redirect()->route('products');
+            return redirect()->route('products.index');
         }
     }
 
@@ -255,13 +254,13 @@ class ProductController extends Controller
 
             toastr()->success('', 'Product restocked successfully');
 
-            return redirect()->route('products');
+            return redirect()->route('products.index');
 
         }  catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error adding product: ' . $e->getMessage());
             toastr()->error('', 'An error occurred while restocking the product');
-            return redirect()->route('products');
+            return redirect()->route('products.index');
         }
     }
 }

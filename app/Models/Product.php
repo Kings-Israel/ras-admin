@@ -11,7 +11,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, HasSlug;
 
     /**
      * The attributes that aren't mass assignable.
@@ -38,6 +38,18 @@ class Product extends Model
     public function scopeAvailable($query)
     {
         return $query->where('is_available', true);
+    }
+
+    /**
+     * Get the options for generating the slug.
+     */
+    public function getSlugOptions() : SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom(['name', 'id'])
+            ->saveSlugsTo('slug')
+            ->usingSeparator('_')
+            ->doNotGenerateSlugsOnUpdate();
     }
 
     /**
