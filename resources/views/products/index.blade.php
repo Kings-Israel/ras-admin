@@ -26,6 +26,7 @@
                                 <tr>
                                     <th>Image</th>
                                     <th>Name</th>
+                                    <th>BIN</th>
                                     <th>Category</th>
                                     <th>Product Owner</th>
                                     <th>Price</th>
@@ -90,6 +91,7 @@
                                                 @endif
                                             </td>
                                             <td>{{ $product->name }}</td>
+                                            <td>{{ $product->bin }}</td>
                                             <td>{{ $product->category->name }}</td>
                                             <td>{{ $product->business ? $product->business->name : 'Warehouse' }}</td>
                                             <td>{{ $product->price ? $product->price : $product->min_price.' - '.$product->max_price }}</td>
@@ -107,7 +109,7 @@
                                             </td>
                                             <td>{{ $product->created_at->format('d M Y') }}</td>
                                             <td>
-                                                <a href="{{ route('products.details', ['product' => $product]) }}" class="btn btn-sm btn-primary btn-round waves-effect">Details</a>
+                                                <a href="{{ route('products.details', ['product' => $product->id]) }}" class="btn btn-sm btn-primary btn-round waves-effect">Details</a>
                                             </td>
                                        </tr>
                                    @endcan

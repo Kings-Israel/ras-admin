@@ -8,6 +8,7 @@ use App\Models\MeasurementUnit;
 use App\Models\Product;
 use App\Models\ProductMedia;
 use App\Models\ProductMedia as ModelsProductMedia;
+use App\Models\User;
 use App\Models\UserWarehouse;
 use App\Models\Warehouse;
 use App\Models\WarehouseProduct;
@@ -117,10 +118,15 @@ class ProductController extends Controller
         ]);
     }
 
-    public function restock($product_id)
+    public function restock(User $user, $product_id)
     {
-        $userwarehouse = UserWarehouse::where('user_id', auth()->user()->id)->first();
-        $warehouse = Warehouse::find($userwarehouse->warehouse_id);
+        $userwarehouse = $user->warehouses->pluck('id');
+        $warehouse = Warehouse::find($userwarehouse->id);
+        $product=Product::findOrFail($product_id);
+        $current_quantity=0;
+        if ($product){
+            $current_quantity=WarehouseProduct::where('product_id',$product_id)->where('warehouse_id', $warehouse->id)->select('quantity')->first();
+        }
         $product = Product::findOrFail($product_id);
             return view('products.restock', [
                 'page' => 'Restock Product',
@@ -129,8 +135,10 @@ class ProductController extends Controller
                 ],
                 'warehouse' => $warehouse,
                 'product'=>$product,
-            ]);
-    }
+                'current_quantity'=>$current_quantity
+                ]);
+        }
+
 
     public function store(Request $request)
     {
@@ -168,6 +176,7 @@ class ProductController extends Controller
                 'model_number' => $request->model_number,
                 'is_available' => $request->product_availability,
                 'regional_featre' => $request->regional_feature,
+                'bin' => $request->bin,
                 'is_warehouse_product'=>1
             ]);
 
@@ -212,7 +221,7 @@ class ProductController extends Controller
 
             toastr()->success('', 'Product added successfully');
 
-            return redirect()->route('products');
+            return redirect()->route('products.index');
 
         }  catch (\Exception $e) {
             DB::rollBack();
@@ -249,8 +258,8 @@ class ProductController extends Controller
             ]);
 
             DB::commit();
-
-            activity()->causedBy(auth()->user())->performedOn($product_id)->log('restcoked product');
+                $product=Product::find($product_id);
+            activity()->causedBy(auth()->user())->performedOn($product)->log('restocked product');
 
             toastr()->success('', 'Product restocked successfully');
 
