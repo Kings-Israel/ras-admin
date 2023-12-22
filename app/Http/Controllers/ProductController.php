@@ -8,6 +8,7 @@ use App\Models\MeasurementUnit;
 use App\Models\Product;
 use App\Models\ProductMedia;
 use App\Models\ProductMedia as ModelsProductMedia;
+use App\Models\User;
 use App\Models\UserWarehouse;
 use App\Models\Warehouse;
 use App\Models\WarehouseProduct;
@@ -117,10 +118,10 @@ class ProductController extends Controller
         ]);
     }
 
-    public function restock($product_id)
+    public function restock(User $user, $product_id)
     {
-        $userwarehouse = UserWarehouse::where('user_id', auth()->user()->id)->first();
-        $warehouse = Warehouse::find($userwarehouse->warehouse_id);
+        $userwarehouse = $user->warehouses->pluck('id');
+        $warehouse = Warehouse::find($userwarehouse->id);
         $product=Product::findOrFail($product_id);
         $current_quantity=0;
         if ($product){
