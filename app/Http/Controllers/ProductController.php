@@ -57,7 +57,7 @@ class ProductController extends Controller
         //     $products = Product::with('category','business.user', 'warehouses.country','media')->get();
         // }
 
-        $products = Product::with('warehouses', 'business', 'media', 'category')->orderBy('created_at', 'DESC')->get();
+        $products = Product::with('warehouses', 'business', 'media', 'category')->get();
 
         return view('products.index', [
             'page' => 'Products',

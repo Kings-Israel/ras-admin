@@ -26,6 +26,7 @@ use Illuminate\Http\Request;
 use VisitLog;
 use App\Models\WarehouseProduct;
 use App\Models\OrderItem;
+use App\Models\ServiceCharge;
 
 class DashboardController extends Controller
 {
@@ -105,6 +106,86 @@ class DashboardController extends Controller
             'Sales' => [],
         ];
         $total_paid_orders_graph_rate = [];
+
+        // Calculate Revenue
+        $total_delivered_orders = Order::with('orderItems')->where('status', 'delivered')->get();
+        $revenue = 0;
+        $revenue_in_current_month = 0;
+        $revenue_in_previous_month = 0;
+        foreach ($total_delivered_orders as $order) {
+            $order_items = $order->orderItems->load(['orderRequests' => function ($query) {
+                $query->where('status', 'accepted');
+            }]);
+
+            if ($order_items->count() > 0) {
+                foreach($order_items as $order_item) {
+                    foreach($order_item->orderRequests as $order_request) {
+                        // Get Service charge for service provider
+                        $service_charge = ServiceCharge::where('chargeable_type', $order_request->requesteable_type)->where('chargeable_id', $order_request->requesteable_id)->first();
+                        if ($service_charge) {
+                            $service_charge_amount = $service_charge->type == 'percentage' ? ($service_charge->value / 100) * $order_request->cost : $service_charge->value - $order_request->cost;
+                            $revenue += (double) $order_request->cost - (double) $service_charge_amount;
+                        }
+                    }
+                }
+            }
+        }
+
+        $total_delivered_orders_in_prev_month = $total_delivered_orders->whereBetween('created_at', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()]);
+        foreach ($total_delivered_orders_in_prev_month as $order) {
+            $order_items = $order->orderItems->load(['orderRequests' => function ($query) {
+                $query->where('status', 'accepted');
+            }]);
+
+            if ($order_items->count() > 0) {
+                foreach($order_items as $order_item) {
+                    foreach($order_item->orderRequests as $order_request) {
+                        // Get Service charge for service provider
+                        $service_charge = ServiceCharge::where('chargeable_type', $order_request->requesteable_type)->where('chargeable_id', $order_request->requesteable_id)->first();
+                        if ($service_charge) {
+                            $service_charge_amount = $service_charge->type == 'percentage' ? ($service_charge->value / 100) * $order_request->cost : $service_charge->value - $order_request->cost;
+                            $revenue_in_previous_month += (double) $order_request->cost - (double) $service_charge_amount;
+                        }
+                    }
+                }
+            }
+        }
+
+        $total_delivered_orders_in_current_month = $total_delivered_orders->whereBetween('created_at', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()]);
+        foreach ($total_delivered_orders_in_current_month as $order) {
+            $order_items = $order->orderItems->load(['orderRequests' => function ($query) {
+                $query->where('status', 'accepted');
+            }]);
+
+            if ($order_items->count() > 0) {
+                foreach($order_items as $order_item) {
+                    foreach($order_item->orderRequests as $order_request) {
+                        // Get Service charge for service provider
+                        $service_charge = ServiceCharge::where('chargeable_type', $order_request->requesteable_type)->where('chargeable_id', $order_request->requesteable_id)->first();
+                        if ($service_charge) {
+                            $service_charge_amount = $service_charge->type == 'percentage' ? ($service_charge->value / 100) * $order_request->cost : $service_charge->value - $order_request->cost;
+                            $revenue_in_current_month += (double) $order_request->cost - (double) $service_charge_amount;
+                        }
+                    }
+                }
+            }
+        }
+
+        $revenue_difference = $total_delivered_orders_in_current_month->count() - $total_delivered_orders_in_prev_month->count();
+        $revenue_rate = 0;
+        $revenue_direction = '';
+
+        if ($revenue_difference <= 0) {
+            $revenue_rate = 0;
+        } else {
+            $revenue_rate = round($revenue_difference / ($revenue_in_previous_month + $revenue_in_current_month) * 100);
+        }
+
+        if ($revenue_in_previous_month < $revenue_in_current_month) {
+            $revenue_direction = 'higher';
+        } elseif ($revenue_in_previous_month > $revenue_in_current_month) {
+            $revenue_direction = 'lower';
+        }
 
         // Top Businesses
         $top_businesses = [];
@@ -196,10 +277,11 @@ class DashboardController extends Controller
         $users_registered_in_current_month = User::whereHas('roles', function ($query) {$query->where('name', 'buyer')->orWhere('name', 'vendor');})->whereMonth('created_at', now())->count();
         $users_registered_in_previous_month = User::whereHas('roles', function ($query) {$query->where('name', 'buyer')->orWhere('name', 'vendor');})->whereMonth('created_at', now()->subMonth())->count();
         $users_registration_diiference = $users_registered_in_previous_month - $users_registered_in_current_month;
-        if ($users_registration_diiference < 0) {
+
+        if ($users_registration_diiference <= 0) {
             $user_registration_rate = 0;
         } else {
-            $user_registration_rate = ceil($users_registration_diiference / ($users_registered_in_previous_month + $users_registered_in_current_month) * 100);
+            $user_registration_rate = round($users_registration_diiference / ($users_registered_in_previous_month + $users_registered_in_current_month) * 100);
         }
 
         if ($users_registered_in_previous_month < $users_registered_in_current_month) {
@@ -239,7 +321,7 @@ class DashboardController extends Controller
             array_push($vendor_registration_rate_graph_data, $vendors_monthly);
         }
 
-        $total_orders = Order::count();
+        // $total_orders = Order::count();
         $orders_in_current_month = Order::whereMonth('created_at', now())->count();
         $orders_in_previous_month = Order::whereMonth('created_at', now()->subMonth())->count();
         $orders_diiference = $orders_in_previous_month - $orders_in_current_month;
@@ -543,6 +625,9 @@ class DashboardController extends Controller
                 'Dashboard' => route('dashboard'),
             ],
             'months' => $months_formatted,
+            'revenue' => $revenue,
+            'revenue_rate' => $revenue_rate,
+            'revenue_direction' => $revenue_direction,
             'total_users_count' => $total_users_count,
             'total_buyers_count' => $total_buyers_count,
             'total_vendors_count' => $total_vendors_count,

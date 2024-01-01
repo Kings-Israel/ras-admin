@@ -13,6 +13,7 @@ use App\Models\OrderConversation;
 use App\Models\OrderRequest;
 use App\Models\ServiceCharge;
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Chat;
@@ -103,6 +104,14 @@ class InspectorController extends Controller
                 'type' => $request->service_charge_type,
                 'chargeable_id' => $inspector->id,
                 'chargeable_type' => InspectingInstitution::class,
+            ]);
+        }
+
+        if ($request->has('wallet_account_number')) {
+            Wallet::create([
+                'account_number' => $request->wallet_account_number,
+                'walleteable_id' => $inspector->id,
+                'walleteable_type' => InspectingInstitution::class,
             ]);
         }
 

@@ -182,6 +182,7 @@
                         </ul>
                     </li>
                 @endcan
+                {{-- <li class="nav-item @if(Route::is('marketing.*')) active open @endif"> <a href="{{ route('marketing.index') }}"><i class="material-icons">credit_card</i><span>E-Wallet</span></a></li> --}}
                 @role('admin')
                     <li class="nav-item @if(Route::is('marketing.*')) active open @endif"> <a href="{{ route('marketing.index') }}"><i class="material-icons">extension</i><span>Marketing Management</span></a></li>
                 @endrole

@@ -22,8 +22,8 @@
                         <div class="body">
                             <p class="m-b-20"><i class="zmdi zmdi-balance zmdi-hc-3x col-amber"></i></p>
                             <span class="font-bold">Total Revenue</span>
-                            <h3 class="m-b-10"><span class="number count-to" data-from="0" data-to="0" data-speed="2000" data-fresh-interval="700">0</span></h3>
-                            <small class="text-muted">0% lower growth</small>
+                            <h3 class="m-b-10"><span class="number count-to" data-from="0" data-to="{{ $revenue }}" data-speed="2000" data-fresh-interval="700">{{ $revenue }}</span></h3>
+                            <small class="text-muted">{{ $revenue_rate }}% {{ $revenue_direction }} growth</small>
                         </div>
                     </div>
                 </div>

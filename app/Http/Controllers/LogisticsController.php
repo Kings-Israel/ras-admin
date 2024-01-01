@@ -95,7 +95,7 @@ class LogisticsController extends Controller
                         'document_name' => $doc,
                         'file_url' => pathinfo($request->document_file[$key]->store('documents', 'company'), PATHINFO_BASENAME),
                         'documenteable_id' => $logistics_company->id,
-                        'documenteable_type' => LogisticCompany::class,
+                        'documenteable_type' => LogisticsCompany::class,
                     ]);
                 }
             }
@@ -106,7 +106,7 @@ class LogisticsController extends Controller
                 'value' => $request->service_charge_rate,
                 'type' => $request->service_charge_type,
                 'chargeable_id' => $logistics_company->id,
-                'chargeable_type' => LogisticCompany::class,
+                'chargeable_type' => LogisticsCompany::class,
             ]);
         }
 
