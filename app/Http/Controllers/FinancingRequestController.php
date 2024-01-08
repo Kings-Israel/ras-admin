@@ -10,15 +10,19 @@ use App\Models\FinancingInstitution;
 
 class FinancingRequestController extends Controller
 {
-    public function index()
+    public function index(FinancingInstitution $financingInstitution = null)
     {
-        if(auth()->user()->hasRole('admin')) {
-            $financing_requests = FinancingRequest::with('invoice.orders.orderItems')->get();
-        } else if (auth()->user()->hasPermissionTo('view financing request') && auth()->user()->financingInstitutions->count() <= 0) {
-            $financing_requests = FinancingRequest::with('invoice.orders.orderItems')->get();
+        if ($financingInstitution) {
+            $financing_requests = FinancingRequest::with('invoice.orders.orderItems')->where('financing_institution_id', $financingInstitution->id)->get();
         } else {
-            $user_financing_institutions_ids = auth()->user()->financingInstitutions->pluck('id');
-            $financing_requests = FinancingRequest::with('invoice.orders.orderItems')->whereIn('financing_institution_id', $user_financing_institutions_ids)->get();
+            if(auth()->user()->hasRole('admin')) {
+                $financing_requests = FinancingRequest::with('invoice.orders.orderItems')->get();
+            } else if (auth()->user()->hasPermissionTo('view financing request') && auth()->user()->financingInstitutions->count() <= 0) {
+                $financing_requests = FinancingRequest::with('invoice.orders.orderItems')->get();
+            } else {
+                $user_financing_institutions_ids = auth()->user()->financingInstitutions->pluck('id');
+                $financing_requests = FinancingRequest::with('invoice.orders.orderItems')->whereIn('financing_institution_id', $user_financing_institutions_ids)->get();
+            }
         }
 
         return view('financiers.requests.index', [

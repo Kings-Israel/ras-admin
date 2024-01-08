@@ -438,7 +438,7 @@ class FinancingInstitutionController extends Controller
             'breadcrumbs' => [
                 'Customers' => route('financing.institutions.customers')
             ],
-            'users' => $users
+            'users' => collect($users)->unique(),
         ]);
     }
 

@@ -16,6 +16,10 @@ class FinancingRequestPolicy
     {
         $user_financing_institution = FinancingInstitutionUser::where('user_id', $user->id)->where('financing_institution_id', $financingRequest->financingInstitution->id)->first();
 
+        if (!$user_financing_institution && $user->hasPermissionTo('view financing request')) {
+            return true;
+        }
+
         if ($user->hasPermissionTo('view financing request') && $user_financing_institution) {
             return true;
         }

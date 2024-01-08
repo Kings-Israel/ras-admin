@@ -13,9 +13,7 @@ class WalletController extends Controller
         $wallet_balance = 0;
 
         if (auth()->user()->hasRole('admin')) {
-            // $order_items = $order->orderItems->load(['orderRequests' => function ($query) {
-            //     $query->where('status', 'accepted');
-            // }]);
+            
         }
 
     }

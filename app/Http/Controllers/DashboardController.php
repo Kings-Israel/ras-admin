@@ -514,17 +514,28 @@ class DashboardController extends Controller
                             });
 
         $financing_requests_count = FinancingRequest::count();
-        if (auth()->user()->hasRole('financier')) {
+        if (auth()->user()->hasPermissionTo('view financing request')) {
             $financier = FinancingInstitutionUser::where('user_id', auth()->user()->id)->first();
-            $financing_total_limit = (double)FinancingInstitution::where('id', $financier->financing_institution_id)
-                ->value('credit_limit');
-            $financing_req = FinancingRequest::where('financing_institution_id', $financier->financing_institution_id)
-                ->where('status', 'accepted')
-                ->pluck('invoice_id');
-            $financing_total_invoices = (double)Invoice::whereIn('id', $financing_req)
-                ->where('payment_status', 'paid')
-                ->sum('total_amount');
+            if ($financier) {
+                $financier = FinancingInstitutionUser::where('user_id', auth()->user()->id)->first();
+                $financing_total_limit = (double)FinancingInstitution::where('id', $financier->financing_institution_id)
+                    ->value('credit_limit');
+                $financing_req = FinancingRequest::where('financing_institution_id', $financier->financing_institution_id)
+                    ->where('status', 'accepted')
+                    ->pluck('invoice_id');
+                $financing_total_invoices = (double)Invoice::whereIn('id', $financing_req)
+                    ->where('payment_status', 'paid')
+                    ->sum('total_amount');
+            } else {
+                $financing_total_limit = (double) FinancingInstitution::sum('credit_limit');
+                $financing_req = FinancingRequest::where('status', 'accepted')
+                                                ->pluck('invoice_id');
+                $financing_total_invoices = (double)Invoice::whereIn('id', $financing_req)
+                                                ->where('payment_status', 'paid')
+                                                ->sum('total_amount');
+            }
         }
+
         foreach($months as $month) {
             $requests_monthly = FinancingRequest::whereBetween('created_at', [Carbon::parse($month)->startOfMonth(), Carbon::parse($month)->endOfMonth()])->count();
             array_push($financing_requests_graph_data, $requests_monthly);

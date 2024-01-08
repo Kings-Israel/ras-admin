@@ -77,8 +77,8 @@
                                                             <span>View Details</span>
                                                         </a>
                                                     @endcan
-                                                    @can('view financing requests')
-                                                        <a class="dropdown-item" href="#">
+                                                    @can('view financing request')
+                                                        <a class="dropdown-item" href="{{ route('financing.requests.index', ['financingInstitution' => $institution]) }}">
                                                             <span>Financing Requests</span></a>
                                                         </a>
                                                     @endcan

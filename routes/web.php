@@ -123,7 +123,7 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     // Financing Requests
     Route::group(['prefix' => 'financing/requests'], function () {
-        Route::get('/', [FinancingRequestController::class, 'index'])->name('financing.requests.index');
+        Route::get('/{financingInstitution?}', [FinancingRequestController::class, 'index'])->name('financing.requests.index');
         Route::get('{financing_request}/details', [FinancingRequestController::class, 'show'])->name('financing.requests.show');
         Route::get('{financing_request}/{status}/update', [FinancingRequestController::class, 'update'])->name('financing.requests.update');
     });

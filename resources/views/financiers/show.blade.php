@@ -26,7 +26,7 @@
             <div class="col-lg-3 col-md-6">
                 <div class="card text-center">
                     <div class="body">
-                        <span>Requests Awaiting Second Approval</span>
+                        <span>Requests Waiting Second Approval</span>
                         <h3 class="m-b-10 number count-to" data-from="0" data-to="{{ $first_approved_requests }}" data-speed="2000" data-fresh-interval="700">{{ $first_approved_requests }}</h3>
                     </div>
                 </div>

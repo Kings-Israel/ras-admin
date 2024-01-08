@@ -106,4 +106,22 @@ class FinancingRequest extends Model
     {
         return $this->hasMany(FinancingRequestDocument::class);
     }
+
+    public function resolveStatus(): string
+    {
+        switch ($this->status) {
+            case 'pending':
+                return 'badge-info';
+                break;
+            case 'accepted':
+                return 'badge-success';
+                break;
+            case 'rejected':
+                return 'badge-danger';
+                break;
+            default:
+                return 'badge-info';
+                break;
+        }
+    }
 }
